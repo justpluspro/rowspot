@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title th:text="${articleDto.title}">文章标题</title>
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="header">
+        <div class="container">
+            <a class="navbar-brand" href="#">RowSpot</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-tag="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" th:href="@{/dubbo/index}">dubbo教程 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/netty/index}">netty教程</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+<!--                <form class="form-inline my-2 my-lg-0">-->
+<!--                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-tag="Search">-->
+<!--                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+<!--                </form>-->
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-success text-white" href="#" id="navbarDropdown1"
+                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            分享
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                            <a class="dropdown-item disabled" href="#">分享</a>
+                            <a class="dropdown-item" href="/user/share?c=A">技术分享</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item disabled" href="#">问答</a>
+                            <a class="dropdown-item" href="#">我要提问</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            登录
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="loginDropdown">
+                            <a class="dropdown-item" href="#">rowspot登录</a>
+                            <a class="dropdown-item" href="#">QQ登录</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main role="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-9 col-xl-9 col-md-12 col-sm-12">
+                    <div class="markdown-body" th:utext="${articleDto.content}">
+
+                    </div>
+
+                    <div class="mt-5 text-center">
+                        <span><i class="fa fa-heart" aria-hidden="true"></i></span>
+                        <span>赞一下</span>
+                        <span class="badge badge-secondary">2</span>
+                    </div>
+
+
+                    <div class="mt-5">
+                        <div class="">上一条：到底了</div>
+                        <div class="">下一条：到头了</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xl-3">
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <div class="py-2 pl-3 font-weight-bold bg-light border-bottom" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                                 aria-controls="collapseOne">
+                                开始
+                            </div>
+
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                 data-parent="#accordionExample">
+                                <ul class="list-unstyled pl-3">
+                                    <li class="small"><a href="">dubbo 介绍</a></li>
+                                    <li class="small"><a href="">dubbo 下载和安装</a></li>
+                                    <li class="small"><a href="">dubbo 运行</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card mt-2">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        接口
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <ul>
+                                    <li>dubbo 生产者接口</li>
+                                    <li>dubbo 生产者接口 API</li>
+                                    <li>dubbo 消费者 API</li>
+                                    <li>dubbo 消费者客户端</li>
+                                    <li>dubbo admin</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        配置
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                <ul>
+                                    <li>dubbo 生产者接口</li>
+                                    <li>dubbo 生产者接口 API</li>
+                                    <li>dubbo 消费者 API</li>
+                                    <li>dubbo 消费者客户端</li>
+                                    <li>dubbo admin</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="border-bottom pb-2">
+                        <span>
+                            有 <span class="badge badge-info">75</span> 条评论
+                        </span>
+                        <span class="float-right">
+                            登录
+                        </span>
+                    </div>
+                    <div class="media clearfix mt-2">
+                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
+                             style="height: 48px; width: 48px;" alt="...">
+                        <div class="media-body form-group">
+                        <textarea name="content" id="content" style="resize: none"
+                                  cols="30" rows="5" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
+                                 style="height: 48px; width: 48px;" alt="...">
+                            <div class="media-body">
+                                <div class="mt-0">
+                                    <a href="#" class="font-weight-bold small">张三</a>
+                                    <span class="text-muted ml-2 small">一月前</span>
+                                </div>
+                                <div class="markdown-body">
+                                    哥, 最近我在 部署一个kafka服务环境, 当然选择的是最新版本, 2.6.0, 两套环境, linux环境中一直没问题, 后来部署给测试用的环境是window, 刚启动的时候运行的挺好的, 隔一天就出问题了, zookeeper 没有停止, kafka服务停止了, 是不是window环境中不适合部署kafka ?
+                                    我看了下日志:
+                                </div>
+                                <div>
+                                   <span class="text-muted"><i class="fa fa-chevron-up" aria-hidden="true"></i>0</span>
+                                    <span class="text-muted ml-2"><i class="fa fa-chevron-down" aria-hidden="true"></i>0</span>
+                                    <span class="text-muted ml-2">回复</span>
+                                </div>
+
+                                <div class="media mt-3">
+                                    <a class="mr-3" href="#">
+                                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="rounded"
+                                             style="height: 32px; width: 32px;" alt="...">
+                                    </a>
+                                    <div class="media-body">
+                                        <div class="mt-0">
+                                            <a href="#" class="font-weight-bold small">管理员</a>
+                                            <span class="text-muted ml-2 small">
+                                                <i class="fa fa-forward" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="text-muted ml-2 small"> 张三</span>
+                                            <span class="text-muted ml-2 small">一月前</span>
+                                        </div>
+                                        <div class="markdown-body">
+                                            Windows我没部署过额，
+                                            这个是你重新启动kafka报的吧(kafka进程还在)，你先到kafka日志里，看看是否有什么异常导致kafka异常的。
+                                        </div>
+                                        <div>
+                                            <span class="text-muted">
+                                                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                                                0
+                                            </span>
+                                            <span class="text-muted ml-2">
+                                                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                                                0
+                                            </span>
+                                            <span class="text-muted ml-2">回复</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="media mt-3">
+                                    <a class="mr-3" href="#">
+                                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="rounded"
+                                             style="height: 32px; width: 32px;" alt="...">
+                                    </a>
+                                    <div class="media-body">
+                                        <div class="mt-0">
+                                            <a href="#" class="font-weight-bold small">管理员</a>
+                                            <span class="text-muted ml-2 small">
+                                                <i class="fa fa-forward" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="text-muted ml-2 small"> 张三</span>
+                                            <span class="text-muted ml-2 small">一月前</span>
+                                        </div>
+                                        <div class="markdown-body">
+                                           有问题到问题专区提问吧
+                                        </div>
+                                        <div>
+                                            <span class="text-muted">
+                                                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                                                0
+                                            </span>
+                                            <span class="text-muted ml-2">
+                                                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                                                0
+                                            </span>
+                                            <span class="text-muted ml-2">回复</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="media">
+                            <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
+                                 style="height: 48px; width: 48px;" alt="...">
+                            <div class="media-body">
+                                <h5 class="mt-0">Media heading</h5>
+                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+
+                                <div class="media mt-3">
+                                    <a class="mr-3" href="#">
+                                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
+                                             style="height: 48px; width: 48px;" alt="...">
+                                    </a>
+                                    <div class="media-body">
+                                        <h5 class="mt-0">Media heading</h5>
+                                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

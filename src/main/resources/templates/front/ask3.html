@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="https://www.orchome.com/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/static/css/editor.css">
+    <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/prism.css">
+    <link rel="stylesheet" href="/static/css/github-markdown.css">
+    <style>
+        body {
+            background-color: #e9ecef!important;
+        }
+        .section {
+            padding-top: 1.5rem;
+        }
+    </style>
+    <title>提问题-RowSpot</title>
+
+</head>
+<body>
+<div th:replace="/front/base/navbar::header"></div>
+<section class="section">
+    <div class="container is-max-widescreen">
+        <div class="columns">
+            <div class="column">
+                <div class="control">
+                    <input id="title" autocomplete="off" class="input" type="text" placeholder="标题">
+                </div>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-one-quarter">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="category"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-gapless" style="border-radius: 4px; border: 1px solid #dbdbdb; height: 550px; max-height: 550px;">
+            <div class="column is-half has-fixed-size" style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;">
+                <textarea name="content" id="content"  style="padding: 8px 16px; height: 100%; border-top-left-radius: 4px; border-bottom-left-radius: 4px;" placeholder="内容简介"></textarea>
+            </div>
+            <div class="column is-half has-fixed-size markdown-body" id="preview_out"></div>
+        </div>
+
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button class="button is-warning">存为草稿</button>
+            </div>
+            <div class="control">
+                <button id="post-question-btn" class="button is-success">提交</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="/static/markdown-editor-master/codemirror/lib/codemirror.js"></script>
+<script src="/static/markdown-editor-master/codemirror/markdown/markdown.js"></script>
+<script src="/static/markdown-editor-master/codemirror/marked.min.js"></script>
+<script src="/static/markdown-editor-master/codemirror/prism.js"></script>
+
+<script>
+
+    let editor;
+    let column;
+
+    window.onload = function() {
+
+        let markedRender = new marked.Renderer();
+        marked.setOptions({
+            render: markedRender,
+            gfm: true,
+            tables: true,
+            breaks: true, // '>' 换行，回车换行成 <br>
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            smartypants: false
+        });
+
+        editor = CodeMirror.fromTextArea(document.getElementById('content'), {
+            mode:'markdown',
+            // lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            lineWrapping: true
+        });
+
+        editor.on('change', editorOnHandler);
+
+        initialCategories();
+
+    }
+
+    function editorOnHandler(cm, co) {
+        console.log(cm.getValue());
+
+        document.getElementById('preview_out').innerHTML = marked(cm.getValue());
+
+
+        // $('.markdown-body').html(marked(cm.getValue()));
+        // $('.markdown-body pre code').each(function(i, block) {
+        //     Prism.highlightElement(block);
+        // });
+    }
+
+
+    function initialCategories() {
+
+        fetch("/api/categories", {
+            headers: {},
+            method: 'GET',
+        }).then(res => res.json())
+        .catch(error => {
+            console.error('error:', error);
+        }).then(res => {
+            let html = "";
+            for(let i = 0; i < res.length; i++){
+                let category = res[i];
+                html += '<option value="' + category.id + '">' + category.name + '</option>';
+            }
+            document.getElementById('category').innerHTML = html;
+        });
+
+    }
+
+    document.getElementById('post-question-btn').addEventListener('click', function() {
+        let article = getArticle();
+
+        fetch('/api/article/saved', {
+            body: JSON.stringify(article),
+            headers: new Headers({
+                'Content-Type': 'application/json;charset=utf8',
+            }),
+            method: 'POST'
+        }).then(res => res.json()).catch(error => {
+            console.error('Error:', error)
+        }).then(response => {
+            console.log('Success:', response);
+            window.location.href = '/';
+        });
+    });
+
+    function getArticle() {
+        let Article = {};
+        Article.title = document.getElementById('title').value;
+        Article.content = editor.getValue;
+        Article.categoryId = document.getElementById('category').value;
+        Article.state = 'POSTED';
+        Article.articleType = 'Q';
+        return Article;
+    }
+</script>
+</body>
+</html>

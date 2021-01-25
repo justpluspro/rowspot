@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/bootstrap-4.5.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <title th:text="Rowspot">提问题-首页</title>
+<body>
+
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12 col-sm-12">
+            <div class="form-group">
+                <input type="text" id="title" class="form-control"
+                       placeholder="请输入求助标题，以问号结尾">
+            </div>
+            <div class="form-group">
+                <select class="form-control" id="columnId">
+                    <option value="">请选择关联专栏</option>
+                    <option th:each="columnDto: ${columnsDtos}"
+                            th:value="${columnDto.id}"
+                            th:text="${columnDto.columnName}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea name="content" id="content" cols="30" rows="10" class="form-control"></textarea>
+            </div>
+
+            <div class="text-right">
+                <button type="button" id="post-question-btn" class="btn btn-success">发布</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script type="text/javascript" src="/static/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-4.5.0-dist/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('post-question-btn').addEventListener('click', function() {
+        let article = getArticle();
+        $.ajax({
+            url: '/api/article/saved',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf8',
+            data: JSON.stringify(article),
+            success: function(res) {
+                alert('发布成功');
+            }
+        });
+    });
+
+    function getArticle() {
+        let Article = {};
+        Article.title = document.getElementById('title').value;
+        Article.content = document.getElementById('content').value;
+        let columnId = document.getElementById('columnId').value;
+
+        Article.column = {
+            id: columnId
+        };
+
+        Article.state = 'POSTED';
+        Article.articleType = {id: 2};
+        return Article;
+    }
+</script>
+</body>
+</html>

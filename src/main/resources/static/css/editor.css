@@ -1,0 +1,28 @@
+#preview_out {
+    background-color: #eeeeee;
+    padding: 8px 16px !important;
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#editor_in {
+    width: 50%;
+    height: 420px;
+}
+
+#editor_container {
+    border: 1px skyblue solid;
+    border-radius: 4px;
+}
+#editor_toolbar {
+    border-bottom: 1px skyblue solid;
+}
+
+.CodeMirror {
+    /*font-family: monospace;*/
+    height: 100%;
+    color: black;
+    overflow-y: hidden;
+    font-family: Menlo,Ubuntu Mono,Consolas,Courier New,Microsoft Yahei,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;
+}

@@ -1,0 +1,67 @@
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation" th:fragment="header">
+    <div class="container is-max-widescreen">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+                <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            </a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item">
+                    dubbo教程
+                </a>
+
+                <a class="navbar-item">
+                    Netty教程
+                </a>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a th:if="${user == null}" href="javascript:void(0);" class="button is-primary">
+                            <strong>注册</strong>
+                        </a>
+                        <a th:if="${user == null}" th:href="@{/login}" class="button is-light">
+                            登录
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        创建
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a href="/user/share?type=A" class="navbar-item">
+                            技术分享
+                        </a>
+                        <hr class="navbar-divider">
+                        <a href="/user/question" class="navbar-item">
+                            提问
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable" th:if="${user != null}">
+                    <a class="navbar-link">
+                        不荒
+                    </a>
+
+                    <div class="navbar-dropdown">
+                        <a th:href="@{/user/} + ${user.id} + @{/profile}" class="navbar-item">
+                            我的空间
+                        </a>
+                        <hr class="navbar-divider">
+                        <a href="javascript:void(0);" id="logout" class="navbar-item">
+                            退出
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

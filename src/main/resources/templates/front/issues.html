@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/x-icon" href="https://www.orchome.com/images/favicon.ico">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/github-markdown.css">
+    <link rel="stylesheet" href="/static/bootstrap-4.5.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <title th:text="教程">问答-Rowspot.cn</title>
+    <style>
+        .jumbotron {
+            padding-top: 2rem !important;
+            padding-bottom: 0 !important;
+            background-color: #f6f6f6;
+        }
+        textarea:focus {
+            box-shadow: none !important;
+        }
+        .accordion>.card:not(:last-of-type) {
+            border-radius: 4px;
+            border-bottom: 1px silver solid;
+        }
+
+        .accordion>.card>.card-header{
+            margin-bottom: -1px;
+        }
+    </style>
+</head>
+<body>
+<header class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="https://static.oschina.net/new-osc/img/logo_new.svg">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-tag="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/dubbo/index">dubbo教程</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/netty/index">netty教程</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1"
+                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        分享
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                        <a class="dropdown-item disabled" href="#">分享</a>
+                        <a class="dropdown-item" href="/write">技术分享</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item disabled" href="#">问答</a>
+                        <a class="dropdown-item" href="/ask">提问</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userNavbarDropdown"
+                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        不荒
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userNavbarDropdown">
+                        <a class="dropdown-item" href="/user/1/profile">我的空间</a>
+                        <a class="dropdown-item" onclick="{alert('退出');}" href="javascript:void(0);">退出</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+<main role="main">
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 d-flex">
+                    <div style="padding-top: 16px; padding-bottom: 8px;">
+                        <h4 th:text="${articleDto.title}">dubbo 中文教程</h4>
+                        <div>
+                            <span class="tag">原创</span>
+                            <span class="font-weight-bold text-success">
+                                <a th:href="@{/user/} + ${articleDto.userDto.id} + @{/profile}" th:text="${articleDto.userDto.username}"></a>
+                            </span>
+                            <span class="ml-2">发表于:</span>
+                            <span class="ml-1" th:text="${#temporals.format(articleDto.postAt, 'yyyy-MM-dd')}">2020-12-13</span>
+                            <span class="ml-2">最后更新时间:</span>
+                            <span class="ml-1" th:text="${#temporals.format(articleDto.modifyAt, 'yyyy-MM-dd')}">2020-12-13</span>
+                        </div>
+                    </div>
+                    <div style="padding-top: 8px; padding-bottom: 16px;" class="ml-auto align-self-center">
+                        <button class="btn btn-sm btn-success">订阅</button>
+                        <span class="text-muted font-weight-bold ml-1">
+                            <span th:text="${articleDto.subscribeCount}">467</span>
+                            <span style="margin-left: 4px;">订阅</span>
+                        </span>
+                        <span class="text-muted font-weight-bold" style="margin-left: 6px;">
+                            <span th:text="${articleDto.clickCount}">435278</span>
+                            <span style="margin-left: 4px;">浏览</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex" style="margin-top: 16px;">
+                <div th:each="articleTypeDto : ${articleDto.articleTypeDtos}"
+                     th:classappend="${articleTypeDto.selected} ?
+                     'article-type-active' : 'article-type'">
+                    <a th:href="${articleTypeDto.url}" th:text="${articleTypeDto.name}">问答区</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9" style="border-right: 1px silver solid;">
+                <div class="d-flex">
+                    <div style="border-bottom: 2px solid orangered; padding-top: 8px; padding-bottom: 8px;">
+                        <a href="/ask/issues">最新提问</a>
+                    </div>
+                    <div style="padding-top: 8px; padding-bottom: 8px; margin-left: 16px;">
+                        <a href="/ask/issues/unanswered">等待回答</a>
+                    </div>
+                    <div style="padding-top: 8px; padding-bottom: 8px; margin-left: 16px;">
+                        <a href="/ask/issues/hot">热门回答</a>
+                    </div>
+                </div>
+                <div class="d-flex border-bottom" th:each="articleDto :${pageDto.data}">
+                    <div class="align-self-center">
+                        <div style="padding: 4px 12px; border-radius: 4px;">
+                            <div class="text-center small" th:text="${articleDto.voteCount}">2</div>
+                            <div class="text-center small">得票</div>
+                        </div>
+                    </div>
+                    <div class="align-self-center">
+                        <div style="border: 1px seagreen solid; padding: 4px 12px; border-radius: 4px;">
+                            <div class="text-center small" th:text="${articleDto.commentCount}">2</div>
+                            <div class="text-center small">回答</div>
+                        </div>
+                    </div>
+                    <div class="align-self-center">
+                        <div style="padding: 4px 12px; border-radius: 4px;">
+                            <div class="text-center small" th:text="${articleDto.clickCount}">120</div>
+                            <div class="text-center small">浏览</div>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 d-flex flex-column p-2">
+                        <div>
+                            <span th:text="${articleDto.userDto.username}"></span>
+                            <span class="small">43分钟前提问</span>
+                        </div>
+                        <div>
+                            <a style="font-size: 16px;" th:href="@{/} + ${articleDto.id}" th:text="${articleDto.title}"></a>
+                        </div>
+                        <div>
+                            <a th:href="@{articleDto.columnDto.columnUrl} + '/index'"  style="color: #00965e;
+                                background-color:#00965e1a; padding: 2px 6px; border-radius: 2px;"
+                               th:text="${articleDto.columnDto.columnName}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="p-2 align-self-center">
+                        <button type="button">首页</button>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button type="button">上一页</button>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button type="button">下页</button>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button type="button">尾页</button>
+                    </div>
+                    <div class="p-2">
+                        <span style="font-size: 24px;" class="text-danger font-weight-bold" th:text="${pageDto.currentPage}">1</span>
+                        <span class="">/</span>
+                        <span style="font-size: 24px;" class="text-danger font-weight-bold" th:text="${pageDto.totalPage}">12</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="d-flex flex-column alert alert-warning" style="padding-top: 32px; padding-bottom: 32px">
+                    <div class="align-self-center">找不到问题的答案？</div>
+                    <div style="margin-top: 16px;" class="align-self-center">
+                        <a href="/ask" class="btn btn-success">我要提问</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<footer style="margin-top: 64px; background-color: black; padding-top: 32px; padding-bottom: 32px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center text-light" style="padding-top: 32px; padding-bottom: 32px;">
+                Rowspot ©2018 www.rowspot.cn, All rights reserved. 粤ICP备19028930号
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/bootstrap-4.5.0-dist/js/bootstrap.min.js"></script>
+
+<script>
+    let id = '[[${articleDto.id}]]';
+    $(document).ready(function() {
+        $.ajax({
+            url: '/api/article/' + id +'/hit',
+            method: 'PATCH',
+            dataType: 'json'
+        });
+
+
+        loadComments(1);
+
+    });
+
+    document.getElementById('postComment').addEventListener('click', function() {
+        let content = document.getElementById('content').value;
+
+        if(content === null || content === "") {
+            alert("评论内容不能为空");
+            return;
+        }
+
+
+
+        $.ajax({
+            url: "/api/comment/saved",
+            method: 'POST',
+            contentType: 'application/json;charset=utf8',
+            data: JSON.stringify({"content": content, "article": {"id": id}}),
+            dataType: 'json',
+            success: function(res) {
+                alert('评论成功：' + JSON.stringify(res));
+            }
+        });
+    });
+
+
+    function loadComments(page) {
+        $.ajax({
+            url: '/api/article/' + id + '/comments/' + page,
+            dataType: 'json',
+            contentType: 'application/json;charset=utf8',
+            method: 'GET',
+            success: function(res) {
+                console.log(JSON.stringify(res));
+                // {"currentPage":1,"pageSize":10,"totalRow":2,"totalPage":1,"data":[{"id":2,"content":"<p>可以啊，兄弟</p>\n","userDto":{"id":4,"email":"23456@qq.com","username":"测试"},"childrens":null},{"id":3,"content":"<p>还行还行，过奖了，兄弟</p>\n","userDto":{"id":4,"email":"23456@qq.com","username":"测试"},"childrens":null}],"firstPage":true,"lastPage":false,"hasPreviousPage":false,"hasNextPage":false}
+
+                let html = "";
+                for(let i = 0; i < res.data.length; i++) {
+                    // html += ;
+
+                }
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

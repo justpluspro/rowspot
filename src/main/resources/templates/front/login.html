@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="https://www.orchome.com/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <title>登录/注册</title>
+<!--    <style>-->
+<!--        body {-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            margin: 0 auto;-->
+<!--        }-->
+<!--    </style>-->
+</head>
+<body>
+
+    <section class="section">
+        <div class="container is-max-widescreen">
+            <div class="columns is-mobile is-centered">
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label" for="email">Email</label>
+                        <p class="control has-icons-left">
+                            <input class="input" type="email" id="email" placeholder="Email">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="password">Password</label>
+                        <p class="control has-icons-left">
+                            <input class="input" id="password" type="password" placeholder="Password">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="control">
+                            <button id="loginBtn" class="button is-success">
+                                登录
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div id="tipModal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <article class="message is-small">
+                <div class="message-header">
+                    <p>Small message</p>
+                    <button class="delete is-small" aria-label="delete"></button>
+                </div>
+                <div class="message-body">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla.Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus.
+                </div>
+            </article>
+        </div>
+<!--        <button class="modal-close is-large" aria-label="close"></button>-->
+    </div>
+
+    <script src="/static/index.js"></script>
+    <script src="/static/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        const rootPath = '[[@{/}]]';
+
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+
+            if(email === null || email.length === 0 || email === ""){
+                Swal.fire('error', '请输入您的邮箱!', '确认');
+                // errorInfo.style.display = 'block';
+                return;
+            }
+
+            if(password === null || password.length === 0 || password === ""){
+                Swal.fire('error', '请输入您的密码!', '确认');
+                return;
+            }
+
+
+            fetch('/api/token', {
+                body: JSON.stringify({"email": email, "password": password}),
+                headers: new Headers({
+                    'Content-Type': 'application/json;charset=utf8',
+                }),
+                method: 'POST'
+            }).then(res => res.json()).catch(error => {
+                console.error('Error:', error)
+            }).then(response => {
+                console.log('Success:', response);
+                window.location.href = '/';
+            });
+
+
+            // postData("/api/token", {"email": email, "password": password})
+            //     .then(data => console.log(data))
+            //     .catch(error => console.error(error));
+
+        })
+    </script>
+</body>
+</html>

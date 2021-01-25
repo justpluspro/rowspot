@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
+    <title>RowSpot主页</title>
+</head>
+<body>
+    <div th:replace="/front/base/navbar::header"></div>
+    <section class="section">
+        <div class="container is-max-widescreen">
+            <div class="columns">
+            <div class="column">
+                <div class="level is-small">
+                    <div class="level-left">最新资讯</div>
+                    <div class="level-right">更多</div>
+                </div>
+                <div class="content is-small">
+                    <h6 class="is-6">Kubernetes 1.20：CSI 驱动程序中的Pod模仿和短生命周期卷</h6>
+                    2020/12/18 星期五通常，当 CSI 驱动程序挂载 诸如 Secret 和证书之类的凭据时，它必须通过存储提供者的身份认证才能访问这些凭据。 然而，对这...
+                </div>
+                <ul class="is-small">
+                    <li th:each="article: ${latestNews}">
+                        <span class="tag">x</span>
+                        <a href="" th:text="${article.title}">12/22Kafka - 2.7.0版本发布说明</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="column">
+                <div class="level is-small">
+                    <div class="level-left">最新分享</div>
+                    <div class="level-right">更多</div>
+                </div>
+                <div class="content is-small">
+                    <h6 class="is-6">Kubernetes（k8s）通过文件将 Pod 信息呈现给容器</h6>
+                    此页面描述 Pod 如何使用 DownwardAPIVolumeFile 把自己的信息呈现给 Pod 中运行的容器。 DownwardAPIVolumeFile...
+                </div>
+                <ul class="is-small">
+                    <li th:each="article: ${latestArticles}"><a th:href="@{/} + ${article.id}"
+                           th:text="${article.title}">Kubernetes（k8s）通过环境变量将 Pod 信息呈现给容器</a> </li>
+                </ul>
+            </div>
+            <div class="column">
+                <h5 class="title is-5">热门标签</h5>
+                <div class="tags">
+                    <span class="tag">One</span>
+                    <span class="tag">Two</span>
+                    <span class="tag">Three</span>
+                    <span class="tag">Four</span>
+                    <span class="tag">Five</span>
+                    <span class="tag">Six</span>
+                    <span class="tag">Seven</span>
+                    <span class="tag">Eight</span>
+                    <span class="tag">Nine</span>
+                    <span class="tag">Ten</span>
+                    <span class="tag">Eleven</span>
+                    <span class="tag">Twelve</span>
+                    <span class="tag">Thirteen</span>
+                    <span class="tag">Fourteen</span>
+                    <span class="tag">Fifteen</span>
+                    <span class="tag">Sixteen</span>
+                    <span class="tag">Seventeen</span>
+                    <span class="tag">Eighteen</span>
+                    <span class="tag">Nineteen</span>
+                    <span class="tag">Twenty</span>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="container is-max-widescreen">
+            <div class="columns">
+                <div class="column">
+                    <ul>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <ul>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                        <li><a href="">链接 1</a> </li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h5 class="title is-5">最近评论</h5>
+                    <article class="media">
+                        <figure class="media-left">
+                            <p class="image is-32x32">
+                                <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+                            </p>
+                        </figure>
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <strong>张三</strong> <span>回复</span> <strong>李四:</strong>
+                                    感谢您的解释，按照这个解决了。不过我还必须删除URL周围的引号，
+                                    因为使用shell运行命令的话就是必...<br>
+                                    30min
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="media">
+                        <figure class="media-left">
+                            <p class="image is-32x32">
+                                <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+                            </p>
+                        </figure>
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <strong>半兽人</strong>
+                                    Linux的命令是由一连串的单词组成的。如果你在shell提示符下键入一个命令，它就会负责帮你拆成单...<br>
+                                    30min
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container is-max-widescreen">
+            <h1 class="title">Section</h1>
+            <h2 class="subtitle">
+                A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading
+            </h2>
+        </div>
+    </section>
+    <div th:replace="/front/base/footer::footer"></div>
+    <script>
+
+        window.onload = function() {
+            fetch('/isAuthenticated', {
+                "headers": {
+                    "accept": "*/*",
+                    "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+                    "cache-control": "no-cache",
+                    "pragma": "no-cache",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin",
+                    "x-requested-with": "XMLHttpRequest"
+                },
+                "method": "GET",
+            }).then(res => res.json())
+            .catch(error => {
+                console.log("error:", error);
+            }).then(res => {
+                console.log(res);
+            });
+        }
+
+        document.getElementById('logout').addEventListener('click', function() {
+            fetch('/api/exit', {
+                "headers": {
+                },
+                method: 'POST',
+            }).then(res => res.json())
+            .catch(error => {
+                console.log("error", error);
+            }).then(res => {
+                console.log(res);
+                window.location.href = '/login';
+            })
+
+        })
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Get all "navbar-burger" elements
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+            // Check if there are any navbar burgers
+            if ($navbarBurgers.length > 0) {
+
+                // Add a click event on each of them
+                $navbarBurgers.forEach( el => {
+                    el.addEventListener('click', () => {
+
+                        // Get the target from the "data-target" attribute
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+
+                        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+
+                    });
+                });
+            }
+        });
+    </script>
+<!--    <script src="/static/jquery/jquery.min.js"></script>-->
+<!--    <script src="/static/bootstrap-4.5.0-dist/js/bootstrap.min.js"></script>-->
+</body>
+</html>

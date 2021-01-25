@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/bootstrap-4.5.0-dist/css/bootstrap.min.css">
+    <title>技术问答-Rowspot</title>
+</head>
+<body>
+
+<header class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="https://static.oschina.net/new-osc/img/logo_new.svg">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-tag="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dubbo/index">dubbo教程</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/netty/index">netty教程</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/ask/issues/1">问答</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1"
+                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        分享
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                        <a class="dropdown-item disabled" href="#">分享</a>
+                        <a class="dropdown-item" href="/write">技术分享</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item disabled" href="#">问答</a>
+                        <a class="dropdown-item" href="/ask">提问</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userNavbarDropdown"
+                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        不荒
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userNavbarDropdown">
+                        <a class="dropdown-item" href="/user/1/profile">我的空间</a>
+                        <a class="dropdown-item" onclick="{alert('退出');}" href="javascript:void(0);">退出</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<main role="main" style="margin-top: 16px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9" style="border-right: 1px silver solid;">
+                <div class="d-flex">
+                    <div style="border-bottom: 2px solid orangered; padding-top: 8px; padding-bottom: 8px;">
+                        <a href="/ask/issues">最新提问</a>
+                    </div>
+                    <div style="padding-top: 8px; padding-bottom: 8px; margin-left: 16px;">
+                        <a href="/ask/issues/unanswered">等待回答</a>
+                    </div>
+                    <div style="padding-top: 8px; padding-bottom: 8px; margin-left: 16px;">
+                        <a href="/ask/issues/hot">热门回答</a>
+                    </div>
+                </div>
+                <div class="d-flex border-bottom" th:each="articleDto :${pageDto.data}">
+                    <div class="align-self-center">
+                        <div style="padding: 4px 12px; border-radius: 4px;">
+                            <div class="text-center small" th:text="${articleDto.voteCount}">2</div>
+                            <div class="text-center small">得票</div>
+                        </div>
+                    </div>
+                    <div class="align-self-center">
+                        <div style="border: 1px seagreen solid; padding: 4px 12px; border-radius: 4px;">
+                            <div class="text-center small" th:text="${articleDto.commentCount}">2</div>
+                            <div class="text-center small">回答</div>
+                        </div>
+                    </div>
+                    <div class="align-self-center">
+                        <div style="padding: 4px 12px; border-radius: 4px;">
+                            <div class="text-center small" th:text="${articleDto.clickCount}">120</div>
+                            <div class="text-center small">浏览</div>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 d-flex flex-column p-2">
+                        <div>
+                            <span th:text="${articleDto.userDto.username}"></span>
+                            <span class="small">43分钟前提问</span>
+                        </div>
+                        <div>
+                            <a style="font-size: 16px;" th:href="@{/} + ${articleDto.id}" th:text="${articleDto.title}"></a>
+                        </div>
+                        <div>
+                            <a th:href="@{articleDto.columnDto.columnUrl} + '/index'"  style="color: #00965e;
+                                background-color:#00965e1a; padding: 2px 6px; border-radius: 2px;"
+                                   th:text="${articleDto.columnDto.columnName}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="p-2 align-self-center">
+                        <button type="button">首页</button>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button type="button">上一页</button>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button type="button">下页</button>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button type="button">尾页</button>
+                    </div>
+                    <div class="p-2">
+                        <span style="font-size: 24px;" class="text-danger font-weight-bold" th:text="${pageDto.currentPage}">1</span>
+                        <span class="">/</span>
+                        <span style="font-size: 24px;" class="text-danger font-weight-bold" th:text="${pageDto.totalPage}">12</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="d-flex flex-column alert alert-warning" style="padding-top: 32px; padding-bottom: 32px">
+                    <div class="align-self-center">找不到问题的答案？</div>
+                    <div style="margin-top: 16px;" class="align-self-center">
+                        <a href="/ask" class="btn btn-success">我要提问</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer style="margin-top: 64px; background-color: #3b3e43; padding-top: 32px; padding-bottom: 32px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center text-light" style="padding-top: 32px; padding-bottom: 32px;">
+                Rowspot ©2018 www.rowspot.cn, All rights reserved. 粤ICP备19028930号
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

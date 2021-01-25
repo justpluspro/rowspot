@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-4.5.0-dist/css/bootstrap.min.css">
+    <title>注册</title>
+    <style>
+        html, body {
+            font-family: Helvetica Neue,Luxi Sans,DejaVu Sans,Hiragino Sans GB,Microsoft Yahei,sans-serif,
+            Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,Segoe UI Symbol,Android Emoji,EmojiSymbols;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header class="navbar navbar-expand-lg navbar-dark" style="background-color: #3b3e43;">
+    <div class="container">
+        <a class="navbar-brand" href="#">RowSpot</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-tag="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/dubbo/index">dubbo教程</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/netty/index">netty教程</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <!--                    <li class="nav-item dropdown">-->
+                <!--                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1"-->
+                <!--                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                <!--                            分享-->
+                <!--                        </a>-->
+                <!--                        <div class="dropdown-menu" aria-labelledby="navbarDropdown1">-->
+                <!--                            <a class="dropdown-item disabled" href="#">分享</a>-->
+                <!--                            <a class="dropdown-item" href="/write">技术分享</a>-->
+                <!--                            <div class="dropdown-divider"></div>-->
+                <!--                            <a class="dropdown-item disabled" href="#">问答</a>-->
+                <!--                            <a class="dropdown-item" href="/ask">提问</a>-->
+                <!--                        </div>-->
+                <!--                    </li>-->
+                <li class="nav-item">
+                    <a href="/user/login" class="nav-link">登陆</a>
+                </li>
+                <li class="nav-item" >
+                    <a style="border-bottom: 2px darkorange solid;" href="/user/register" class="nav-link">注册</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+<main role="main" style="margin-top: 32px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="d-flex flex-column">
+                    <div class="p-2 align-self-center">
+                        <img src="/static/image/OIP.jpg" style="height: 120px; width: 120px;"
+                             class="rounded" alt="">
+                    </div>
+                    <div class="p-2 align-self-center">
+                        继续操作表示你已同意用户服务协议与隐私条款
+                    </div>
+                    <div class="p-2">
+                        <input type="text" autocomplete="off"
+                               class="form-control" name="email"
+                               placeholder="邮箱" value="">
+                    </div>
+                    <div class="p-2">
+                        <input type="text" autocomplete="off"
+                               class="form-control" name="username"
+                               placeholder="用户名" value="">
+                    </div>
+                    <div class="p-2">
+                        <input type="password" autocomplete="off"  id="password" class="form-control"
+                               name="password" placeholder="密码">
+                    </div>
+                    <div class="p-2">
+                        <input type="password" autocomplete="off"  id="confirmPassword" class="form-control"
+                               name="confirmPassword" placeholder="确认密码">
+                    </div>
+
+                    <div class="p-2">
+                        <button id="btn-register" type="button"
+                                class="btn btn-block btn-success">注册</button>
+                    </div>
+
+                    <div class="p-2">
+                        <a href="/user/login" type="button"
+                           class="btn btn-block btn-outline-success">已有账号登陆</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div role="alert" style="padding: 50px;" class="alert alert-info">
+                    <h4 class="alert-heading">欢迎来到这里！</h4>
+                    <hr>
+                    <p>这里是一个记录生活的地方，目前已经有超过 50000 的伙伴加入。.</p>
+                    <p>我们正在构建一个小众社区。大家在这里相互信任，以平等 • 自由 • 奔放的价值观进行分享交流。最终，希望大家能够找到与自己志同道合的伙伴，共同成长。</p>
+                    <p>最后请大家共同爱护这个自由的交流环境，相信这里一定是你注册过的所有社区中体验最好的 😍</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer style="margin-top: 32px; background-color: #3b3e43; padding-top: 32px; padding-bottom: 32px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center text-light" style="padding-top: 32px; padding-bottom: 32px;">
+                Rowspot ©2018 www.rowspot.cn, All rights reserved. 粤ICP备19028930号
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/bootstrap-4.5.0-dist/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('btn-register').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        $.ajax({
+            url: '/register',
+            data: {'email': email, 'username': username, 'password': password, 'confirmPassword': confirmPassword},
+            dataType: 'json',
+            method: 'POST',
+            success: function(res) {
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

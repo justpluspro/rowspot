@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--    <link rel="icon" type="image/x-icon" href="https://www.orchome.com/images/favicon.ico">-->
+<!--    <link rel="stylesheet" href="/static/css/index.css">-->
+    <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/github-markdown.css">
+<!--    <link rel="stylesheet" href="/static/bootstrap-4.5.0-dist/css/bootstrap.min.css">-->
+<!--    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">-->
+    <title th:text="教程">教程-Rowspot.cn</title>
+    <style>
+        .jumbotron {
+            padding-top: 2rem !important;
+            padding-bottom: 0 !important;
+            background-color: #f6f6f6;
+        }
+        textarea:focus {
+            box-shadow: none !important;
+        }
+        .accordion>.card:not(:last-of-type) {
+            border-radius: 4px;
+            border-bottom: 1px silver solid;
+        }
+
+        .accordion>.card>.card-header{
+            margin-bottom: -1px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <div class="container is-max-widescreen">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+                <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            </a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item">
+                    dubbo教程
+                </a>
+
+                <a class="navbar-item">
+                    Netty教程
+                </a>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-primary">
+                            <strong>Sign up</strong>
+                        </a>
+                        <a class="button is-light">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        不荒
+                    </a>
+
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                            我的空间
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            退出
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="hero is-light">
+    <div class="hero-body">
+        <div class="container is-max-widescreen">
+            <h1 class="title" th:text="${articleAggregate.title}">
+                Hero title
+            </h1>
+            <h2 class="subtitle">
+                Hero subtitle
+            </h2>
+        </div>
+    </div>
+    <div class="hero-foot">
+        <nav class="tabs is-boxed">
+            <div class="container is-max-widescreen">
+                <ul>
+                    <li class="is-active"><a>教程</a></li>
+                    <li><a>问答区</a></li>
+                    <li><a>最新咨询</a></li>
+                    <li><a>工具</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</section>
+<section class="section">
+    <div class="container is-max-widescreen">
+        <div class="columns">
+            <div class="column is-10 markdown-body" >
+                <div class="content markdown-body" th:utext="${articleAggregate.content}"></div>
+                <div class="level">
+                    <div class="level-item">
+                        赞一下
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <aside class="menu">
+                    <p class="menu-label">
+                        基本概念和术语
+                    </p>
+                    <ul class="menu-list">
+                        <li><a href="">入门概念</a></li>
+                        <li><a href="">Kubernetes管理之master和Node</a></li>
+                        <li><a href="">ubernetes Pod介绍</a></li>
+                        <li><a href="">ukubernetes Lable（标签）</a></li>
+                        <li><a href="">Kubernetes Deployment介绍</a></li>
+                    </ul>
+                    <p class="menu-label">
+                        Administration
+                    </p>
+                    <ul class="menu-list">
+                        <li><a>Team Settings</a></li>
+                        <li>
+                            <a class="is-active">Manage Your Team</a>
+                        </li>
+                        <li><a>Invitations</a></li>
+                        <li><a>Cloud Storage Environment Settings</a></li>
+                        <li><a>Authentication</a></li>
+                    </ul>
+                    <p class="menu-label">
+                        Transactions
+                    </p>
+                    <ul class="menu-list">
+                        <li><a>Payments</a></li>
+                        <li><a>Transfers</a></li>
+                        <li><a>Balance</a></li>
+                    </ul>
+                </aside>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container is-max-widescreen">
+        <article class="media">
+            <figure class="media-left">
+                <p class="image is-64x64">
+                    <img src="https://bulma.io/images/placeholders/128x128.png">
+                </p>
+            </figure>
+            <div class="media-content">
+                <div class="field">
+                    <p class="control">
+                        <textarea class="textarea" placeholder="Add a comment..."></textarea>
+                    </p>
+                </div>
+                <nav class="level">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <a class="button is-info">Submit</a>
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <label class="checkbox">
+                                <input type="checkbox"> Press enter to submit
+                            </label>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </article>
+        <article class="media">
+            <figure class="media-left">
+                <p class="image is-64x64">
+                    <img class="is-radiusless" src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
+                </p>
+            </figure>
+            <div class="media-content">
+                <div class="content">
+                    <p>
+                        <strong>Barbara Middleton</strong>
+                        <br>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta eros lacus, nec ultricies elit blandit non. Suspendisse pellentesque mauris sit amet dolor blandit rutrum. Nunc in tempus turpis.
+                        <br>
+                        <small><a>Like</a> · <a>Reply</a> · 3 hrs</small>
+                    </p>
+                </div>
+
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image is-48x48">
+                            <img src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <strong>Sean Brown</strong>
+                                <br>
+                                Donec sollicitudin urna eget eros malesuada sagittis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam blandit nisl a nulla sagittis, a lobortis leo feugiat.
+                                <br>
+                                <small><a>Like</a> · <a>Reply</a> · 2 hrs</small>
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image is-48x48">
+                            <img src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <strong>Kayli Eunice </strong>
+                                <br>
+                                Sed convallis scelerisque mauris, non pulvinar nunc mattis vel. Maecenas varius felis sit amet magna vestibulum euismod malesuada cursus libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus lacinia non nisl id feugiat.
+                                <br>
+                                <small><a>Like</a> · <a>Reply</a> · 2 hrs</small>
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </article>
+    </div>
+</section>
+<footer class="footer">
+    <div class="container is-max-widescreen">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
+                <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+                is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<!--<main role="main">-->
+<!--    <div class="jumbotron jumbotron-fluid">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12 d-flex">-->
+<!--                    <div style="padding-top: 16px; padding-bottom: 8px;">-->
+<!--                        <h4 th:text="${articleAggregate.title}">dubbo 中文教程</h4>-->
+<!--                        <div>-->
+<!--                            <span class="tag">原创</span>-->
+<!--                            <span class="font-weight-bold text-success">-->
+<!--                                <a href="">不荒</a>-->
+<!--                            </span>-->
+<!--                            <span class="ml-2">发表于:</span>-->
+<!--                            <span class="ml-1">2020-12-13</span>-->
+<!--                            <span class="ml-2">最后更新时间:</span>-->
+<!--                            <span class="ml-1">2020-12-13</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div style="padding-top: 8px; padding-bottom: 16px;" class="ml-auto align-self-center">-->
+<!--                        <button class="btn btn-sm btn-success">订阅</button>-->
+<!--                        <span class="text-muted font-weight-bold ml-1">-->
+<!--                            <span>23</span>-->
+<!--                            <span style="margin-left: 4px;">订阅</span>-->
+<!--                        </span>-->
+<!--                        <span class="text-muted font-weight-bold" style="margin-left: 6px;">-->
+<!--                            <span>435278</span>-->
+<!--                            <span style="margin-left: 4px;">浏览</span>-->
+<!--                        </span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="d-flex" style="margin-top: 16px;">-->
+<!--                <div>-->
+<!--                    <a href="">教程</a>-->
+<!--                    <a href="">问答</a>-->
+<!--                    <a href="">资讯</a>-->
+<!--                    <a href="">工具</a>-->
+<!--                </div>-->
+<!--&lt;!&ndash;                <div th:each="articleTypeDto : ${articleDto.articleTypeDtos}"&ndash;&gt;-->
+<!--&lt;!&ndash;                     th:classappend="${articleTypeDto.selected} ?&ndash;&gt;-->
+<!--&lt;!&ndash;                     'article-type-active' : 'article-type'">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <a th:href="${articleTypeDto.url}" th:text="${articleTypeDto.name}">问答区</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-9">-->
+<!--                <div class="markdown-body" th:utext="${articleAggregate.content}">-->
+
+<!--                </div>-->
+<!--                <div style="margin-top: 32px;" class="text-center">-->
+<!--                    <span><i class="fa fa-heart" aria-hidden="true"></i></span>-->
+<!--                    <span>赞一下</span>-->
+<!--                    <span class="badge badge-secondary">2</span>-->
+<!--                </div>-->
+<!--                <div style="margin-top: 32px;">-->
+<!--                    <div>上一条<a>dubbo 的下载和安装</a></div>-->
+<!--                    <div>下一条:到头了</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="col-md-3" style="border-left: 1px silver solid;">&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="accordion" id="accordionExample">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="card" style="margin-bottom: 16px;" th:each="sidebarDetail : ${articleDto.sidebars}">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <div class="card-header" th:text="${sidebarDetail.name}"&ndash;&gt;-->
+<!--&lt;!&ndash;                             style="padding: 8px 16px;cursor: pointer;"&ndash;&gt;-->
+<!--&lt;!&ndash;                             data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="headingOne">&ndash;&gt;-->
+<!--&lt;!&ndash;                                开始&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="card-body" style="padding: 8px 16px;">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <ul class="list-unstyled">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <li class="small" th:each="detail: ${sidebarDetail.details}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <a th:href="@{/} + ${detail.id}" th:text="${detail.title}">如何运作</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </li>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--        <div class="row" style="padding-top: 32px;">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="d-flex" style="border-bottom: 1px silver solid">-->
+<!--                    <div>-->
+<!--                        有 <span th:text="${articleAggregate.comments}">75</span> 条评论-->
+<!--                    </div>-->
+<!--                    <div class="ml-auto">-->
+<!--                        <a href="">不荒</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row" style="margin-top: 16px;">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="d-flex">-->
+<!--                    <div>-->
+<!--                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"-->
+<!--                             style="height: 48px; width: 48px;" alt="...">-->
+<!--                    </div>-->
+<!--                    <div class="flex-grow-1">-->
+<!--                        <div class="d-flex flex-column" style="border: 1px solid silver; border-radius: 2px;">-->
+<!--                            <textarea name="content" id="content" style="border: none; resize: vertical; border-radius: 0; outline: none; box-shadow: none; border-bottom: 1px silver solid" class="form-control"></textarea>-->
+<!--                        </div>-->
+<!--                        <div class="d-flex justify-content-end">-->
+<!--                            <div>表情</div>-->
+<!--                            <div>-->
+<!--                                <button type="button" id="postComment" class="btn btn-primary">发表</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                &lt;!&ndash; 评论列表 &ndash;&gt;-->
+<!--                <ul class="media-list" style="margin-top: 32px;">-->
+<!--                    <li class="media">-->
+<!--                        <div class="media-left">-->
+<!--                            <a href="#">-->
+<!--                                <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 img-rounded"-->
+<!--                                     style="height: 48px; width: 48px;" alt="...">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="media-body">-->
+<!--                            <div class="mt-0">-->
+<!--                                <a href="#" style="font-weight: bold;">张三</a>-->
+<!--                                <span class="text-muted" style="margin-left: 8px;">一月前</span>-->
+<!--                            </div>-->
+<!--                            <div class="markdown-body">-->
+<!--                                哥, 最近我在 部署一个kafka服务环境, 当然选择的是最新版本, 2.6.0, 两套环境, linux环境中一直没问题, 后来部署给测试用的环境是window, 刚启动的时候运行的挺好的, 隔一天就出问题了, zookeeper 没有停止, kafka服务停止了, 是不是window环境中不适合部署kafka ?-->
+<!--                                我看了下日志:-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <span class="text-muted"><i class="fa fa-chevron-up" aria-hidden="true"></i>0</span>-->
+<!--                                <span class="text-muted" style="margin-left: 10px;"><i class="fa fa-chevron-down" aria-hidden="true"></i>0</span>-->
+<!--                                <span class="text-muted" style="margin-left: 10px;">回复</span>-->
+<!--                            </div>-->
+
+<!--                            <ul class="media-list" style="margin-top: 16px;">-->
+<!--                                <li class="media mt-3">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <a href="#">-->
+<!--                                            <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="img-rounded"-->
+<!--                                                 style="height: 32px; width: 32px;" alt="...">-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <div class="mt-0">-->
+<!--                                            <a href="#" style="font-weight: bold;">管理员</a>-->
+<!--                                            <span class="text-muted" style="margin-left: 8px">-->
+<!--                                                <i class="fa fa-forward" aria-hidden="true"></i>-->
+<!--                                            </span>-->
+<!--                                            <span class="text-muted" style="margin-left: 8px;"> 张三</span>-->
+<!--                                            <span class="text-muted" style="margin-left: 10px;">一月前</span>-->
+<!--                                        </div>-->
+<!--                                        <div class="markdown-body">-->
+<!--                                            Windows我没部署过额，-->
+<!--                                            这个是你重新启动kafka报的吧(kafka进程还在)，你先到kafka日志里，看看是否有什么异常导致kafka异常的。-->
+<!--                                        </div>-->
+<!--                                        <div>-->
+<!--                                                <span class="text-muted">-->
+<!--                                                    <i class="fa fa-chevron-up" aria-hidden="true"></i>-->
+<!--                                                    0-->
+<!--                                                </span>-->
+<!--                                            <span class="text-muted ml-2">-->
+<!--                                                    <i class="fa fa-chevron-down" aria-hidden="true"></i>-->
+<!--                                                    0-->
+<!--                                                </span>-->
+<!--                                            <span class="text-muted ml-2">回复</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </li>-->
+
+<!--                                <li class="media mt-3">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <a class="mr-3" href="#">-->
+<!--                                            <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="img-rounded"-->
+<!--                                                 style="height: 32px; width: 32px;" alt="...">-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <div class="mt-0">-->
+<!--                                            <a href="#" class="font-weight-bold small">管理员</a>-->
+<!--                                            <span class="text-muted ml-2 small">-->
+<!--                                                <i class="fa fa-forward" aria-hidden="true"></i>-->
+<!--                                            </span>-->
+<!--                                            <span class="text-muted ml-2 small"> 张三</span>-->
+<!--                                            <span class="text-muted ml-2 small">一月前</span>-->
+<!--                                        </div>-->
+<!--                                        <div class="markdown-body">-->
+<!--                                            有问题到问题专区提问吧-->
+<!--                                        </div>-->
+<!--                                        <div>-->
+<!--                                            <span class="text-muted"><i class="fa fa-chevron-up" aria-hidden="true"></i>-->
+<!--                                                0-->
+<!--                                            </span>-->
+<!--                                            <span class="text-muted ml-2"><i class="fa fa-chevron-down" aria-hidden="true"></i>-->
+<!--                                                    0-->
+<!--                                            </span>-->
+<!--                                            <span class="text-muted ml-2">回复</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</main>-->
+
+
+<!--<footer style="margin-top: 64px; background-color: black; padding-top: 32px; padding-bottom: 32px;">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 text-center text-light" style="padding-top: 32px; padding-bottom: 32px;">-->
+<!--                Rowspot ©2018 www.rowspot.cn, All rights reserved. 粤ICP备19028930号-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+
+<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/bootstrap-4.5.0-dist/js/bootstrap.min.js"></script>
+
+<script>
+    let id = '[[${articleAggregate.id}]]';
+    $(document).ready(function() {
+        $.ajax({
+            url: '/api/article/' + id +'/hit',
+            method: 'PATCH',
+            dataType: 'json'
+        });
+
+
+        loadComments(1);
+
+    });
+
+    document.getElementById('postComment').addEventListener('click', function() {
+        let content = document.getElementById('content').value;
+
+        if(content === null || content === "") {
+            alert("评论内容不能为空");
+            return;
+        }
+
+
+
+        $.ajax({
+            url: "/api/comment/saved",
+            method: 'POST',
+            contentType: 'application/json;charset=utf8',
+            data: JSON.stringify({"content": content, "article": {"id": id}}),
+            dataType: 'json',
+            success: function(res) {
+                alert('评论成功：' + JSON.stringify(res));
+            }
+        });
+    });
+
+
+    function loadComments(page) {
+        $.ajax({
+            url: '/api/article/' + id + '/comments/' + page,
+            dataType: 'json',
+            contentType: 'application/json;charset=utf8',
+            method: 'GET',
+            success: function(res) {
+                console.log(JSON.stringify(res));
+                // {"currentPage":1,"pageSize":10,"totalRow":2,"totalPage":1,"data":[{"id":2,"content":"<p>可以啊，兄弟</p>\n","userDto":{"id":4,"email":"23456@qq.com","username":"测试"},"childrens":null},{"id":3,"content":"<p>还行还行，过奖了，兄弟</p>\n","userDto":{"id":4,"email":"23456@qq.com","username":"测试"},"childrens":null}],"firstPage":true,"lastPage":false,"hasPreviousPage":false,"hasNextPage":false}
+
+                let html = "";
+                for(let i = 0; i < res.data.length; i++) {
+                    // html += ;
+
+                }
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

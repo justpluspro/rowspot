@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/static/css/editor.css">
+    <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/prism.css">
+    <link rel="stylesheet" href="/static/css/github-markdown.css">
+    <style>
+        body {
+            background-color: #e9ecef!important;
+        }
+        .section {
+            padding-top: 1.5rem;
+        }
+    </style>
+    <title>写文章-RowSpot</title>
+</head>
+<body>
+<div th:replace="/front/base/navbar::header"></div>
+<section class="section">
+    <div class="container is-max-widescreen">
+        <div class="columns">
+            <div class="column">
+                <div class="control">
+                    <input id="title" autocomplete="off" class="input is-medium" type="text" placeholder="标题">
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-one-quarter">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="category"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-one-quarter">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="menuId" onchange="menuChange();"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-vcentered level">
+                <label class="checkbox level-right">
+                    <input type="checkbox" checked>
+                    更多设置
+                </label>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-one-quarter">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="articleType" onchange="gradeChange();">
+                                <option value="I">首页唯一</option>
+                                <option value="T">实用工具</option>
+                                <option value="A" selected>文章</option>
+                                <option value="V">视频</option>
+                                <option value="N">最新动态</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-gapless" style="border-radius: 4px; border: 1px solid #dbdbdb; height: 550px; max-height: 550px;">
+            <div class="column is-half has-fixed-size" style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;">
+                <textarea name="content" id="content"  style="padding: 8px 16px; height: 100%; border-top-left-radius: 4px; border-bottom-left-radius: 4px;" placeholder="内容简介"></textarea>
+            </div>
+            <div class="column is-half has-fixed-size markdown-body" id="preview_out"></div>
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button data-action="DRAFT" class="button is-warning">存为草稿</button>
+            </div>
+            <div class="control">
+                <button data-action="POSTED" id="btn-post" class="button is-success">发布</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">创建菜单</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body form-group">
+                <input id="addMenuId" type="text" class="form-control" placeholder="二级专栏名称">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" id="submitAddMenu" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/markdown-editor-master/codemirror/lib/codemirror.js"></script>
+<script src="/static/markdown-editor-master/codemirror/markdown/markdown.js"></script>
+<script src="/static/markdown-editor-master/codemirror/marked.min.js"></script>
+<script src="/static/markdown-editor-master/codemirror/prism.js"></script>
+
+<script>
+
+    let editor;
+    let category;
+
+    window.onload = function() {
+        let markedRender = new marked.Renderer();
+        marked.setOptions({
+            render: markedRender,
+            gfm: true,
+            tables: true,
+            breaks: true, // '>' 换行，回车换行成 <br>
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            smartypants: false
+        });
+        editor = CodeMirror.fromTextArea(document.getElementById('content'), {
+            mode:'markdown',
+            // lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            lineWrapping: true
+        });
+        editor.on('change', editorOnHandler);
+        initialCategories();
+        $('#category').change(function(data) {
+            let value = $('#category option:selected').attr('value');
+            if(value !== '') {
+                $.ajax({
+                    url: '/api/category/' + value,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        let html = '<option value="">请选择</option><option value="add">【--增加新选项--】</option>';
+                        for (let i = 0; i < res.length; i++) {
+                            let menu = res[i];
+                            html += '<option value="' + menu.menuId + '">' + menu.name + '</option>';
+                        }
+                        document.getElementById('menuId').innerHTML = html;
+                    }
+                });
+            } else {
+                document.getElementById('menuId').innerHTML = '';
+            }
+        });
+    };
+
+
+    document.getElementById('submitAddMenu').addEventListener('click', function() {
+        let categoryId = document.getElementById('category').value;
+        let menuName = document.getElementById('addMenuId').value;
+
+        $.ajax({
+            url: '/api/category/saved',
+            method: 'post',
+            data: JSON.stringify({parentId: categoryId, "name": menuName}),
+            dataType: 'json',
+            contentType: 'application/json;charset=utf8',
+            success: function(res) {
+                $('#addMenuModal').modal('hide');
+                $.ajax({
+                    url: '/api/category/' + value,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        let html = '<option value="">请选择</option><option value="add">【--增加新选项--】</option>';
+                        for (let i = 0; i < res.length; i++) {
+                            let menu = res[i];
+                            html += '<option value="' + menu.menuId + '">' + menu.name + '</option>';
+                        }
+                        document.getElementById('menuId').innerHTML = html;
+                    }
+                });
+            }
+        })
+    });
+
+
+    function menuChange() {
+        let menuId = document.getElementById('menuId').value;
+        if(menuId === 'add') {
+            $('#addMenuModal').modal('show');
+        }
+    }
+
+
+    function gradeChange() {
+        let articleType = document.getElementById('articleType');
+        let articleTypeIndex = articleType.selectedIndex;
+        let value = articleType.options[articleTypeIndex].value;
+        if(value === 'A') {//只有文章的时候显示
+            document.getElementById('menuId').style.display = 'block';
+        } else {
+            document.getElementById('menuId').style.display = 'none';
+        }
+    }
+
+
+    function editorOnHandler(cm, co) {
+        console.log(cm.getValue());
+        $('.markdown-body').html(marked(cm.getValue()));
+        $('.markdown-body pre code').each(function(i, block) {
+            Prism.highlightElement(block);
+        });
+    }
+
+
+    function initialCategories() {
+
+        fetch("/api/categories", {
+            method: "GET",
+            headers: {},
+        }).then(res => res.json())
+        .catch(error => {
+            console.error("error:", error)
+        }).then(res => {
+            let html = "<option value=''>请选择专栏</option>";
+            for(let i = 0; i < res.length; i++){
+                let category = res[i];
+                html += '<option value="' + category.id + '">' + category.name + '</option>';
+            }
+            document.getElementById('category').innerHTML = html;
+        });
+    }
+
+    for(ele of document.querySelectorAll('button[data-action]')) {
+        ele.addEventListener('click', function () {
+            let action = ele.getAttribute('data-action');
+            document.getElementById('btn-post').addEventListener('click', function() {
+                let article = getArticle();
+
+                if(article.title === null && article.title === ''){
+                    alert('请输入分享标题');
+                    return;
+                }
+
+                fetch("/api/article/saved", {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                    },
+                    body: JSON.stringify(article),
+                    method: 'POST'
+                }).then(res => res.json())
+                  .catch(error => {
+                        console.error('error:', error)
+                  })
+                  .then(res => {
+
+                });
+            });
+        });
+    }
+
+
+    function getArticle() {
+        let Article = {};
+        Article.title = document.getElementById('title').value;
+        Article.content = editor.getValue();
+        Article.categoryId = document.getElementById('category').value;
+        Article.state = 'POSTED';
+        Article.articleType = document.getElementById('articleType').value;
+        if(Article.articleType === 'A') {
+            Article.menuId = document.getElementById('menuId').value;
+        }
+        return Article;
+    }
+</script>
+</body>
+</html>
