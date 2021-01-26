@@ -1,19 +1,20 @@
 package org.qwli.rowspot.service;
 
 
-import org.qwli.rowspot.event.PersonNewsCreatedEvent;
+import org.qwli.rowspot.Message;
+import org.qwli.rowspot.MessageEnum;
+import org.qwli.rowspot.event.ActivityCreatedEvent;
 import org.qwli.rowspot.exception.BizException;
-import org.qwli.rowspot.model.PropertyName;
-import org.qwli.rowspot.model.User;
+import org.qwli.rowspot.exception.ResourceNotFoundException;
+import org.qwli.rowspot.model.*;
 import org.qwli.rowspot.model.aggregate.ArticleAggregate;
 import org.qwli.rowspot.model.aggregate.PageAggregate;
 import org.qwli.rowspot.model.enums.ArticleState;
 import org.qwli.rowspot.model.enums.ArticleType;
-import org.qwli.rowspot.model.Article;
 import org.qwli.rowspot.model.factory.ArticleFactory;
-import org.qwli.rowspot.model.Category;
 import org.qwli.rowspot.repository.ArticleRepository;
 import org.qwli.rowspot.repository.CategoryRepository;
+import org.qwli.rowspot.service.processor.MarkdownProcessor;
 import org.qwli.rowspot.web.ArticleQueryParam;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Example;
@@ -25,11 +26,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.*;
-import java.awt.*;
+import javax.persistence.criteria.*;;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 文章 Service
+ * @author liqiwen
+ * @since 1.2
+ */
 @Service
 public class ArticleService extends AbstractService<Article, Article> {
 
@@ -39,31 +44,85 @@ public class ArticleService extends AbstractService<Article, Article> {
 
     private final CategoryRepository categoryRepository;
 
-    private final MarkdownParser markdownParser;
+    private final MarkdownProcessor markdownProcessor;
 
     public ArticleService(ArticleRepository articleRepository, CategoryRepository categoryRepository,
-                          MarkdownParser markdownParser) {
+                          MarkdownProcessor markdownProcessor) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
-        this.markdownParser = markdownParser;
+        this.markdownProcessor = markdownProcessor;
     }
 
-
-
+    /**
+     * 保存文章
+     * @param newArticle newArticle
+     * @return SavedArticle
+     * @throws BizException 业务异常
+     */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
-    public void save(NewArticle newArticle) throws BizException {
-        final Category category = categoryRepository.findById(Long.valueOf(newArticle.getCategoryId())).orElseThrow(()
-                -> new RuntimeException("illegal category"));
+    public SavedArticle save(NewArticle newArticle) throws BizException {
+        final Category category = categoryRepository.findById(newArticle.getCategoryId()).orElseThrow(()
+                -> new BizException(new Message("category.notExists", "分类不存在")));
         final Article article = ArticleFactory.createNewArticle(newArticle, category);
+        final ArticleType articleType = article.getArticleType();
+        if (ArticleType.A.equals(articleType)) {
+            Category probe = new Category();
+            probe.setParentId(category.getParentId());
+            probe.setId(article.getMenuId());
+            Example<Category> example = Example.of(probe);
+            categoryRepository.findOne(example).orElseThrow(() ->
+                    new BizException(new Message("menu.notExists", "菜单不存在")));
+        }
+        checkIndexUnique(articleType, category);
+
         articleRepository.save(article);
 
         //发布个人动态创建事件
-        PersonNewsCreatedEvent personNewsCreatedEvent = new PersonNewsCreatedEvent(this, article, new User(article.getUserId()));
-        applicationEventPublisher.publishEvent(personNewsCreatedEvent);
+        ActivityCreatedEvent activityCreatedEvent = new ActivityCreatedEvent(this, article, new User(article.getUserId()));
+        applicationEventPublisher.publishEvent(activityCreatedEvent);
+
+        SavedArticle savedArticle = new SavedArticle();
+        savedArticle.setId(article.getId());
+        savedArticle.setState(ArticleState.POSTED);
+        savedArticle.setChecking(true);
+        return savedArticle;
+    }
+
+    /**
+     * 检查文章是否是当前分类下的唯一文章
+     * @param articleType articleType
+     * @param category category
+     */
+    private synchronized void checkIndexUnique(ArticleType articleType, Category category) {
+        if(ArticleType.I.equals(articleType)) {
+            Article probe = new Article();
+            probe.setIndexUnique(true);
+            probe.setCategoryId(category.getId());
+            Example<Article> example = Example.of(probe);
+
+            articleRepository.findOne(example).ifPresent(e ->  {
+                throw new BizException(new Message("indexUnique.exists", "已经存在"));
+            });
+        }
+    }
+
+    /**
+     * 点击量变化
+     * @param id id
+     * @throws BizException BizException
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void hit(Long id) throws BizException {
+        final Article article = articleRepository.findById(id).orElseThrow(()
+                -> new BizException(MessageEnum.RESOURCE_NOT_FOUND));
+
+        Long visits = article.getVisits();
+        visits = visits + 1;
+        article.setVisits(visits);
     }
 
     @Transactional(readOnly = true)
-    public PageAggregate<ArticleAggregate> findPage(ArticleQueryParam queryParam) throws RuntimeException {
+    public PageAggregate<ArticleAggregate> findPage(ArticleQueryParam queryParam) throws ResourceNotFoundException {
         final String userId = queryParam.getUserId();
         long uid;
         try {
@@ -118,7 +177,7 @@ public class ArticleService extends AbstractService<Article, Article> {
         for(int i = 0; i < pageData.getContent().size(); i++) {
 
             final Article article = pageData.getContent().get(i);
-            ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownParser, false);
+            ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownProcessor, false);
 
             articleAggregates.add(articleAggregate);
         }
@@ -126,8 +185,8 @@ public class ArticleService extends AbstractService<Article, Article> {
         return new PageAggregate<>(articleAggregates, pageData.getNumber() + 1, 10, pageData.getTotalPages());
     }
 
-    @Transactional(readOnly = true, rollbackFor=ResourceNotFoundException.class)
-    public ArticleAggregate findById(String id) throws ResourceNotFoundException{
+    @Transactional(readOnly = true, rollbackFor = ResourceNotFoundException.class)
+    public ArticleAggregate findById(String id) throws ResourceNotFoundException {
         long aid;
         try{
             aid = Long.parseLong(id);
@@ -140,20 +199,20 @@ public class ArticleService extends AbstractService<Article, Article> {
         
         ArticleState state = article.getState();
         //非发布状态不允许查看 && 非自己的内容 && 未登录
-        if(state != ArticleState.POSTED && article.getUserId() != userId && !EnvironmentContext.isAuthenciated()) {
-            throws new ResourceNotFoundException("invalid access state");   
-        }
+//        if(state != ArticleState.POSTED && article.getUserId() != userId && !EnvironmentContext.isAuthenticated()) {
+//            throw new ResourceNotFoundException("invalid access state");
+//        }
         
        
         final ArticleType articleType = article.getArticleType();
         // 判断当前文章应该选中哪个页签
-        for(ArticleType type : ArticleType.findAll()) {
-            if(type == ArticleType.A || type == ArticleType.I) {
-                   
-            }
-        }
+//        for(ArticleType type : ArticleType.findAll()) {
+//            if(type == ArticleType.A || type == ArticleType.I) {
+//
+//            }
+//        }
         
-        ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownParser, true);
+        ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownProcessor, true);
 
       
         return articleAggregate;
@@ -186,7 +245,6 @@ public class ArticleService extends AbstractService<Article, Article> {
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
-
 
 
 

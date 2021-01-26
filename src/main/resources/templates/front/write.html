@@ -143,27 +143,33 @@
         });
         editor.on('change', editorOnHandler);
         initialCategories();
-        $('#category').change(function(data) {
-            let value = $('#category option:selected').attr('value');
-            if(value !== '') {
-                $.ajax({
-                    url: '/api/category/' + value,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (res) {
-                        let html = '<option value="">请选择</option><option value="add">【--增加新选项--】</option>';
-                        for (let i = 0; i < res.length; i++) {
-                            let menu = res[i];
-                            html += '<option value="' + menu.menuId + '">' + menu.name + '</option>';
-                        }
-                        document.getElementById('menuId').innerHTML = html;
-                    }
-                });
-            } else {
-                document.getElementById('menuId').innerHTML = '';
-            }
-        });
     };
+
+    document.getElementById('category').addEventListener('change', function() {
+        let selected = document.getElementById('category');
+        let selectedIndex = selected.selectedIndex;
+        console.log(selectedIndex);
+        let selectedValue = selected.options[selectedIndex].value;
+        if(selectedValue !== '') {
+            fetch('/api/category/' + selectedValue, {
+                method: 'GET',
+                headers: {}
+            }).then(res => res.json())
+            .catch(error => {
+                console.log("errors: ", error)
+            }).then(res => {
+                let html = '<option value="">请选择</option>';
+                html += '<option value="add">【--增加新选项--】</option>';
+                for (let i = 0; i < res.length; i++) {
+                    let menu = res[i];
+                    html += '<option value="' + menu.menuId + '">' + menu.name + '</option>';
+                }
+                document.getElementById('menuId').innerHTML = html;
+            })
+        } else {
+            document.getElementById('menuId').innerHTML = '';
+        }
+    })
 
 
     document.getElementById('submitAddMenu').addEventListener('click', function() {
@@ -260,11 +266,9 @@
                     },
                     body: JSON.stringify(article),
                     method: 'POST'
-                }).then(res => res.json())
-                  .catch(error => {
+                }).then(res => res.json()).catch(error => {
                         console.error('error:', error)
-                  })
-                  .then(res => {
+                  }).then(res => {
 
                 });
             });

@@ -1,4 +1,4 @@
-package org.qwli.rowspot.service;
+package org.qwli.rowspot.service.processor;
 
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
@@ -18,10 +18,10 @@ import java.util.Map;
 
 /**
  * @author qwli7
- * markdown 解析
+ * commonmark markdown 解析
  */
 @Component
-public class CommonmarkParser implements MarkdownParser {
+public class CommonmarkProcessor implements MarkdownProcessor {
 
     /**
      * HtmlRender 解析
@@ -33,7 +33,7 @@ public class CommonmarkParser implements MarkdownParser {
      */
     private final Parser parser;
 
-    public CommonmarkParser() {
+    public CommonmarkProcessor() {
         //表格扩展
         //标题生成锚点
         //任务列表扩展
@@ -54,7 +54,7 @@ public class CommonmarkParser implements MarkdownParser {
 
 
     @Override
-    public String parse(String markdown) {
+    public String process(String markdown) {
         if (StringUtils.isEmpty(markdown)) {
             return "";
         }
@@ -67,12 +67,12 @@ public class CommonmarkParser implements MarkdownParser {
     }
 
     @Override
-    public Map<Integer, String> parseMap(Map<Integer, String> markdownMap) {
+    public Map<Integer, String> processMap(Map<Integer, String> markdownMap) {
         if (CollectionUtils.isEmpty(markdownMap)) {
             return Collections.emptyMap();
         }
 
-        markdownMap.replaceAll((i, v) -> parse(markdownMap.get(i)));
+        markdownMap.replaceAll((i, v) -> process(markdownMap.get(i)));
 
         return markdownMap;
     }

@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * 用户页面控制器
+ * @author liqiwen
+ * @since 1.2
+ */
 @RequestMapping("user")
 @Controller
 public class UserController {

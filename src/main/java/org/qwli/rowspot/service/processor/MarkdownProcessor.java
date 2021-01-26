@@ -1,9 +1,12 @@
-package org.qwli.rowspot.service;
+package org.qwli.rowspot.service.processor;
 
 
 import java.util.Map;
 
-public interface MarkdownParser {
+/**
+ * MarkdownProcessor 解析器接口
+ */
+public interface MarkdownProcessor {
 
     /**
      * 解析 markdown 接口
@@ -11,7 +14,7 @@ public interface MarkdownParser {
      * @param markdown markdown
      * @return string
      */
-    String parse(String markdown);
+    String process(String markdown);
 
     /**
      * 批量解析 markdown 接口
@@ -19,5 +22,5 @@ public interface MarkdownParser {
      * @param markdownMap markdownMap
      * @return Map<Integer, String>
      */
-    Map<Integer, String> parseMap(Map<Integer, String> markdownMap);
+    Map<Integer, String> processMap(Map<Integer, String> markdownMap);
 }

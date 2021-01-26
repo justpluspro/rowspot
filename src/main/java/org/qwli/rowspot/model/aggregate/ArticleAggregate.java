@@ -1,6 +1,6 @@
 package org.qwli.rowspot.model.aggregate;
 
-import org.qwli.rowspot.service.MarkdownParser;
+import org.qwli.rowspot.service.processor.MarkdownProcessor;
 import org.qwli.rowspot.model.Article;
 
 import java.io.Serializable;
@@ -15,10 +15,10 @@ public class ArticleAggregate implements Serializable {
 
     private Long id;
 
-    public ArticleAggregate(Article article, MarkdownParser markdownParser, boolean isParse) {
+    public ArticleAggregate(Article article, MarkdownProcessor markdownProcessor, boolean isParse) {
         this.id = article.getId();
         if(isParse) {
-            this.content = markdownParser.parse(article.getContent());
+            this.content = markdownProcessor.process(article.getContent());
         }
         this.title = article.getTitle();
         this.comments = article.getComments();

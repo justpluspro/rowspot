@@ -1,21 +1,23 @@
 package org.qwli.rowspot.web.controller.api;
 
 
+import org.qwli.rowspot.model.SavedArticle;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.service.ArticleService;
 import org.qwli.rowspot.service.NewArticle;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 文章操作 API
+ * @author liqiwen
+ * @since 1.2
+ */
 @RequestMapping("api/article")
 @RestController
-public class ArticleApi {
-
+public class ArticleApi extends AbstractApi {
 
     private final ArticleService articleService;
 
@@ -23,13 +25,27 @@ public class ArticleApi {
         this.articleService = articleService;
     }
 
+    /**
+     * 发布文章
+     * @param newArticle newArticle
+     * @param request request
+     * @return SavedArticle
+     */
     @PostMapping("saved")
-    public ResponseEntity<Void> save(@RequestBody NewArticle newArticle, HttpServletRequest request) {
-
+    public ResponseEntity<SavedArticle> save(@RequestBody NewArticle newArticle, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
         newArticle.setUserId(user.getId());
-        articleService.save(newArticle);
+        return ResponseEntity.ok(articleService.save(newArticle));
+    }
 
-        return ResponseEntity.noContent().build();
+    /**
+     * 点击量
+     * @param id id
+     * @return ResponseEntity
+     */
+    @PatchMapping("{id}/hits")
+    public ResponseEntity<Void> hit(@PathVariable("id") Long id) {
+        articleService.hit(id);
+        return ResponseEntity.ok().build();
     }
 }

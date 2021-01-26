@@ -11,16 +11,27 @@
 <div th:replace="/front/base/navbar::header"></div>
 <section class="section" style="background:#EEEEEE;">
     <div class="container is-max-widescreen">
-        <div class="columns">
-            <div class="column is-one-quarter">
+        <div class="columns is-vcentered">
+            <div class="column is-one-fifth">
                 <div class="image is-128x128">
                     <img class="is-rounded" src="https://www.orchome.com/images/user/noHeadPortraitV2.png">
                 </div>
             </div>
-            <div class="column is-one-quarter">
-                <h5 class="is-5" th:text="${userAggregateRoot.username}">半兽人</h5>
+            <div class="column">
+                <h3 class="title is-3" th:text="${userAggregateRoot.username}">半兽人</h3>
+                <div class="tag is-success">1234声望</div>
                 <div>
                     <span th:text="${userAggregateRoot.job}">架构师</span>
+                    <div class="field is-grouped">
+                        <p class="control is-expanded">
+                            <input class="input" type="text" placeholder="Find a repository">
+                        </p>
+                        <p class="control">
+                            <a class="button is-info">
+                                Search
+                            </a>
+                        </p>
+                    </div>
                     <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">编辑</a>
                 </div>
                 <div>
@@ -36,16 +47,16 @@
                     <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">编辑</a>
                 </div>
             </div>
-            <div class="column">
-                <article class="message is-dark">
-                    <div class="message-header">
-                        <p>Dark</p>
-                    </div>
-                    <div class="message-body">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                    </div>
-                </article>
-            </div>
+<!--            <div class="column">-->
+<!--                <article class="message is-dark">-->
+<!--                    <div class="message-header">-->
+<!--                        <p>Dark</p>-->
+<!--                    </div>-->
+<!--                    <div class="message-body">-->
+<!--                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.-->
+<!--                    </div>-->
+<!--                </article>-->
+<!--            </div>-->
         </div>
     </div>
 </section>
@@ -111,7 +122,6 @@
                 </nav>
             </div>
             <div class="column">
-
                 <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">

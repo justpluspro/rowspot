@@ -10,16 +10,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name = "PersonNews")
-@Table(name = "personal_news")
-public class PersonNews extends BaseEntity implements Serializable {
+@Entity(name = "Activity")
+@Table(name = "activities")
+public class Activity extends BaseEntity implements Serializable {
 
     @Id
     @Column(name = "id")
     @GenericGenerator(name = "idGenerator", strategy = "org.qwli.rowspot.model.IdGenerator")
     @GeneratedValue(generator = "idGenerator")
     private Long id;
-
 
 
     @Column(name = "user_id")

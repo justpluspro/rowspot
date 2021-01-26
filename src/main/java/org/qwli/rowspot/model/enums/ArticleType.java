@@ -1,5 +1,9 @@
 package org.qwli.rowspot.model.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public enum ArticleType {
     A("article", 0),
     Q("question", 1),
@@ -40,7 +44,7 @@ public enum ArticleType {
      * 获取所有的文章类型，并排序
      **/
     public List<Map<String, Object>> findAll() {
-        for(ArticleType[] type : ArticleType.values()) {
+        for(ArticleType type : ArticleType.values()) {
             
         }
         

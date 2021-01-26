@@ -108,25 +108,25 @@ public class Article extends BaseEntity implements Serializable {
     private Long userId;
 
     @Column(name = "category_id")
-    private Integer categoryId;
+    private Long categoryId;
 
     @Column(name = "menu_id")
-    private Integer menuId;
+    private Long menuId;
 
 
-    public Integer getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
-    public Integer getMenuId() {
+    public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Integer menuId) {
+    public void setMenuId(Long menuId) {
         this.menuId = menuId;
     }
 
@@ -147,7 +147,7 @@ public class Article extends BaseEntity implements Serializable {
         this.visits = 0L;
         this.votes = 0L;
         this.editorType = EditorType.MD;
-        this.categoryId = Math.toIntExact(category.getId());
+        this.categoryId = category.getId();
 
         final String articleType = newArticle.getArticleType();
         for(ArticleType value: ArticleType.values()) {
