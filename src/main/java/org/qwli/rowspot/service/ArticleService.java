@@ -126,22 +126,36 @@ public class ArticleService extends AbstractService<Article, Article> {
         return new PageAggregate<>(articleAggregates, pageData.getNumber() + 1, 10, pageData.getTotalPages());
     }
 
-    @Transactional(readOnly = true)
-    public ArticleAggregate findById(String id) {
+    @Transactional(readOnly = true, rollbackFor=ResourceNotFoundException.class)
+    public ArticleAggregate findById(String id) throws ResourceNotFoundException{
         long aid;
         try{
             aid = Long.parseLong(id);
         } catch (NumberFormatException ex){
-            throw new RuntimeException("invalid aid");
+            throw new ResourceNotFoundException("invalid aid");
         }
         final Article article = articleRepository.findById(aid).orElseThrow(()
-                -> new RuntimeException(""));
+                -> new ResourceNotFoundException(""));
+        
+        
+        ArticleState state = article.getState();
+        //非发布状态不允许查看 && 非自己的内容 && 未登录
+        if(state != ArticleState.POSTED && article.getUserId() != userId && !EnvironmentContext.isAuthenciated()) {
+            throws new ResourceNotFoundException("invalid access state");   
+        }
+        
+       
+        final ArticleType articleType = article.getArticleType();
+        // 判断当前文章应该选中哪个页签
+        for(ArticleType type : ArticleType.findAll()) {
+            if(type == ArticleType.A || type == ArticleType.I) {
+                   
+            }
+        }
+        
         ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownParser, true);
 
-        final ArticleType articleType = article.getArticleType();
-
-
-
+      
         return articleAggregate;
     }
 
