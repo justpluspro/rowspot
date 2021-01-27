@@ -21,7 +21,7 @@ public class NewCategory implements Serializable {
     /**
      * 上一级分类 id
      */
-    private Integer parentId;
+    private Long parentId;
 
     public String getName() {
         return name;
@@ -39,11 +39,11 @@ public class NewCategory implements Serializable {
         this.alias = alias;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 }
