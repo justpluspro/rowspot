@@ -12,8 +12,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginController {
 
+    /**
+     * 去登陆页面
+     * @return string
+     */
     @GetMapping("login")
     public String login() {
         return "front/login";
+    }
+
+    /**
+     * 注册页面
+     * @return string
+     */
+    @GetMapping("register")
+    public String register() {
+        return "front/register";
     }
 }
