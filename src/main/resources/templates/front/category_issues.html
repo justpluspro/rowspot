@@ -3,313 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <title th:text="教程"></title>
-    <style>
-        .jumbotron {
-            padding-top: 2rem !important;
-            padding-bottom: 0 !important;
-            background-color: #f6f6f6;
-        }
-        /*.nav-link.active {*/
-        /*    border-top: 2px solid orange !important;*/
-        /*}*/
-        .nav-tabs {
-            border-bottom: none;
-        }
-    </style>
 </head>
 <body>
-<header class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">RowSpot</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-tag="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<div th:replace="/front/base/navbar::header"></div>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/dubbo/index}">dubbo教程 <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/netty/index}">netty教程</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle btn btn-success text-white" href="#" id="navbarDropdown1"
-                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        分享
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-                        <a class="dropdown-item disabled" href="#">分享</a>
-                        <a class="dropdown-item" href="/user/share?c=A">技术分享</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item disabled" href="#">问答</a>
-                        <a class="dropdown-item" href="#">我要提问</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        登录
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="loginDropdown">
-                        <a class="dropdown-item" th:href="@{/login}">rowspot登录</a>
-                        <a class="dropdown-item" href="#">QQ登录</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</header>
-<main role="main">
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h4 th:text="${articleDto.title}">dubbo 中文教程</h4>
-            <div class="clearfix">
-                <span class="float-left">
-                    <small class="badge badge-secondary">原创</small>
-                    <small class="font-weight-bold text-success" th:text="${articleDto.userDto.nickname}">不荒</small>
-                    <small class="ml-2">发表于:</small>
-                    <small class="ml-1" th:text="${#temporals.format(articleDto.postedAt, 'yyyy-MM-dd')}">2020-12-13</small>
-                    <small class="ml-2">最后更新时间:</small>
-                    <small class="ml-1" th:text="${#temporals.format(articleDto.modifyAt, 'yyyy-MM-dd')}">2020-12-13</small>
+<section class="hero is-light">
+    <div class="hero-body">
+        <div class="container is-max-widescreen">
+            <h1 class="title">
+                Kafka中文教程
+            </h1>
+            <div class="tags">
+                <span class="tag is-warning is-light">原创</span>
+                <span class="tag is-success is-light">kafka</span>
+                <span class="tag is-success is-light">java</span>
+                <span class="tag is-light">
+                    发表于:2021-01-27
                 </span>
-                <span class="float-right">
-                    <button class="btn btn-sm btn-success">订阅</button>
-                    <small class="text-muted font-weight-bold ml-1" th:text="${#strings.concat(articleDto.subscribeCount, '订阅')}">467 订阅</small>
-                    <small class="text-muted font-weight-bold ml-1" th:text="${#strings.concat(articleDto.clickCount, '浏览')}">435278 浏览</small>
+                <span class="tag is-light">
+                    最后更新于:2021-01-31
                 </span>
             </div>
-            <ul class="nav nav-tabs mt-2">
-                <li class="nav-item">
-                    <a class="nav-link active small" href="#">
-                        <i class="fa fa-book" aria-hidden="true"></i>
-                        <span>dubbo教程</span>
-                        <small class="badge badge-secondary badge-pill">32</small>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link small" href="#">
-                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                        <span>问答区</span>
-                        <small class="badge badge-secondary badge-pill">939</small>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link small" href="#">
-                        <i class="fa fa-binoculars" aria-hidden="true"></i>
-                        <span>最新动态</span>
-                        <small class="badge badge-secondary badge-pill">27</small>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link small" href="#">
-                        <i class="fa fa-gavel" aria-hidden="true"></i>
-                        <span>使用工具</span>
-                        <small class="badge badge-secondary badge-pill">4</small>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link small" href="#">
-                        <i class="fa fa-film" aria-hidden="true"></i>
-                        <span>视频</span>
-                        <small class="badge badge-secondary badge-pill">1</small>
-                    </a>
-                </li>
-            </ul>
         </div>
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-9 col-xl-9 col-md-12 col-sm-12">
-                <div class="markdown-body" th:utext="${articleDto.content}">
-
-                </div>
-
-                <div class="mt-5 text-center">
-                    <span><i class="fa fa-heart" aria-hidden="true"></i></span>
-                    <span>赞一下</span>
-                    <span class="badge badge-secondary">2</span>
-                </div>
-
-
-                <div class="mt-5">
-                    <div class="">上一条：到底了</div>
-                    <div class="">下一条：到头了</div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-xl-3">
-                <div class="accordion" id="accordionExample">
-                    <div class="card" th:each="columnDto: ${columnDto.childrens}">
-                        <div class="py-2 pl-3 font-weight-bold bg-light border-bottom" th:id="${columnDto.id}"
-                             data-toggle="collapse" th:data-target="${#strings.concat('#', columnDto.id)}" aria-expanded="true"
-                             aria-controls="collapseOne" style="cursor: pointer;" th:text="${columnDto.categoryName}">
-                            开始
-                        </div>
-
-                        <div th:id="${columnDto.id}" class="collapse show" th:aria-labelledby="${columnDto.id}"
-                             data-parent="#accordionExample">
-                            <ul class="list-unstyled pl-3">
-                                <li class="small"><a href="">dubbo 介绍</a></li>
-                                <li class="small"><a href="">dubbo 下载和安装</a></li>
-                                <li class="small"><a href="">dubbo 运行</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="border-bottom pb-2">
-                        <span>
-                            有 <span class="badge badge-info">75</span> 条评论
-                        </span>
-                    <span class="float-right">
-                            登录
-                        </span>
-                </div>
-                <div class="media clearfix mt-2">
-                    <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
-                         style="height: 48px; width: 48px;" alt="...">
-                    <div class="media-body form-group">
-                        <textarea name="content" id="content" style="resize: none"
-                                  cols="30" rows="5" class="form-control"></textarea>
-                    </div>
-                </div>
-
-
-                <ul class="list-unstyled">
-                    <li class="media">
-                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
-                             style="height: 48px; width: 48px;" alt="...">
-                        <div class="media-body">
-                            <div class="mt-0">
-                                <a href="#" class="font-weight-bold small">张三</a>
-                                <span class="text-muted ml-2 small">一月前</span>
-                            </div>
-                            <div class="markdown-body">
-                                哥, 最近我在 部署一个kafka服务环境, 当然选择的是最新版本, 2.6.0, 两套环境, linux环境中一直没问题, 后来部署给测试用的环境是window, 刚启动的时候运行的挺好的, 隔一天就出问题了, zookeeper 没有停止, kafka服务停止了, 是不是window环境中不适合部署kafka ?
-                                我看了下日志:
-                            </div>
-                            <div>
-                                <span class="text-muted"><i class="fa fa-chevron-up" aria-hidden="true"></i>0</span>
-                                <span class="text-muted ml-2"><i class="fa fa-chevron-down" aria-hidden="true"></i>0</span>
-                                <span class="text-muted ml-2">回复</span>
-                            </div>
-
-                            <div class="media mt-3">
-                                <a class="mr-3" href="#">
-                                    <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="rounded"
-                                         style="height: 32px; width: 32px;" alt="...">
-                                </a>
-                                <div class="media-body">
-                                    <div class="mt-0">
-                                        <a href="#" class="font-weight-bold small">管理员</a>
-                                        <span class="text-muted ml-2 small">
-                                                <i class="fa fa-forward" aria-hidden="true"></i>
-                                            </span>
-                                        <span class="text-muted ml-2 small"> 张三</span>
-                                        <span class="text-muted ml-2 small">一月前</span>
-                                    </div>
-                                    <div class="markdown-body">
-                                        Windows我没部署过额，
-                                        这个是你重新启动kafka报的吧(kafka进程还在)，你先到kafka日志里，看看是否有什么异常导致kafka异常的。
-                                    </div>
-                                    <div>
-                                            <span class="text-muted">
-                                                <i class="fa fa-chevron-up" aria-hidden="true"></i>
-                                                0
-                                            </span>
-                                        <span class="text-muted ml-2">
-                                                <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                                                0
-                                            </span>
-                                        <span class="text-muted ml-2">回复</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="media mt-3">
-                                <a class="mr-3" href="#">
-                                    <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="rounded"
-                                         style="height: 32px; width: 32px;" alt="...">
-                                </a>
-                                <div class="media-body">
-                                    <div class="mt-0">
-                                        <a href="#" class="font-weight-bold small">管理员</a>
-                                        <span class="text-muted ml-2 small">
-                                                <i class="fa fa-forward" aria-hidden="true"></i>
-                                            </span>
-                                        <span class="text-muted ml-2 small"> 张三</span>
-                                        <span class="text-muted ml-2 small">一月前</span>
-                                    </div>
-                                    <div class="markdown-body">
-                                        有问题到问题专区提问吧
-                                    </div>
-                                    <div>
-                                            <span class="text-muted">
-                                                <i class="fa fa-chevron-up" aria-hidden="true"></i>
-                                                0
-                                            </span>
-                                        <span class="text-muted ml-2">
-                                                <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                                                0
-                                            </span>
-                                        <span class="text-muted ml-2">回复</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="media">
-                        <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
-                             style="height: 48px; width: 48px;" alt="...">
-                        <div class="media-body">
-                            <h5 class="mt-0">Media heading</h5>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-
-                            <div class="media mt-3">
-                                <a class="mr-3" href="#">
-                                    <img src="https://www.orchome.com/images/user/noHeadPortrait.png" class="mr-3 rounded"
-                                         style="height: 48px; width: 48px;" alt="...">
-                                </a>
-                                <div class="media-body">
-                                    <h5 class="mt-0">Media heading</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+    <div class="hero-foot">
+        <nav class="tabs is-boxed">
+            <div class="container is-max-widescreen">
+                <ul>
+                    <li class="is-active"><a>教程</a></li>
+                    <li><a>问答区</a></li>
+                    <li><a>最新咨询</a></li>
+                    <li><a>工具</a></li>
                 </ul>
             </div>
+        </nav>
+    </div>
+</section>
+
+<section class="container is-max-widescreen">
+    <div class="columns is-vcentered">
+        <div class="column is-one-fifth">
+            <span class="tag is-light">0票</span>
+            <span class="tag is-success">2解决</span>
+            <span class="tag is-light">20浏览</span>
+        </div>
+        <div class="column">
+            <div class="is-3">
+                <a href="javascript:void(0);">k8s11 容器报错</a>
+            </div>
+            <div class="tags">
+                <span class="tag is-success">kubernates</span>
+            </div>
+        </div>
+        <div class="is-one-fifth">
+            <span>不荒 5 天前回答</span>
         </div>
     </div>
-</main>
 
-<footer>
+    <div class="columns is-vcentered">
+        <div class="column is-one-fifth">
+            <span class="tag is-light">0票</span>
+            <span class="tag is-success">2解决</span>
+            <span class="tag is-light">20浏览</span>
+        </div>
+        <div class="column">
+            <h4 class="is-3"><a href="javascript:void(0);" class="title">k8s 容器报错</a></h4>
+            <p class="tags">
+                <span class="tag is-success">kubernates</span>
+            </p>
+        </div>
+        <div class="is-one-fifth">
+            <span>不荒 5 天前回答</span>
+        </div>
+    </div>
 
+    <div class="columns is-vcentered">
+        <div class="column is-one-fifth">
+            <div class="tags">
+                <span class="tag is-light">
+                    <span>0</span><br>
+                    <span>票</span>
+                </span>
+                <span class="tag is-success">2解决</span>
+                <span class="tag is-light">20浏览</span>
+            </div>
+        </div>
+        <div class="column">
+            <h5 class="title is-5"><a href="javascript:void(0);">k8s 容器报错</a></h5>
+            <p class="tags">
+                <span class="tag is-success">kubernates</span>
+            </p>
+        </div>
+        <div class="is-one-fifth">
+            <span class="is-small">不荒 5 天前回答</span>
+        </div>
+    </div>
+</section>
+
+<div class="tile is-ancestor">
+    <div class="tile is-vertical is-8">
+        <div class="tile">
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-primary">
+                    <p class="title">Vertical...</p>
+                    <p class="subtitle">Top tile</p>
+                </article>
+                <article class="tile is-child notification is-warning">
+                    <p class="title">...tiles</p>
+                    <p class="subtitle">Bottom tile</p>
+                </article>
+            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child notification is-info">
+                    <p class="title">Middle tile</p>
+                    <p class="subtitle">With an image</p>
+                    <figure class="image is-4by3">
+                        <img src="https://bulma.io/images/placeholders/640x480.png">
+                    </figure>
+                </article>
+            </div>
+        </div>
+        <div class="tile is-parent">
+            <article class="tile is-child notification is-danger">
+                <p class="title">Wide tile</p>
+                <p class="subtitle">Aligned with the right tile</p>
+                <div class="content">
+                    <!-- Content -->
+                </div>
+            </article>
+        </div>
+    </div>
+    <div class="tile is-parent">
+        <article class="tile is-child notification is-success">
+            <div class="content">
+                <p class="title">Tall tile</p>
+                <p class="subtitle">With even more content</p>
+                <div class="content">
+                    <!-- Content -->
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container is-max-widescreen">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
+                <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+                is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+            </p>
+        </div>
+    </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>

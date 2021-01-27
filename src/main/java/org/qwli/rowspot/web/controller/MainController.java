@@ -45,11 +45,26 @@ public class MainController {
 
             return "front/a_detail";
         }
-
-
         return "front/a_detail";
     }
 
+    @GetMapping("{categoryName}/issues")
+    public String categoryIssues(@PathVariable("categoryName") String categoryName) {
+
+//        articleService.findCategoryIssues(categoryName);
+
+//        articleService.findCategoryIssues(categoryName);
+//
+
+        return "front/category_issues";
+    }
+
+    /**
+     * 获取文章详情
+     * @param id id
+     * @param model model
+     * @return String
+     */
     @GetMapping("{id}")
     public String detail(@PathVariable("id") String id, Model model) {
 

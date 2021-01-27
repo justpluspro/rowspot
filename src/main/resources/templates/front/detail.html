@@ -7,89 +7,19 @@
     <link rel="stylesheet" href="/static/css/github-markdown.css">
     <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
     <title th:text="教程">教程-Rowspot.cn</title>
-    <style>
-        .jumbotron {
-            padding-top: 2rem !important;
-            padding-bottom: 0 !important;
-            background-color: #f6f6f6;
-        }
-        textarea:focus {
-            box-shadow: none !important;
-        }
-        .accordion>.card:not(:last-of-type) {
-            border-radius: 4px;
-            border-bottom: 1px silver solid;
-        }
-
-        .accordion>.card>.card-header{
-            margin-bottom: -1px;
-        }
-    </style>
 </head>
 <body>
-<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-    <div class="container is-max-widescreen">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="https://bulma.io">
-                <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-            </a>
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
-        </div>
-        <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item">
-                    dubbo教程
-                </a>
-
-                <a class="navbar-item">
-                    Netty教程
-                </a>
-            </div>
-
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-primary">
-                            <strong>Sign up</strong>
-                        </a>
-                        <a class="button is-light">
-                            Log in
-                        </a>
-                    </div>
-                </div>
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        不荒
-                    </a>
-
-                    <div class="navbar-dropdown">
-                        <a class="navbar-item">
-                            我的空间
-                        </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item">
-                            退出
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
+<div th:replace="/front/base/navbar::header"></div>
 
 <section class="hero is-light">
     <div class="hero-body">
         <div class="container is-max-widescreen">
-            <h1 class="title" th:text="${articleAggregate.title}">
+            <h3 class="title" th:text="${articleAggregate.title}">
                 Hero title
-            </h1>
-            <h2 class="subtitle">
+            </h3>
+            <h4 class="subtitle">
                 Hero subtitle
-            </h2>
+            </h4>
         </div>
     </div>
     <div class="hero-foot">
@@ -159,27 +89,20 @@
     <div class="container is-max-widescreen">
         <article class="media">
             <figure class="media-left">
-                <p class="image is-64x64">
+                <p class="image is-48x48">
                     <img src="https://bulma.io/images/placeholders/128x128.png">
                 </p>
             </figure>
             <div class="media-content">
                 <div class="field">
                     <p class="control">
-                        <textarea class="textarea" placeholder="Add a comment..."></textarea>
+                        <textarea id="content" class="textarea" placeholder="Add a comment..."></textarea>
                     </p>
                 </div>
                 <nav class="level">
-                    <div class="level-left">
-                        <div class="level-item">
-                            <a class="button is-info">Submit</a>
-                        </div>
-                    </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <label class="checkbox">
-                                <input type="checkbox"> Press enter to submit
-                            </label>
+                            <button id="post-comment" class="button is-info">发布</button>
                         </div>
                     </div>
                 </nav>
@@ -187,8 +110,8 @@
         </article>
         <article class="media">
             <figure class="media-left">
-                <p class="image is-64x64">
-                    <img class="is-radiusless" src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
+                <p class="image is-48x48">
+                    <img class="is-rounded" src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
                 </p>
             </figure>
             <div class="media-content">
@@ -205,7 +128,7 @@
                 <article class="media">
                     <figure class="media-left">
                         <p class="image is-48x48">
-                            <img src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
+                            <img class="is-rounded" src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
                         </p>
                     </figure>
                     <div class="media-content">
@@ -224,7 +147,7 @@
                 <article class="media">
                     <figure class="media-left">
                         <p class="image is-48x48">
-                            <img src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
+                            <img class="is-rounded" src="https://img.orchome.com/head/0A97CB1252F325C84FED9BA6F0240A04">
                         </p>
                     </figure>
                     <div class="media-content">
@@ -276,29 +199,28 @@
     }
 
 
-    // document.getElementById('postComment').addEventListener('click', function() {
-    //     let content = document.getElementById('content').value;
-    //
-    //     if(content === null || content === "") {
-    //         alert("评论内容不能为空");
-    //         return;
-    //     }
-    //
-    //
-    //     fetch('/api/comment/saved', {
-    //         method: 'POST',
-    //         body: JSON.stringify({'content': content, 'articleId': id}),
-    //         headers: {
-    //             'Content-Type': 'application/json;charset=utf8',
-    //         },
-    //     }).then(res => res.json())
-    //     .catch(error => {
-    //         console.log("error", error)
-    //     }).then(res => {
-    //         console.log(res);
-    //     })
-    //
-    // });
+    document.getElementById('post-comment').addEventListener('click', function() {
+
+        let content = document.getElementById('content').value;
+        if(content === null || content === "") {
+            alert("内容不能为空");
+            return;
+        }
+
+        fetch('/api/comment/saved', {
+            method: 'POST',
+            body: JSON.stringify({"content": content, 'articleId': id}),
+            headers: {
+                'Content-Type': 'application/json;charset=utf8',
+            }
+        }).then(res => res.json())
+        .catch(error => {
+            console.log("error", error);
+        }).then(res => {
+            console.log(res);
+        })
+
+    })
 
 
     function loadingComments(page) {

@@ -1,5 +1,6 @@
 package org.qwli.rowspot.web.filter;
 
+import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.util.EnvironmentContext;
 import org.slf4j.Logger;
@@ -10,6 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 
+/**
+ * 认证 AuthenticateFilter
+ * @author liqiwen
+ */
 public class AuthenticateFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -29,8 +34,8 @@ public class AuthenticateFilter implements Filter {
         logger.info("requestUrl:[{}], requestURI:[{}], remoteHost:[{}]", requestUrl, requestURI, remoteHost);
         logger.info("remotePort: [{}], method: [{}]", remotePort, method);
 
-        User user = (User) request.getSession().getAttribute("user");
-        EnvironmentContext.setAuthenticated(user != null);
+        LoggedUser loggedUser = (LoggedUser) request.getSession().getAttribute("user");
+        EnvironmentContext.setAuthenticated(loggedUser != null);
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
