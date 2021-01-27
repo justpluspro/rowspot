@@ -4,21 +4,31 @@ import org.qwli.rowspot.model.Category;
 
 import java.io.Serializable;
 
+/**
+ * @author qwli7
+ */
 public class MenuAggregate implements Serializable {
-    private Integer menuId;
+
+    private Long menuId;
 
     private String name;
 
+    /**
+     * 排序
+     */
+    private Integer sort = 0;
+
+
     public MenuAggregate(Category category) {
-        this.menuId = Math.toIntExact(category.getId());
+        this.menuId = category.getId();
         this.name = category.getName();
     }
 
-    public Integer getMenuId() {
+    public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Integer menuId) {
+    public void setMenuId(Long menuId) {
         this.menuId = menuId;
     }
 
@@ -28,5 +38,13 @@ public class MenuAggregate implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public Integer getSort() {
+        return sort;
     }
 }
