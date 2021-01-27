@@ -7,6 +7,10 @@ import org.qwli.rowspot.model.enums.BaseEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * 分类
+ * @author qwli7
+ */
 @Entity(name = "Category")
 @Table(name = "categories",
         indexes = {
@@ -15,20 +19,30 @@ import java.io.Serializable;
 public class Category extends BaseEntity implements Serializable {
 
 
+    /**
+     * 分类id
+     */
     @Id
     @Column(name = "id")
     @GenericGenerator(name = "idGenerator", strategy = "org.qwli.rowspot.model.IdGenerator")
     @GeneratedValue(generator = "idGenerator")
     private Long id;
 
-
+    /**
+     * 分类名称
+     */
     @Column(name = "name", nullable = false)
     private String name;
 
+    /**
+     * 分类别名
+     */
     @Column(name = "alias")
     private String alias;
 
-
+    /**
+     * 分类描述
+     */
     @Column(name = "description", length = 100)
     private String description;
 
@@ -37,7 +51,7 @@ public class Category extends BaseEntity implements Serializable {
      */
     @Column(name = "parent_id")
     @ColumnDefault("0")
-    private Integer parentId;
+    private Long parentId;
 
 
     public Long getId() {
@@ -72,11 +86,11 @@ public class Category extends BaseEntity implements Serializable {
         this.description = description;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 }
