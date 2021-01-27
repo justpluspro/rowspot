@@ -1,6 +1,7 @@
 package org.qwli.rowspot.model.factory;
 
 import org.qwli.rowspot.model.Comment;
+import org.qwli.rowspot.service.NewComment;
 
 /**
  * @author qwli7
