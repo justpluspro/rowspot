@@ -19,8 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author qwli
+ * 收藏 collect
+ **/
 @Service
-public class CollectService extends AbstractService<Object, Object> {
+public class CollectService extends AbstractService<Collect, Collect> {
 
     private final CollectRepository collectRepository;
 
@@ -31,14 +35,38 @@ public class CollectService extends AbstractService<Object, Object> {
         this.categoryRepository = categoryRepository;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void save(Collect collect) {
+    /**
+    ** 保存收藏
+    **/
+    @Transactional(propagation = Propagation.REQUIRED, rollback=BizException.class)
+    public void save(Collect collect) throws BizException {
+        Long id = collect.getCategoryId();
+        categoryRepository.findById(id).orElseThrown(() -> new BizException(new Message("invalid category", "分类不存在")));
         collectRepository.save(collect);
     }
+    
+    /**
+    ** 删除收藏
+    **/
+    @Transactional(propagation = Propagation.REQUIRED, rollback = BizException.class)
+    public void delete(Long id, Long userId) throw BizException {
+         Collect prob = new Collect();
+         prob.setUserId(userId);
+        prob.setId(id);
+          Example<Collect> example = Example.of(prob);
+        
+       Optional<Collect> collectOptional = collectRepository.findOne(example);
+        if(collectOptional.ifPresent()) {
+          collectRepository.deleteById(collectOptional.get());   
+        }
+    }
 
-
+    
+    /**
+    ** 分页查询收藏
+    **/
     @Transactional(readOnly = true)
-    public PageAggregate<CollectAggregate> findPage(Integer page, String id) throws RuntimeException {
+    public PageAggregate<CollectAggregate> findPage(Integer page, String id) throws BizException {
         if(page == null || page < 1) {
             page = 1;
         }
