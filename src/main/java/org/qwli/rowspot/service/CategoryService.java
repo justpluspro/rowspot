@@ -51,7 +51,8 @@ public class CategoryService extends AbstractService<Category, Category> {
             MenuAggregate menuAggregate = new MenuAggregate(next);
             menuAggregates.add(menuAggregate);
         }
-        return menuAggregates;
+        //按照 sort 进行排序
+        return menuAggregates.stream().sorted(Comparator.comparingInt(MenuAggregate::getSort)).collect(Collectors.toList());
     }
 
     /**
