@@ -2,6 +2,7 @@ package org.qwli.rowspot.web.controller.api;
 
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
+import org.qwli.rowspot.service.NewUser;
 import org.qwli.rowspot.service.UserService;
 import org.qwli.rowspot.util.EnvironmentContext;
 import org.springframework.http.ContentDisposition;
@@ -47,6 +48,18 @@ public class LoginApi extends AbstractApi {
         request.getSession().setAttribute("user", loggedUser);
 
         return ResponseEntity.ok(loggedUser);
+    }
+
+
+    /**
+     * 用户注册
+     * @param newUser newUser
+     * @return ResponseEntity
+     */
+    @PostMapping("register")
+    public ResponseEntity<String> register(@RequestBody @Validated NewUser newUser) {
+        userService.register(newUser);
+        return ResponseEntity.ok("注册成功, 请前往邮箱确认");
     }
 
     /**
