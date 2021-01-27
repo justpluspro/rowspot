@@ -1,5 +1,7 @@
 package org.qwli.rowspot.service;
 
+import org.qwli.rowspot.Message;
+import org.qwli.rowspot.exception.BizException;
 import org.qwli.rowspot.model.PropertyName;
 import org.qwli.rowspot.model.aggregate.CollectAggregate;
 import org.qwli.rowspot.model.aggregate.PageAggregate;
@@ -36,35 +38,43 @@ public class CollectService extends AbstractService<Collect, Collect> {
     }
 
     /**
-    ** 保存收藏
-    **/
-    @Transactional(propagation = Propagation.REQUIRED, rollback=BizException.class)
+     * 保存收藏
+     * @param collect collect
+     * @throws BizException BizException
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void save(Collect collect) throws BizException {
         Long id = collect.getCategoryId();
-        categoryRepository.findById(id).orElseThrown(() -> new BizException(new Message("invalid category", "分类不存在")));
+        categoryRepository.findById(id).orElseThrow(() -> new BizException(new Message("invalid category", "分类不存在")));
         collectRepository.save(collect);
     }
-    
+
     /**
-    ** 删除收藏
-    **/
-    @Transactional(propagation = Propagation.REQUIRED, rollback = BizException.class)
-    public void delete(Long id, Long userId) throw BizException {
+     * 删除收藏
+     * @param id id
+     * @param userId userId
+     * @throws BizException BizException
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void delete(Long id, Long userId) throws BizException {
          Collect prob = new Collect();
          prob.setUserId(userId);
-        prob.setId(id);
-          Example<Collect> example = Example.of(prob);
+         prob.setId(id);
+         Example<Collect> example = Example.of(prob);
         
-       Optional<Collect> collectOptional = collectRepository.findOne(example);
-        if(collectOptional.ifPresent()) {
-          collectRepository.deleteById(collectOptional.get());   
-        }
+        Optional<Collect> collectOptional = collectRepository.findOne(example);
+        collectOptional.ifPresent(collect -> collectRepository.deleteById(collectOptional.get().getId()));
+
     }
 
-    
+
     /**
-    ** 分页查询收藏
-    **/
+     * 分页查询收藏
+     * @param page page
+     * @param id id
+     * @return PageAggregate
+     * @throws BizException BizException
+     */
     @Transactional(readOnly = true)
     public PageAggregate<CollectAggregate> findPage(Integer page, String id) throws BizException {
         if(page == null || page < 1) {
