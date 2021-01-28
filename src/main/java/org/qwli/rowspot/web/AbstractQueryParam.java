@@ -1,9 +1,19 @@
 package org.qwli.rowspot.web;
 
+/**
+ * @author qwli7
+ * 基础查询参数
+ */
 public abstract class AbstractQueryParam {
 
+    /**
+     * 当前页码
+     */
     private Integer page;
 
+    /**
+     * 分页大小
+     */
     private Integer size;
 
     public Integer getPage() {
