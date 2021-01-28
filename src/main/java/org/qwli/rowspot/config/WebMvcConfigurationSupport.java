@@ -1,5 +1,6 @@
 package org.qwli.rowspot.config;
 
+import org.qwli.rowspot.exception.RowspotExceptionResolvers;
 import org.qwli.rowspot.web.filter.AuthenticateFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,18 +8,29 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+/**
+ * @author qwli7
+ * 自定义 Web 配置
+ */
 @Configuration
 public class WebMvcConfigurationSupport implements WebMvcConfigurer {
 
+    /**
+     * 日志
+     */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-
+    /**
+     * 添加静态资源映射
+     * @param registry registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         logger.info("addResourceHandlers");
@@ -27,7 +39,20 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/");
     }
 
+    /**
+     * 定义自定义的异常解析器
+     * @param resolvers resolvers
+     */
+    @Override
+    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+        //自定义的异常放在最前面
+        resolvers.add(0, new RowspotExceptionResolvers());
+    }
 
+    /**
+     * 过滤器配置
+     * @return FilterRegistrationBean
+     */
     @Bean
     public FilterRegistrationBean<AuthenticateFilter> authenticateFilterFilterRegistrationBean() {
 
