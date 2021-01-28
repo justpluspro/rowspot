@@ -25,6 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;;
 import java.util.ArrayList;
@@ -124,11 +125,15 @@ public class ArticleService extends AbstractService<Article, Article> {
     @Transactional(readOnly = true)
     public PageAggregate<ArticleAggregate> findPage(ArticleQueryParam queryParam) throws ResourceNotFoundException {
         final String userId = queryParam.getUserId();
-        long uid;
-        try {
-            uid = Long.parseLong(userId);
-        } catch (NumberFormatException ex) {
-            throw new RuntimeException("invalid userId");
+        Article prob = new Article();
+        if(!StringUtils.isEmpty(userId)) {
+            long uid;
+            try {
+                uid = Long.parseLong(userId);
+            } catch (NumberFormatException ex) {
+                throw new RuntimeException("invalid userId");
+            }
+            prob.setUserId(uid);
         }
 
         Integer page = queryParam.getPage();
@@ -148,26 +153,11 @@ public class ArticleService extends AbstractService<Article, Article> {
                 Sort.by(new Sort.Order(Sort.Direction.DESC, PropertyName.postAt)));
 
 
-        Article prob = new Article();
+
         prob.setState(ArticleState.POSTED);
-        prob.setUserId(uid);
         prob.setArticleType(queryParam.getArticleType());
 
         Example<Article> example = Example.of(prob);
-
-
-//
-//        Specification<Article> specification = (root, query, criteriaBuilder) -> {
-//            List<Predicate> predicates = new ArrayList<>();
-//
-//            predicates.add(criteriaBuilder.equal(root.get("userId").as(Integer.class), uid));
-//            predicates.add(criteriaBuilder.equal(root.get("articleType").as(ArticleType.class), queryParam.getArticleType()));
-//            predicates.add(criteriaBuilder.equal(root.get("state").as(ArticleState.class), ArticleState.POSTED));
-//
-//            Predicate[] pre = new Predicate[predicates.size()];
-//            pre = predicates.toArray(pre);
-//            return query.where(pre).getRestriction();
-//        };
 
         final Page<Article> pageData = articleRepository.findAll(example, pageRequest);
 

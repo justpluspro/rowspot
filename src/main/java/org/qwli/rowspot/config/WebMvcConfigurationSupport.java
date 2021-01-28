@@ -8,10 +8,15 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,6 +52,18 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
         //自定义的异常放在最前面
         resolvers.add(0, new RowspotExceptionResolvers());
+        resolvers.add(1, (httpServletRequest, httpServletResponse, o, e) -> {
+            if(e instanceof MaxUploadSizeExceededException) {
+                //客户端上传了过大的文件
+                //这里返回 400 更加合适
+                try{
+                    httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                } catch (IOException ex){
+                    logger.error("error:[{}]", ex.getMessage(), ex);
+                }
+            }
+            return new ModelAndView();
+        });
     }
 
     /**

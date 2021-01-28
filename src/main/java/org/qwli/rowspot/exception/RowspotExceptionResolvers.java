@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,15 +48,15 @@ public class RowspotExceptionResolvers implements HandlerExceptionResolver {
             boolean match = exceptionReader.match(e);
             if(match) { //匹配上
                 int status = exceptionReader.getStatus(httpServletRequest, httpServletResponse);
-
-//                httpServletRequest.setAttribute(DispatcherServlet.);
-
-
+                try {
+                    httpServletResponse.sendError(status);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
                 break;
             }
         }
-
-        return null;
+        return new ModelAndView();
     }
 
     /**

@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -86,5 +83,17 @@ public class CategoryService extends AbstractService<Category, Category> {
             });
         }
         categoryRepository.save(category);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Category> findOne(String categoryAlias) {
+        if(categoryAlias.startsWith("/")) {
+            categoryAlias = categoryAlias.substring(1);
+        }
+        Category probe = new Category();
+        probe.setAlias(categoryAlias);
+        probe.setParentId(0L);
+        Example<Category> example = Example.of(probe);
+        return categoryRepository.findOne(example);
     }
 }

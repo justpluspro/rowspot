@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/image/favicon.png" type="image/x-icon"/>
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/materialdesignicons/css/materialdesignicons.min.css">
     <title th:text="教程"></title>
 </head>
 <body>
@@ -44,7 +45,7 @@
 </section>
 
 <section class="container is-max-widescreen">
-    <div class="columns is-vcentered">
+    <div class="columns is-vcentered" th:each="article : ${page.data}">
         <div class="column is-one-fifth">
             <span class="tag is-light">0票</span>
             <span class="tag is-success">2解决</span>
@@ -52,7 +53,7 @@
         </div>
         <div class="column">
             <div class="is-3">
-                <a href="javascript:void(0);">k8s11 容器报错</a>
+                <a th:href="@{/} + ${article.id}" th:text="${article.title}">k8s11 容器报错</a>
             </div>
             <div class="tags">
                 <span class="tag is-success">kubernates</span>
@@ -60,45 +61,6 @@
         </div>
         <div class="is-one-fifth">
             <span>不荒 5 天前回答</span>
-        </div>
-    </div>
-
-    <div class="columns is-vcentered">
-        <div class="column is-one-fifth">
-            <span class="tag is-light">0票</span>
-            <span class="tag is-success">2解决</span>
-            <span class="tag is-light">20浏览</span>
-        </div>
-        <div class="column">
-            <h4 class="is-3"><a href="javascript:void(0);" class="title">k8s 容器报错</a></h4>
-            <p class="tags">
-                <span class="tag is-success">kubernates</span>
-            </p>
-        </div>
-        <div class="is-one-fifth">
-            <span>不荒 5 天前回答</span>
-        </div>
-    </div>
-
-    <div class="columns is-vcentered">
-        <div class="column is-one-fifth">
-            <div class="tags">
-                <span class="tag is-light">
-                    <span>0</span><br>
-                    <span>票</span>
-                </span>
-                <span class="tag is-success">2解决</span>
-                <span class="tag is-light">20浏览</span>
-            </div>
-        </div>
-        <div class="column">
-            <h5 class="title is-5"><a href="javascript:void(0);">k8s 容器报错</a></h5>
-            <p class="tags">
-                <span class="tag is-success">kubernates</span>
-            </p>
-        </div>
-        <div class="is-one-fifth">
-            <span class="is-small">不荒 5 天前回答</span>
         </div>
     </div>
 </section>
