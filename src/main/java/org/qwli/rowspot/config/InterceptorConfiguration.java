@@ -6,8 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * @author liqiwen
+ * 拦截器配置
+ **/
 @Configuration
 public class InterceptorConfiguration implements WebMvcConfigurer {
+    /**
+     * 登陆拦截器
+     **/
     @Bean
     public LoginInterceptor loginInterceptor() {
         return new LoginInterceptor();
