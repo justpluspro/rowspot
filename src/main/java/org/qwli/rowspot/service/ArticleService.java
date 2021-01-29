@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.*;;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 文章 Service
@@ -112,7 +113,7 @@ public class ArticleService extends AbstractService<Article, Article> {
      * @param id id
      * @throws BizException BizException
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void hit(Long id) throws BizException {
         final Article article = articleRepository.findById(id).orElseThrow(()
                 -> new BizException(MessageEnum.RESOURCE_NOT_FOUND));
@@ -122,57 +123,43 @@ public class ArticleService extends AbstractService<Article, Article> {
         article.setVisits(visits);
     }
 
+    /**
+     * 分页查询文章
+     * @param queryParam queryParam
+     * @return PageAggregate
+     * @throws ResourceNotFoundException exception
+     */
     @Transactional(readOnly = true)
     public PageAggregate<ArticleAggregate> findPage(ArticleQueryParam queryParam) throws ResourceNotFoundException {
-        final String userId = queryParam.getUserId();
-        Article prob = new Article();
-        if(!StringUtils.isEmpty(userId)) {
-            long uid;
-            try {
-                uid = Long.parseLong(userId);
-            } catch (NumberFormatException ex) {
-                throw new RuntimeException("invalid userId");
-            }
-            prob.setUserId(uid);
+        final Long userId = queryParam.getUserId();
+        Article probe = new Article();
+        if(userId != null) {
+            probe.setUserId(userId);
+        }
+        Long categoryId = queryParam.getCategoryId();
+        if(categoryId != null) {
+            probe.setCategoryId(categoryId);
+        }
+        ArticleType articleType = queryParam.getArticleType();
+        if(articleType != null) {
+            probe.setArticleType(articleType);
         }
 
-        Integer page = queryParam.getPage();
-
-        if(page == null || page < 1) {
-            page = 1;
+        ArticleState articleState = queryParam.getArticleState();
+        if(articleState != null) {
+            probe.setState(articleState);
         }
 
-
-        List<ArticleState> states = new ArrayList<>();
-        states.add(ArticleState.POSTED);
-
-        queryParam.setStates(states);
-
-
-        final PageRequest pageRequest = PageRequest.of(page-1, 10,
+        final PageRequest pageRequest = PageRequest.of(queryParam.getPage()-1, queryParam.getSize(),
                 Sort.by(new Sort.Order(Sort.Direction.DESC, PropertyName.postAt)));
 
-
-
-        prob.setState(ArticleState.POSTED);
-        prob.setArticleType(queryParam.getArticleType());
-
-        Example<Article> example = Example.of(prob);
+        Example<Article> example = Example.of(probe);
 
         final Page<Article> pageData = articleRepository.findAll(example, pageRequest);
 
+        List<ArticleAggregate> articleAggregates = pageData.stream().map(e -> new ArticleAggregate(e, markdownProcessor, false)).collect(Collectors.toList());
 
-
-        List<ArticleAggregate> articleAggregates = new ArrayList<>();
-        for(int i = 0; i < pageData.getContent().size(); i++) {
-
-            final Article article = pageData.getContent().get(i);
-            ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownProcessor, false);
-
-            articleAggregates.add(articleAggregate);
-        }
-
-        return new PageAggregate<>(articleAggregates, pageData.getNumber() + 1, 10, pageData.getTotalPages());
+        return new PageAggregate<>(articleAggregates, pageData.getNumber() + 1, queryParam.getSize(), pageData.getTotalPages());
     }
 
     @Transactional(readOnly = true, rollbackFor = ResourceNotFoundException.class)
