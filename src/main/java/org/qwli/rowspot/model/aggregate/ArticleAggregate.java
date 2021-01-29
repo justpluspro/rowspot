@@ -1,27 +1,71 @@
 package org.qwli.rowspot.model.aggregate;
 
+import org.qwli.rowspot.model.enums.ArticleType;
 import org.qwli.rowspot.service.processor.MarkdownProcessor;
 import org.qwli.rowspot.model.Article;
 
 import java.io.Serializable;
+import java.util.Date;
 
+/**
+ * 文章内容聚合根
+ * @author qwli7
+ */
 public class ArticleAggregate implements Serializable {
 
-    private String title;
+    /**
+     * 文章 id
+     */
+    private Long id;
 
+    /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 内容
+     */
     private String content;
 
+    /**
+     * 评论数量
+     */
     private Long comments;
 
-    private Long id;
+    /**
+     * 浏览量
+     */
+    private Long visits;
+
+    /**
+     * 是否已经解决
+     */
+    private Boolean solved = false;
+
+    /**
+     * 发布时间
+     */
+    private Date postedAt;
 
     public ArticleAggregate(Article article, MarkdownProcessor markdownProcessor, boolean isParse) {
         this.id = article.getId();
-        if(isParse) {
+        if(isParse || markdownProcessor != null) {
             this.content = markdownProcessor.process(article.getContent());
+        } else {
+            this.content = "";
         }
         this.title = article.getTitle();
         this.comments = article.getComments();
+        ArticleType articleType = article.getArticleType();
+        if(ArticleType.isQuestion(articleType.name())) {
+            this.solved = article.getSolved();
+        }
+        this.visits = article.getVisits();
+        this.postedAt = article.getPostAt();
+    }
+
+    public ArticleAggregate(Article article) {
+        this(article, null, false);
     }
 
 
@@ -55,5 +99,29 @@ public class ArticleAggregate implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getPostedAt() {
+        return postedAt;
+    }
+
+    public Boolean getSolved() {
+        return solved;
+    }
+
+    public Long getVisits() {
+        return visits;
+    }
+
+    public void setVisits(Long visits) {
+        this.visits = visits;
+    }
+
+    public void setPostedAt(Date postedAt) {
+        this.postedAt = postedAt;
+    }
+
+    public void setSolved(Boolean solved) {
+        this.solved = solved;
     }
 }
