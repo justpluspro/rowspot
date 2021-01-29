@@ -13,10 +13,7 @@ import org.qwli.rowspot.web.ArticleQueryParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +24,7 @@ import java.util.Optional;
  * @since 1.2
  */
 @Controller
-public class MainController {
+public class MainController extends AbstractController {
 
     private final ArticleService articleService;
 
@@ -35,6 +32,7 @@ public class MainController {
 
 
     public MainController(ArticleService articleService, CategoryService categoryService) {
+        super(categoryService);
         this.articleService = articleService;
         this.categoryService = categoryService;
     }
@@ -62,20 +60,54 @@ public class MainController {
         return "front/a_detail";
     }
 
-    @GetMapping("{categoryName}/issues")
-    public String categoryIssues(@PathVariable("categoryName") String categoryName,
+    @GetMapping("{alias}/issues")
+    public String categoryIssues(@PathVariable("alias") String alias,
+                                 @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
                                  Model model) {
-        final Category category = categoryService.findOne(categoryName).orElseThrow(()
-                -> new ResourceNotFoundException("分类不存在"));
+        Category category = checkCategory(alias);
+        ArticleQueryParam queryParam = new ArticleQueryParam();
+        queryParam.setPage(page);
+        queryParam.setArticleType(ArticleType.Q);
+        queryParam.setCategoryId(category.getId());
+
+        final PageAggregate<ArticleAggregate> pageData = articleService.findPage(queryParam);
+
+        model.addAttribute("page", pageData);
+        return "front/category_issues";
+    }
+
+
+    @GetMapping("{alias}/news")
+    public String categoryNews(@PathVariable("alias") String alias,
+                               @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                               Model model) {
+        final Category category = checkCategory(alias);
 
         ArticleQueryParam queryParam = new ArticleQueryParam();
-        queryParam.setPage(1);
-        queryParam.setArticleType(ArticleType.Q);
+        queryParam.setPage(page);
+        queryParam.setArticleType(ArticleType.N);
+        queryParam.setCategoryId(category.getId());
 
-        final PageAggregate<ArticleAggregate> page = articleService.findPage(queryParam);
+        final PageAggregate<ArticleAggregate> pageData = articleService.findPage(queryParam);
 
-        model.addAttribute("page", page);
-        return "front/category_issues";
+        model.addAttribute("page", pageData);
+        return "front/category_news";
+    }
+
+    @GetMapping("{alias}/tools")
+    public String categoryTools(@PathVariable("alias") String alias,
+                               @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                               Model model) {
+        final Category category = checkCategory(alias);
+        ArticleQueryParam queryParam = new ArticleQueryParam();
+        queryParam.setPage(page);
+        queryParam.setArticleType(ArticleType.T);
+        queryParam.setCategoryId(category.getId());
+
+        final PageAggregate<ArticleAggregate> pageData = articleService.findPage(queryParam);
+
+        model.addAttribute("page", pageData);
+        return "front/category_news";
     }
 
     /**
