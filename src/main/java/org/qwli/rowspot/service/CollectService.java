@@ -76,7 +76,7 @@ public class CollectService extends AbstractService<Collect, Collect> {
      * @throws BizException BizException
      */
     @Transactional(readOnly = true)
-    public PageAggregate<CollectAggregate> findPage(Integer page, String id) throws BizException {
+    public PageAggregate<CollectAggregate> findPage(Integer page, long id) throws BizException {
         if(page == null || page < 1) {
             page = 1;
         }
@@ -86,7 +86,7 @@ public class CollectService extends AbstractService<Collect, Collect> {
         final PageRequest pageRequest = PageRequest.of(page-1, 10, sort);
 
         Collect prob = new Collect();
-        prob.setUserId(Long.parseLong(id));
+        prob.setUserId(id);
         Example<Collect> example = Example.of(prob);
         final Page<Collect> pageData = collectRepository.findAll(example, pageRequest);
 

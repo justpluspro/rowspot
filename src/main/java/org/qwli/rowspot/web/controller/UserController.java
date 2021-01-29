@@ -47,7 +47,7 @@ public class UserController {
      * @return String
      */
     @GetMapping("{id}/profile")
-    public String userProfile(@PathVariable("id") String id, Model model) {
+    public String userProfile(@PathVariable("id") long id, Model model) {
         UserAggregateRoot userAggregateRoot = userService.getUserProfile(id);
         model.addAttribute("userAggregateRoot", userAggregateRoot);
 
@@ -61,7 +61,7 @@ public class UserController {
      * @return String
      */
     @GetMapping("{id}/articles")
-    public String articles(@PathVariable("id") String userId,
+    public String articles(@PathVariable("id") long userId,
                            @RequestParam(value = "page", defaultValue = "1") Integer page,
                            Model model) {
 
@@ -88,7 +88,7 @@ public class UserController {
      * @return string
      */
     @GetMapping("{id}/questions")
-    public String questions(@PathVariable("id") String userId,
+    public String questions(@PathVariable("id") long userId,
                             @RequestParam(value = "page", defaultValue = "1") Integer page,
                             Model model) {
         final UserAggregateRoot userAggregateRoot = userService.getUserProfile(userId);
@@ -112,7 +112,7 @@ public class UserController {
      * @return String
      */
     @GetMapping("{id}/answers")
-    public String answers(@PathVariable("id") String id, Model model) {
+    public String answers(@PathVariable("id") long id, Model model) {
         final UserAggregateRoot userAggregateRoot = userService.getUserProfile(id);
         model.addAttribute(userAggregateRoot);
         return "front/user/answers";
@@ -125,7 +125,7 @@ public class UserController {
      * @return String
      */
     @GetMapping("{id}/collects")
-    public String collect(@PathVariable("id") String id,
+    public String collect(@PathVariable("id") long id,
                           @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                           Model model) {
         final UserAggregateRoot userAggregateRoot = userService.getUserProfile(id);

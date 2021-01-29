@@ -107,14 +107,11 @@ public class UserService extends AbstractService<User, User> {
     }
 
     @Transactional(readOnly = true)
-    public UserAggregateRoot getUserProfile(String id) throws ResourceNotFoundException {
-        if(StringUtils.isEmpty(id)) {
-            throw new ResourceNotFoundException("invalid user id");
-        }
-        final User user = userRepository.findById(Long.parseLong(id)).orElseThrow(()
+    public UserAggregateRoot getUserProfile(long id) throws ResourceNotFoundException {
+        final User user = userRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("user not exists"));
 
-        final UserAddition userAddition = userAdditionRepository.findUserAdditionByUserId(Long.parseLong(id))
+        final UserAddition userAddition = userAdditionRepository.findUserAdditionByUserId(id)
                 .orElse(new UserAddition());
 
         return new UserAggregateRoot(user, userAddition);

@@ -1,6 +1,7 @@
 package org.qwli.rowspot.web.controller.api;
 
 
+import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.SavedArticle;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.service.ArticleService;
@@ -33,8 +34,8 @@ public class ArticleApi extends AbstractApi {
      */
     @PostMapping("saved")
     public ResponseEntity<SavedArticle> save(@RequestBody NewArticle newArticle, HttpServletRequest request) {
-        User user = (User) request.getAttribute("user");
-        newArticle.setUserId(user.getId());
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        newArticle.setUserId(loggedUser.getId());
         return ResponseEntity.ok(articleService.save(newArticle));
     }
 

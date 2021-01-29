@@ -5,11 +5,11 @@
     <link rel="icon" type="image/x-icon" href="https://www.orchome.com/images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/lib/codemirror.css">
     <link rel="stylesheet" href="/static/css/editor.css">
     <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/prism.css">
     <link rel="stylesheet" href="/static/css/github-markdown.css">
+    <link rel="stylesheet" href="/static/materialdesignicons/css/materialdesignicons.min.css">
     <style>
         body {
             background-color: #e9ecef!important;
@@ -152,7 +152,7 @@
     function getArticle() {
         let Article = {};
         Article.title = document.getElementById('title').value;
-        Article.content = editor.getValue;
+        Article.content = editor.getValue();
         Article.categoryId = document.getElementById('category').value;
         Article.state = 'POSTED';
         Article.articleType = 'Q';

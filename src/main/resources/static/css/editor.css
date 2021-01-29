@@ -21,8 +21,11 @@
 
 .CodeMirror {
     /*font-family: monospace;*/
+    padding: 16px;
     height: 100%;
     color: black;
+    font-size: 13px !important;
     overflow-y: hidden;
-    font-family: Menlo,Ubuntu Mono,Consolas,Courier New,Microsoft Yahei,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    /*font-family: Menlo,Ubuntu Mono,Consolas,Courier New,Microsoft Yahei,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;*/
 }

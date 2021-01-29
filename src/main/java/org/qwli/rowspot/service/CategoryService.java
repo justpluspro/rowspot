@@ -27,8 +27,20 @@ public class CategoryService extends AbstractService<Category, Category> {
     }
 
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<Category> findAll() {
-        return categoryRepository.findCategoriesByParentId(0);
+        Category probe = new Category();
+        probe.setParentId(0L);
+        Example<Category> example = Example.of(probe);
+        final Iterable<Category> categoryIterable = categoryRepository.findAll(example);
+        final Iterator<Category> iterator = categoryIterable.iterator();
+
+        List<Category> categories = new ArrayList<>();
+        while (iterator.hasNext()){
+            final Category next = iterator.next();
+            categories.add(next);
+        }
+        return categories;
     }
 
     /**

@@ -46,6 +46,9 @@ public class ArticleFactory {
                  break;
             }
         }
+
+         article.setMenuId(newArticle.getMenuId());
+
          if(article.getArticleType() == null) {
              article.setArticleType(ArticleType.A);
              article.setMenuId(newArticle.getMenuId());

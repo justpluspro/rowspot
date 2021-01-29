@@ -69,7 +69,7 @@ public class ArticleService extends AbstractService<Article, Article> {
         final ArticleType articleType = article.getArticleType();
         if (ArticleType.A.equals(articleType)) {
             Category probe = new Category();
-            probe.setParentId(category.getParentId());
+            probe.setParentId(category.getId());
             probe.setId(article.getMenuId());
             Example<Category> example = Example.of(probe);
             categoryRepository.findOne(example).orElseThrow(() ->

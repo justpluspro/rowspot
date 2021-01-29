@@ -1,8 +1,8 @@
 package org.qwli.rowspot.exception;
 
-import org.qwli.rowspot.exception.reader.AuthenticationExceptionReader;
-import org.qwli.rowspot.exception.reader.BizExceptionReader;
-import org.qwli.rowspot.exception.reader.ExceptionReader;
+import org.qwli.rowspot.exception.reader.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -22,6 +22,8 @@ import java.util.Optional;
  **/
 public class RowspotExceptionResolvers implements HandlerExceptionResolver {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
     private final static String ERROR_ATTRIBUTES = RowspotExceptionResolvers.class.getSimpleName() + ".ERROR";
 
     /**
@@ -34,8 +36,10 @@ public class RowspotExceptionResolvers implements HandlerExceptionResolver {
         exceptionReaders = new ArrayList<>();
         exceptionReaders.add(new AuthenticationExceptionReader());
         exceptionReaders.add(new BizExceptionReader());
+        exceptionReaders.add(new ResourceNotFoundExceptionReader());
+        exceptionReaders.add(new BadRequestExceptionReader());
 
-
+        logger.info("registry exception readers, total count is {}!", exceptionReaders.size());
     }
 
 
