@@ -1,5 +1,8 @@
 package org.qwli.rowspot.model.enums;
 
+import org.qwli.rowspot.model.Category;
+import org.qwli.rowspot.model.aggregate.TypeAggregate;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,13 +81,14 @@ public enum ArticleType {
     /**
      * 获取所有的文章类型，并排序
      **/
-    public List<Map<String, Object>> findAll() {
+    public static List<TypeAggregate> findAll(Category category, ArticleType type) {
         ArticleType[] values = ArticleType.values();
         return Arrays.stream(values).filter(e -> e.getSort() >= 0).sorted(Comparator.comparingInt(ArticleType::getSort)).map(e -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("name", e.getName());
-            map.put("url", e.getCode());
-            return map;
+            TypeAggregate typeAggregate = new TypeAggregate();
+            typeAggregate.setName(e.getName());
+            typeAggregate.setAlias(category.getAlias() + "/" + e.getCode());
+            typeAggregate.setChecked(type == e);
+            return typeAggregate;
         }).collect(Collectors.toList());
-    }   
+    }
 }

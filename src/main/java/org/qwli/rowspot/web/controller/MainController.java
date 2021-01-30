@@ -4,6 +4,7 @@ import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.Article;
 import org.qwli.rowspot.model.Category;
 import org.qwli.rowspot.model.aggregate.PageAggregate;
+import org.qwli.rowspot.model.aggregate.TypeAggregate;
 import org.qwli.rowspot.model.enums.ArticleType;
 import org.qwli.rowspot.service.ArticleService;
 import org.qwli.rowspot.model.aggregate.ArticleAggregate;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -49,9 +51,10 @@ public class MainController extends AbstractController {
     }
 
 
-    @GetMapping("{categoryName}/index")
-    public String categoryIndex(@PathVariable("categoryName") String categoryName) {
-        ArticleAggregate articleAggregate = articleService.findIndexUnique(categoryName);
+    @GetMapping("{alias}/index")
+    public String categoryIndex(@PathVariable("alias") String alias) {
+        checkCategory(alias);
+        ArticleAggregate articleAggregate = articleService.findIndexUnique(alias);
 
         if(articleAggregate != null) {
 
@@ -69,6 +72,10 @@ public class MainController extends AbstractController {
         queryParam.setPage(page);
         queryParam.setArticleType(ArticleType.Q);
         queryParam.setCategoryId(category.getId());
+
+        final List<TypeAggregate> typeAggregates = ArticleType.findAll(category, ArticleType.Q);
+        model.addAttribute("typeAggregates", typeAggregates);
+
 
         final PageAggregate<ArticleAggregate> pageData = articleService.findPage(queryParam);
 
@@ -88,6 +95,9 @@ public class MainController extends AbstractController {
         queryParam.setArticleType(ArticleType.N);
         queryParam.setCategoryId(category.getId());
 
+        final List<TypeAggregate> typeAggregates = ArticleType.findAll(category, ArticleType.N);
+        model.addAttribute("typeAggregates", typeAggregates);
+
         final PageAggregate<ArticleAggregate> pageData = articleService.findPage(queryParam);
 
         model.addAttribute("page", pageData);
@@ -103,6 +113,9 @@ public class MainController extends AbstractController {
         queryParam.setPage(page);
         queryParam.setArticleType(ArticleType.T);
         queryParam.setCategoryId(category.getId());
+
+        final List<TypeAggregate> typeAggregates = ArticleType.findAll(category, ArticleType.T);
+        model.addAttribute("typeAggregates", typeAggregates);
 
         final PageAggregate<ArticleAggregate> pageData = articleService.findPage(queryParam);
 

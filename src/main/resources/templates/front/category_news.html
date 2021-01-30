@@ -33,10 +33,11 @@
         <nav class="tabs is-boxed">
             <div class="container is-max-widescreen">
                 <ul>
-                    <li class="is-active"><a>教程</a></li>
-                    <li><a>问答区</a></li>
-                    <li><a>最新咨询</a></li>
-                    <li><a>工具</a></li>
+                    <li th:classappend="${typeAggregate.checked ? 'is-active': ''}" th:each="typeAggregate: ${typeAggregates}">
+                        <a th:href="@{/}+${typeAggregate.alias}" th:text="${typeAggregate.name}">教程
+                            <span class="tag" th:text="0"></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

@@ -22,7 +22,7 @@ import java.util.Optional;
  **/
 public class RowspotExceptionResolvers implements HandlerExceptionResolver {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private final static String ERROR_ATTRIBUTES = RowspotExceptionResolvers.class.getSimpleName() + ".ERROR";
 
@@ -38,8 +38,9 @@ public class RowspotExceptionResolvers implements HandlerExceptionResolver {
         exceptionReaders.add(new BizExceptionReader());
         exceptionReaders.add(new ResourceNotFoundExceptionReader());
         exceptionReaders.add(new BadRequestExceptionReader());
+        exceptionReaders.add(new LoginFailExceptionReader());
 
-        logger.info("registry exception readers, total count is {}!", exceptionReaders.size());
+        logger.info("Registry all exception readers, total count is {}!", exceptionReaders.size());
     }
 
 
