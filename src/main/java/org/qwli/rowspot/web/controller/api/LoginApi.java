@@ -45,6 +45,7 @@ public class LoginApi extends AbstractApi {
 
         LoggedUser loggedUser = userService.login(user);
 
+        logger.info("loggedUser: [{}]", loggedUser);
         request.getSession().setAttribute("user", loggedUser);
 
         return ResponseEntity.ok(loggedUser);

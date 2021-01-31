@@ -5,7 +5,9 @@ import org.qwli.rowspot.service.processor.MarkdownProcessor;
 import org.qwli.rowspot.model.Article;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 文章内容聚合根
@@ -46,6 +48,18 @@ public class ArticleAggregate implements Serializable {
      * 发布时间
      */
     private Date postedAt;
+
+
+    private List<TypeAggregate> typeAggregates = new ArrayList<>();
+
+
+    public List<TypeAggregate> getTypeAggregates() {
+        return typeAggregates;
+    }
+
+    public void setTypeAggregates(List<TypeAggregate> typeAggregates) {
+        this.typeAggregates = typeAggregates;
+    }
 
     public ArticleAggregate(Article article, MarkdownProcessor markdownProcessor, boolean isParse) {
         this.id = article.getId();

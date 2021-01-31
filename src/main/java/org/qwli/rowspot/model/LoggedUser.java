@@ -25,6 +25,17 @@ public class LoggedUser implements Serializable {
     private String email;
 
 
+    public LoggedUser() {
+        super();
+    }
+
+    public LoggedUser(Long id, String username, String email) {
+        super();
+        this.id = id;
+        this.username = username;
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }

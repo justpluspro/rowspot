@@ -39,7 +39,7 @@ public class CategoryApi extends AbstractApi {
      * @return List<MenuAggregate>
      */
     @GetMapping("category/{parentId}")
-    public ResponseEntity<List<MenuAggregate>> findByCategoryId(@PathVariable("parentId") int id) {
+    public ResponseEntity<List<MenuAggregate>> findByCategoryId(@PathVariable("parentId") long id) {
         Long parentId = (long) id;
         return ResponseEntity.ok(categoryService.findMenuById(parentId));
     }
@@ -53,5 +53,17 @@ public class CategoryApi extends AbstractApi {
     public ResponseEntity<Void> save(@RequestBody @Validated NewCategory newCategory) {
         categoryService.save(newCategory);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 删除分类
+     * @param id id
+     * @return String
+     */
+    @DeleteMapping("{id}/category")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        categoryService.delete(id);
+        return ResponseEntity.ok().build();
+
     }
 }

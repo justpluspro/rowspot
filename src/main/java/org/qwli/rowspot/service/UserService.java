@@ -1,6 +1,5 @@
 package org.qwli.rowspot.service;
 
-import org.qwli.rowspot.Message;
 import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.config.DefaultUserProperties;
 import org.qwli.rowspot.event.UserLoginEvent;
@@ -19,16 +18,10 @@ import org.qwli.rowspot.service.processor.DefaultMailProcessor;
 import org.qwli.rowspot.service.processor.EmailBean;
 import org.qwli.rowspot.util.DateUtil;
 import org.qwli.rowspot.util.Md5Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.thymeleaf.util.DateUtils;
-
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Optional;
 
@@ -45,7 +38,7 @@ public class UserService extends AbstractService<User, User> {
 
     private final DefaultUserProperties defaultUserProperties;
 
-    private DefaultMailProcessor defaultMailProcessor;
+    private final DefaultMailProcessor defaultMailProcessor;
 
     private final UserAdditionRepository userAdditionRepository;
 
@@ -109,7 +102,7 @@ public class UserService extends AbstractService<User, User> {
     @Transactional(readOnly = true)
     public UserAggregateRoot getUserProfile(long id) throws ResourceNotFoundException {
         final User user = userRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("user not exists"));
+                -> new ResourceNotFoundException(MessageEnum.USER_NOT_EXISTS));
 
         final UserAddition userAddition = userAdditionRepository.findUserAdditionByUserId(id)
                 .orElse(new UserAddition());
@@ -125,12 +118,12 @@ public class UserService extends AbstractService<User, User> {
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public LoggedUser login(User user) throws BizException {
-        final User db = userRepository.findByEmail(user.getEmail()).orElseThrow(()
+        final User existsUser = userRepository.findByEmail(user.getEmail()).orElseThrow(()
                 -> new BizException(MessageEnum.USER_NOT_EXISTS));
-        final String password = db.getPassword();
+        final String password = existsUser.getPassword();
         final String comparePwd = user.getPassword();
 
-        final UserState state = db.getState();
+        final UserState state = existsUser.getState();
         if(state == UserState.LOCKED) {
             throw new BizException(MessageEnum.USER_LOCKED);
         }
@@ -141,16 +134,9 @@ public class UserService extends AbstractService<User, User> {
         if(!Md5Util.md5(comparePwd).equals(password)) {
             throw new BizException(MessageEnum.AUTH_FAILED);
         }
-        user.setId(db.getId());
+        user.setId(existsUser.getId());
         applicationEventPublisher.publishEvent(new UserLoginEvent(this, user));
-
-
-        LoggedUser loggedUser = new LoggedUser();
-        loggedUser.setId(db.getId());
-        loggedUser.setUsername(db.getUsername());
-        loggedUser.setEmail(db.getEmail());
-
-        return loggedUser;
+        return new LoggedUser(existsUser.getId(), existsUser.getUsername(), existsUser.getEmail());
     }
 
     @Override

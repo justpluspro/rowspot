@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -24,7 +25,7 @@ public class RowspotExceptionResolvers implements HandlerExceptionResolver {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    private final static String ERROR_ATTRIBUTES = RowspotExceptionResolvers.class.getSimpleName() + ".ERROR";
+    private final static String ERROR_ATTRIBUTES = RowspotExceptionResolvers.class.getSimpleName() + ".ERROR_ATTRIBUTE";
 
     /**
      * 异常读取器列表
@@ -49,19 +50,33 @@ public class RowspotExceptionResolvers implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest httpServletRequest,
                                          HttpServletResponse httpServletResponse,
                                          Object o, Exception e) {
-        for(ExceptionReader exceptionReader: exceptionReaders) {
-            boolean match = exceptionReader.match(e);
-            if(match) { //匹配上
-                int status = exceptionReader.getStatus(httpServletRequest, httpServletResponse);
-                try {
-                    httpServletResponse.sendError(status);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                break;
-            }
+        if(resolve(httpServletRequest, httpServletResponse, e)){
+            return new ModelAndView();
         }
-        return new ModelAndView();
+        return null;
+    }
+
+
+    private boolean resolve(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+        request.removeAttribute(ERROR_ATTRIBUTES);
+
+        for(ExceptionReader reader: exceptionReaders) {
+            if(!reader.match(ex)){
+                continue;
+            }
+            int status = reader.getStatus(request, response);
+            final Map<String, Object> readErrors = reader.readErrors(ex);
+            request.setAttribute(ERROR_ATTRIBUTES, readErrors);
+
+            try{
+                response.sendError(status);
+            } catch (IOException e){
+                logger.error(e.getMessage(), e);
+            }
+            return true;
+        }
+        return false;
+
     }
 
     /**

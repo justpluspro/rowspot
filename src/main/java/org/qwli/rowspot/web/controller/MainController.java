@@ -1,6 +1,5 @@
 package org.qwli.rowspot.web.controller;
 
-import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.Article;
 import org.qwli.rowspot.model.Category;
 import org.qwli.rowspot.model.aggregate.PageAggregate;
@@ -17,8 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * IndexController
@@ -30,15 +27,16 @@ public class MainController extends AbstractController {
 
     private final ArticleService articleService;
 
-    private final CategoryService categoryService;
-
-
     public MainController(ArticleService articleService, CategoryService categoryService) {
         super(categoryService);
         this.articleService = articleService;
-        this.categoryService = categoryService;
     }
 
+    /**
+     * 首页
+     * @param model model
+     * @return String
+     */
     @GetMapping("/")
     public String index(Model model) {
         List<Article> latestNews = articleService.findLatestNews(ArticleType.A);
@@ -50,24 +48,31 @@ public class MainController extends AbstractController {
         return "front/index2";
     }
 
-
-    @GetMapping("{alias}/index")
-    public String categoryIndex(@PathVariable("alias") String alias) {
-        checkCategory(alias);
+    /**
+     * 分类首页
+     * @param alias alias
+     * @param model Model
+     * @return String
+     */
+    @GetMapping(value = {"{alias}/index"})
+    public String categoryIndex(@PathVariable("alias") String alias, Model model) {
         ArticleAggregate articleAggregate = articleService.findIndexUnique(alias);
-
-        if(articleAggregate != null) {
-
-            return "front/a_detail";
-        }
-        return "front/a_detail";
+        model.addAttribute("articleAggregate", articleAggregate);
+        return "front/detail";
     }
 
+    /**
+     * 问题 issues
+     * @param alias alias
+     * @param page page
+     * @param model model
+     * @return String
+     */
     @GetMapping("{alias}/issues")
     public String categoryIssues(@PathVariable("alias") String alias,
                                  @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
                                  Model model) {
-        Category category = checkCategory(alias);
+        Category category = validCategory(alias);
         ArticleQueryParam queryParam = new ArticleQueryParam();
         queryParam.setPage(page);
         queryParam.setArticleType(ArticleType.Q);
@@ -84,11 +89,18 @@ public class MainController extends AbstractController {
     }
 
 
+    /**
+     * 分类动态
+     * @param alias alias
+     * @param page page
+     * @param model model
+     * @return String
+     */
     @GetMapping("{alias}/news")
     public String categoryNews(@PathVariable("alias") String alias,
                                @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
                                Model model) {
-        final Category category = checkCategory(alias);
+        final Category category = validCategory(alias);
 
         ArticleQueryParam queryParam = new ArticleQueryParam();
         queryParam.setPage(page);
@@ -104,11 +116,18 @@ public class MainController extends AbstractController {
         return "front/category_news";
     }
 
+    /**
+     * 工具
+     * @param alias alias
+     * @param page page
+     * @param model model
+     * @return String
+     */
     @GetMapping("{alias}/tools")
     public String categoryTools(@PathVariable("alias") String alias,
                                @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
                                Model model) {
-        final Category category = checkCategory(alias);
+        final Category category = validCategory(alias);
         ArticleQueryParam queryParam = new ArticleQueryParam();
         queryParam.setPage(page);
         queryParam.setArticleType(ArticleType.T);
@@ -130,7 +149,7 @@ public class MainController extends AbstractController {
      * @return String
      */
     @GetMapping("{id}")
-    public String detail(@PathVariable("id") String id, Model model) {
+    public String detail(@PathVariable("id") Long id, Model model) {
 
         ArticleAggregate articleAggregate = articleService.findById(id);
 
@@ -140,6 +159,10 @@ public class MainController extends AbstractController {
 
     }
 
+    /**
+     * 用户是否登录了
+     * @return boolean
+     */
     @RequestMapping("isAuthenticated")
     @ResponseBody
     public ResponseEntity<Boolean> isAuthenticated(){

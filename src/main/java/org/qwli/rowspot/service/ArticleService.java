@@ -9,6 +9,7 @@ import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.*;
 import org.qwli.rowspot.model.aggregate.ArticleAggregate;
 import org.qwli.rowspot.model.aggregate.PageAggregate;
+import org.qwli.rowspot.model.aggregate.TypeAggregate;
 import org.qwli.rowspot.model.enums.ArticleState;
 import org.qwli.rowspot.model.enums.ArticleType;
 import org.qwli.rowspot.model.factory.ArticleFactory;
@@ -25,15 +26,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 文章 Service
+ * article Service
  * @author liqiwen
  * @since 1.2
  */
@@ -56,15 +55,20 @@ public class ArticleService extends AbstractService<Article, Article> {
     }
 
     /**
-     * 保存文章
+     * saved article
      * @param newArticle newArticle
      * @return SavedArticle
-     * @throws BizException 业务异常
+     * @throws BizException
+     * - category not exists
+     * - menu not exists
+     * - index unique exists
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public SavedArticle save(NewArticle newArticle) throws BizException {
+        //check category
         final Category category = categoryRepository.findById(newArticle.getCategoryId()).orElseThrow(()
-                -> new BizException(new Message("category.notExists", "分类不存在")));
+                -> new BizException(MessageEnum.CATEGORY_NOT_EXISTS));
+        //create new article
         final Article article = ArticleFactory.createNewArticle(newArticle, category);
         final ArticleType articleType = article.getArticleType();
         if (ArticleType.A.equals(articleType)) {
@@ -72,17 +76,22 @@ public class ArticleService extends AbstractService<Article, Article> {
             probe.setParentId(category.getId());
             probe.setId(article.getMenuId());
             Example<Category> example = Example.of(probe);
+            //check menu if article type is 'A'
             categoryRepository.findOne(example).orElseThrow(() ->
-                    new BizException(new Message("menu.notExists", "菜单不存在")));
+                    new BizException(MessageEnum.MENU_NOT_EXISTS));
         }
+        //check index unique article if article type is 'I'
         checkIndexUnique(articleType, category);
 
+
+        //save article
         articleRepository.save(article);
 
-        //发布个人动态创建事件
+        //publish create article event
         ActivityCreatedEvent activityCreatedEvent = new ActivityCreatedEvent(this, article, new User(article.getUserId()));
         applicationEventPublisher.publishEvent(activityCreatedEvent);
 
+        //return saved article for caller
         SavedArticle savedArticle = new SavedArticle();
         savedArticle.setId(article.getId());
         savedArticle.setState(ArticleState.POSTED);
@@ -91,32 +100,43 @@ public class ArticleService extends AbstractService<Article, Article> {
     }
 
     /**
-     * 检查文章是否是当前分类下的唯一文章
+     * check article is unique if article type is 'I'
      * @param articleType articleType
      * @param category category
      */
-    private synchronized void checkIndexUnique(ArticleType articleType, Category category) {
+    private synchronized void checkIndexUnique(ArticleType articleType, Category category) throws BizException {
         if(ArticleType.I.equals(articleType)) {
             Article probe = new Article();
             probe.setIndexUnique(true);
+            probe.setState(ArticleState.POSTED);
             probe.setCategoryId(category.getId());
             Example<Article> example = Example.of(probe);
 
             articleRepository.findOne(example).ifPresent(e ->  {
-                throw new BizException(new Message("indexUnique.exists", "已经存在"));
+                throw new BizException(MessageEnum.ARTICLE_INDEX_UNIQUE);
             });
         }
     }
 
     /**
-     * 点击量变化
+     * changed visits
      * @param id id
      * @throws BizException BizException
+     * maybe throws some exception
+     * - resource not found
+     * - article state is not posted
+     * - if article's author is current logged user, don't change
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void hit(Long id) throws BizException {
+        //check article exists
         final Article article = articleRepository.findById(id).orElseThrow(()
                 -> new BizException(MessageEnum.RESOURCE_NOT_FOUND));
+
+        //check state
+        if(article.getState() != ArticleState.POSTED) {
+            throw new BizException(MessageEnum.ARTICLE_STATE_ERROR);
+        }
 
         Long visits = article.getVisits();
         visits = visits + 1;
@@ -124,7 +144,7 @@ public class ArticleService extends AbstractService<Article, Article> {
     }
 
     /**
-     * 分页查询文章
+     * search article for page
      * @param queryParam queryParam
      * @return PageAggregate
      * @throws ResourceNotFoundException exception
@@ -162,45 +182,62 @@ public class ArticleService extends AbstractService<Article, Article> {
         return new PageAggregate<>(articleAggregates, pageData.getNumber() + 1, queryParam.getSize(), pageData.getTotalPages());
     }
 
+    /**
+     * find article by id
+     * @param id id
+     * @return article aggregate
+     * @throws ResourceNotFoundException maybe resource not found exception
+     */
     @Transactional(readOnly = true, rollbackFor = ResourceNotFoundException.class)
-    public ArticleAggregate findById(String id) throws ResourceNotFoundException {
-        long aid;
-        try{
-            aid = Long.parseLong(id);
-        } catch (NumberFormatException ex){
-            throw new ResourceNotFoundException("invalid aid");
-        }
-        final Article article = articleRepository.findById(aid).orElseThrow(()
-                -> new ResourceNotFoundException(""));
-        
-        
+    public ArticleAggregate findById(Long id) throws ResourceNotFoundException {
+
+        //check article
+        final Article article = articleRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException(MessageEnum.ARTICLE_NOT_EXISTS));
+
+        //check state
         ArticleState state = article.getState();
-        //非发布状态不允许查看 && 非自己的内容 && 未登录
-//        if(state != ArticleState.POSTED && article.getUserId() != userId && !EnvironmentContext.isAuthenticated()) {
-//            throw new ResourceNotFoundException("invalid access state");
-//        }
-        
-       
-        final ArticleType articleType = article.getArticleType();
-        // 判断当前文章应该选中哪个页签
-//        for(ArticleType type : ArticleType.findAll()) {
-//            if(type == ArticleType.A || type == ArticleType.I) {
-//
-//            }
-//        }
-        
+        if(state != ArticleState.POSTED) {
+            throw new ResourceNotFoundException(MessageEnum.ARTICLE_STATE_ERROR);
+        }
+
+        //build article aggregate
         ArticleAggregate articleAggregate = new ArticleAggregate(article, markdownProcessor, true);
 
-      
+        //check category
+        final Category category = categoryRepository.findById(article.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(MessageEnum.CATEGORY_NOT_EXISTS));
+
+        //assemble type
+        final List<TypeAggregate> typeAggregates = ArticleType.findAll(category, article.getArticleType());
+
+        articleAggregate.setTypeAggregates(typeAggregates);
+
         return articleAggregate;
     }
 
-    public ArticleAggregate findIndexUnique(String categoryName) {
-        final Category category = categoryRepository.findByName(categoryName).orElseThrow(() -> new RuntimeException(""));
-//        articleRepositoryJpa.findByIndexUniqueAndCategoryId(true, Math.toIntExact(category.getId()));
+    @Transactional(readOnly = true, rollbackFor = ResourceNotFoundException.class)
+    public ArticleAggregate findIndexUnique(String alias) {
+        final Category category = categoryRepository.findByName(alias).orElseThrow(()
+                -> new ResourceNotFoundException(MessageEnum.CATEGORY_NOT_EXISTS));
+
+        Article probe = new Article();
+        probe.setIndexUnique(true);
+        probe.setCategoryId(category.getId());
+        probe.setArticleType(ArticleType.A);
+        probe.setState(ArticleState.POSTED);
 
 
-        return null;
+        Example<Article> example = Example.of(probe);
+        final Article article = articleRepository.findOne(example).orElseThrow(()
+                -> new ResourceNotFoundException(MessageEnum.ARTICLE_NOT_EXISTS));
+        ArticleAggregate articleAggregate = new ArticleAggregate(article);
+
+        final List<TypeAggregate> typeAggregates = ArticleType.findAll(category, ArticleType.A);
+
+        articleAggregate.setTypeAggregates(typeAggregates);
+
+        return articleAggregate;
     }
 
     public List<Article> findLatestNews(ArticleType articleType) {

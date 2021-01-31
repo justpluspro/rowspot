@@ -1,10 +1,13 @@
 package org.qwli.rowspot.service;
 
 import org.qwli.rowspot.Message;
+import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.exception.BizException;
+import org.qwli.rowspot.model.Article;
 import org.qwli.rowspot.model.aggregate.MenuAggregate;
 import org.qwli.rowspot.model.Category;
 import org.qwli.rowspot.model.factory.CategoryFactory;
+import org.qwli.rowspot.repository.ArticleRepository;
 import org.qwli.rowspot.repository.CategoryRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,11 @@ public class CategoryService extends AbstractService<Category, Category> {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    private final ArticleRepository articleRepository;
+
+    public CategoryService(CategoryRepository categoryRepository, ArticleRepository articleRepository) {
         this.categoryRepository = categoryRepository;
+        this.articleRepository = articleRepository;
     }
 
 
@@ -76,7 +82,8 @@ public class CategoryService extends AbstractService<Category, Category> {
         final Category category = CategoryFactory.createCategory(newCategory);
         Long parentId = category.getParentId();
         if(parentId != null && parentId > 0) {
-            categoryRepository.findById(parentId).orElseThrow(() -> new BizException(new Message("parent.notExists", "父分类不存在")));
+            categoryRepository.findById(parentId).orElseThrow(()
+                    -> new BizException(new Message("parent.notExists", "父分类不存在")));
 
             Category probe = new Category();
             probe.setParentId(parentId);
@@ -107,5 +114,24 @@ public class CategoryService extends AbstractService<Category, Category> {
         probe.setParentId(0L);
         Example<Category> example = Example.of(probe);
         return categoryRepository.findOne(example);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void delete(Long id) throws BizException {
+        final Category category = categoryRepository.findById(id).orElseThrow(()
+                -> new BizException(MessageEnum.RESOURCE_NOT_FOUND));
+
+        final Long parentId = category.getParentId();
+        Article probe = new Article();
+        probe.setCategoryId(category.getParentId());
+        if(parentId != null && parentId > 0) {
+            probe.setMenuId(category.getId());
+        }
+        Example<Article> example = Example.of(probe);
+        final Iterable<Article> articleIterable = articleRepository.findAll(example);
+        for (Article next : articleIterable) {
+            next.setMenuId(null);
+        }
+        categoryRepository.deleteById(category.getId());
     }
 }

@@ -1,53 +1,20 @@
-html, body {
-    font-family: Helvetica Neue,Luxi Sans,DejaVu Sans,Hiragino Sans GB,Microsoft Yahei,sans-serif,
-    Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,Segoe UI Symbol,Android Emoji,EmojiSymbols;!important;
-    font-size: 14px !important;
+.section {
+    padding-top: 1.5rem;
 }
 
-textarea, input {
-    box-shadow: none !important;
+.title {
+    margin-bottom: 0.5rem !important;
 }
 
-textarea, input:focus {
-    box-shadow: none !important;
+.reponav {
+    background-color: transparent;
+    border-radius: 4px;
 }
 
-a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: none; !important;
-}
-
-.article-type {
-    padding: 8px 16px;
-    border-top: 2px solid transparent;
-    border-radius: 2px;
-}
-
-.article-type-active {
-    padding: 8px 16px;
-    border-radius: 2px;
-    background-color: #ffffff;
-    border-left: 1px silver solid;
-    border-right: 1px silver solid;
+.reponav-selected {
+    background-color: #ffffff !important;
     border-top: 2px solid orange;
+    border-left: 1px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
+    border-radius: 3px 3px 0 0;
 }
-
-.index_tag_container {
-    padding-top: 10px;
-}
-
-.index_tag_container>div {
-    margin-right: 8px;
-    margin-bottom: 4px;
-}
-
-.tag {
-    color: #00965e;
-    background-color:#00965e1a;
-    padding: 4px 8px;
-    border-radius: 2px;
-}
-

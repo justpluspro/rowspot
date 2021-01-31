@@ -1,5 +1,6 @@
 package org.qwli.rowspot.web.controller;
 
+import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.Category;
 import org.qwli.rowspot.service.CategoryService;
@@ -20,8 +21,8 @@ public abstract class AbstractController {
         this.categoryService = categoryService;
     }
 
-    protected Category checkCategory(String alias) {
+    protected Category validCategory(String alias) {
        return categoryService.findOne(alias).orElseThrow(()
-               -> new ResourceNotFoundException("category.notExists"));
+               -> new ResourceNotFoundException(MessageEnum.RESOURCE_NOT_FOUND));
     }
 }

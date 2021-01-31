@@ -17,7 +17,7 @@ public class ArticleTag implements Serializable {
     @Column(name = "id")
     @GenericGenerator(name = "idGenerator", strategy = "org.qwli.rowspot.model.IdGenerator")
     @GeneratedValue(generator = "idGenerator")
-    private Integer id;
+    private Long id;
 
     @Column(name = "article_id", nullable = false)
     private Long articleId;
@@ -25,11 +25,11 @@ public class ArticleTag implements Serializable {
     @Column(name = "tag_id", nullable = false)
     private Long tagId;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

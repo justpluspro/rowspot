@@ -3,16 +3,16 @@ package org.qwli.rowspot.web.controller.api;
 
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.SavedArticle;
-import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.service.ArticleService;
 import org.qwli.rowspot.service.NewArticle;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 文章操作 API
+ * Article Operator API
  * @author liqiwen
  * @since 1.2
  */
@@ -20,20 +20,24 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class ArticleApi extends AbstractApi {
 
+    /**
+     * article Service
+     */
     private final ArticleService articleService;
+
 
     public ArticleApi(ArticleService articleService) {
         this.articleService = articleService;
     }
 
     /**
-     * 发布文章
+     * saved article
      * @param newArticle newArticle
      * @param request request
      * @return SavedArticle
      */
     @PostMapping("saved")
-    public ResponseEntity<SavedArticle> save(@RequestBody NewArticle newArticle, HttpServletRequest request) {
+    public ResponseEntity<SavedArticle> save(@RequestBody @Validated NewArticle newArticle, HttpServletRequest request) {
         LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
         newArticle.setUserId(loggedUser.getId());
         return ResponseEntity.ok(articleService.save(newArticle));

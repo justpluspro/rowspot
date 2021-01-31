@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/index.css">
     <link rel="stylesheet" href="/static/css/github-markdown.css">
-<!--    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">-->
     <link rel="stylesheet" href="/static/materialdesignicons/css/materialdesignicons.min.css">
     <title th:text="教程">教程-Rowspot.cn</title>
+    <style>
+        .tabs.is-boxed li.is-active a {
+            background-color: #FFFFFF;
+            border-top: 2px solid orange;
+            border-radius: 1px;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="/front/base/navbar::header"></div>
@@ -15,22 +22,35 @@
 <section class="hero is-light">
     <div class="hero-body">
         <div class="container is-max-widescreen">
-            <h3 class="title" th:text="${articleAggregate.title}">
+            <h1 class="title" th:text="${articleAggregate.title}">
                 Hero title
-            </h3>
-            <h4 class="subtitle">
-                Hero subtitle
-            </h4>
+            </h1>
+            <div class="tags">
+                <span class="tag is-warning is-light">原创</span>
+                <span class="tag is-success is-light">kafka</span>
+                <span class="tag is-success is-light">java</span>
+                <span class="tag is-light">
+                    发表于: [[${#dates.format(articleAggregate.postedAt, 'yyyy-MM-dd')}]]
+                </span>
+                <span class="tag is-light">
+                    最后更新于: [[${#dates.format(articleAggregate.postedAt, 'yyyy-MM-dd')}]]
+                </span>
+            </div>
         </div>
     </div>
     <div class="hero-foot">
         <nav class="tabs is-boxed">
             <div class="container is-max-widescreen">
                 <ul>
-                    <li class="is-active"><a>教程</a></li>
-                    <li><a>问答区</a></li>
-                    <li><a>最新咨询</a></li>
-                    <li><a>工具</a></li>
+                    <li class="reponav" th:classappend="${typeAggregate.checked ? 'reponav-selected': ''}"
+                        th:each="typeAggregate: ${articleAggregate.typeAggregates}">
+                        <a th:href="@{/}+${typeAggregate.alias}">
+                            <span class="mdi mdi-help-circle-outline" aria-hidden="true"></span>
+                            <span style="margin-left: 4px;" th:text="${typeAggregate.name}"></span>
+                            <span style="margin-left: 4px; font-weight: bold" class="tag is-rounded is-small"
+                                  th:text="${typeAggregate.count}"></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

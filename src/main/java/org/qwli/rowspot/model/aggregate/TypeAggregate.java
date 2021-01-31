@@ -9,11 +9,30 @@ import java.io.Serializable;
  */
 public class TypeAggregate implements Serializable {
 
+    /**
+     * 类型名称
+     */
     private String name;
 
+    /**
+     * 类型别名
+     */
     private String alias;
 
+    private long count = 0L;
+
+    /**
+     * 是否选中
+     */
     private boolean checked;
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
 
     public String getName() {
         return name;
