@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * @author qwli7
+ * login fail Exception
+ */
 public class LoginFailExceptionReader implements ExceptionReader {
     @Override
     public Map<String, Object> readErrors(Exception ex) {
