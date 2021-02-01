@@ -59,7 +59,7 @@
 <section class="section">
     <div class="container is-max-widescreen">
         <div class="columns">
-            <div class="column is-10 markdown-body" >
+            <div class="column is-9 markdown-body" >
                 <div class="content markdown-body" th:utext="${articleAggregate.content}"></div>
                 <div class="level">
                     <div class="level-item">
@@ -71,38 +71,38 @@
             </div>
 
             <div class="column">
-                <aside class="menu">
-                    <p class="menu-label">
-                        基本概念和术语
-                    </p>
-                    <ul class="menu-list">
-                        <li><a href="">入门概念</a></li>
-                        <li><a href="">Kubernetes管理之master和Node</a></li>
-                        <li><a href="">ubernetes Pod介绍</a></li>
-                        <li><a href="">ukubernetes Lable（标签）</a></li>
-                        <li><a href="">Kubernetes Deployment介绍</a></li>
-                    </ul>
-                    <p class="menu-label">
-                        Administration
-                    </p>
-                    <ul class="menu-list">
-                        <li><a>Team Settings</a></li>
-                        <li>
-                            <a class="is-active">Manage Your Team</a>
-                        </li>
-                        <li><a>Invitations</a></li>
-                        <li><a>Cloud Storage Environment Settings</a></li>
-                        <li><a>Authentication</a></li>
-                    </ul>
-                    <p class="menu-label">
-                        Transactions
-                    </p>
-                    <ul class="menu-list">
-                        <li><a>Payments</a></li>
-                        <li><a>Transfers</a></li>
-                        <li><a>Balance</a></li>
-                    </ul>
-                </aside>
+                <div class="card">
+                    <header class="card-header" data-header="1">
+                        <p class="card-header-title">
+                            开始
+                        </p>
+                    </header>
+                    <div class="card-content" data-menu="1">
+                        <ul class="is-small" style="list-style: none;padding: 0; margin: 0;">
+                            <li><a href="">kafka下载</a></li>
+                            <li><a href="">入门</a> </li>
+                            <li><a href="">kafka使用场景</a> </li>
+                            <li><a href="">快速启动kafka</a> </li>
+                            <li><a href="">kafka的生态系统</a> </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <header class="card-header" data-header="2">
+                        <p class="card-header-title">
+                            接口
+                        </p>
+                    </header>
+                    <div class="card-content" data-menu="2">
+                        <ul class="is-small" style="list-style: none;padding: 0; margin: 0;">
+                            <li><a href="">kafka接口API</a></li>
+                            <li><a href="">kafka生产者 API</a></li>
+                            <li><a href="">kafka使用场景</a></li>
+                            <li><a href="">快速启动kafka</a></li>
+                            <li><a href="">kafka的生态系统</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -236,6 +236,14 @@
         })
 
         // loadingComments(1);
+    }
+
+
+    for(let elem of document.querySelectorAll('header[data-header]')) {
+        elem.addEventListener('click', function() {
+           let id = this.dataset.header;
+
+        });
     }
 
 

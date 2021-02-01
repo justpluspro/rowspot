@@ -2,6 +2,7 @@ package org.qwli.rowspot.web.controller.api;
 
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
+import org.qwli.rowspot.service.LoginUser;
 import org.qwli.rowspot.service.NewUser;
 import org.qwli.rowspot.service.UserService;
 import org.qwli.rowspot.util.EnvironmentContext;
@@ -37,7 +38,7 @@ public class LoginApi extends AbstractApi {
      * @return LoggedUser
      */
     @PostMapping("token")
-    public ResponseEntity<LoggedUser> session(@RequestBody @Validated LoginUser loginUser,
+    public ResponseEntity<LoggedUser> session(@Validated @RequestBody LoginUser loginUser,
                                               HttpServletRequest request) {
 
         User user = new User();

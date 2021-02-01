@@ -1,8 +1,5 @@
 package org.qwli.rowspot.service;
 
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -12,13 +9,8 @@ import java.io.Serializable;
  **/
 public class LoginUser implements Serializable {
 
-    @NotNull
-    @Length(min = 6, max = 16, message = "mail length is 6~12")
     private String mail;
 
-
-    @NotNull
-    @Length(min = 6, max = 32, message = "password length is 6~12")
     private String password;
 
     public String getMail() {

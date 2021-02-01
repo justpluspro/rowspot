@@ -14,7 +14,9 @@ import org.qwli.rowspot.model.enums.ArticleState;
 import org.qwli.rowspot.model.enums.ArticleType;
 import org.qwli.rowspot.model.factory.ArticleFactory;
 import org.qwli.rowspot.repository.ArticleRepository;
+import org.qwli.rowspot.repository.ArticleTagRepository;
 import org.qwli.rowspot.repository.CategoryRepository;
+import org.qwli.rowspot.repository.CommentRepository;
 import org.qwli.rowspot.service.processor.MarkdownProcessor;
 import org.qwli.rowspot.web.ArticleQueryParam;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,13 +47,19 @@ public class ArticleService extends AbstractService<Article, Article> {
 
     private final CategoryRepository categoryRepository;
 
+    private final ArticleTagRepository articleTagRepository;
+
+    private final CommentRepository commentRepository;
+
     private final MarkdownProcessor markdownProcessor;
 
     public ArticleService(ArticleRepository articleRepository, CategoryRepository categoryRepository,
-                          MarkdownProcessor markdownProcessor) {
+                          ArticleTagRepository articleTagRepository, CommentRepository commentRepository, MarkdownProcessor markdownProcessor) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
         this.markdownProcessor = markdownProcessor;
+        this.articleTagRepository = articleTagRepository;
+        this.commentRepository = commentRepository;
     }
 
     /**
@@ -215,6 +223,46 @@ public class ArticleService extends AbstractService<Article, Article> {
 
         return articleAggregate;
     }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void update(Article article) throws BizException {
+        final Article existsArticle = articleRepository.findById(article.getId()).orElseThrow(()
+                -> new BizException(MessageEnum.ARTICLE_NOT_EXISTS));
+
+        //  update article
+//        final Long categoryId = article.getCategoryId();
+
+//        categoryRepository.fin
+
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void delete(Long id) throws BizException {
+        final Article article = articleRepository.findById(id).orElseThrow(()
+                -> new BizException(MessageEnum.ARTICLE_NOT_EXISTS));
+
+        // delete article
+        articleRepository.deleteById(article.getId());
+
+
+        // delete articleTags
+        ArticleTag probe = new ArticleTag();
+        probe.setArticleId(article.getId());
+        Example<ArticleTag> example = Example.of(probe);
+
+        final List<ArticleTag> articleTags = articleTagRepository.findAll(example);
+        articleTagRepository.deleteInBatch(articleTags);
+
+
+        // delete comment
+        Comment comment = new Comment();
+        comment.setArticleId(article.getId());
+        commentRepository.deleteAll(commentRepository.findAll(Example.of(comment)));
+
+    }
+
 
     @Transactional(readOnly = true, rollbackFor = ResourceNotFoundException.class)
     public ArticleAggregate findIndexUnique(String alias) {
