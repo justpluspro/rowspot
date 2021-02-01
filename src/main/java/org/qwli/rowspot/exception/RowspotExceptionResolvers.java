@@ -42,6 +42,7 @@ public class RowspotExceptionResolvers implements HandlerExceptionResolver, Erro
         exceptionReaders.add(new ResourceNotFoundExceptionReader());
         exceptionReaders.add(new BadRequestExceptionReader());
         exceptionReaders.add(new LoginFailExceptionReader());
+        exceptionReaders.add(new MethodArgumentNotValidExceptionReader());
 
         logger.info("Registry all exception readers, total count is {}!", exceptionReaders.size());
     }
