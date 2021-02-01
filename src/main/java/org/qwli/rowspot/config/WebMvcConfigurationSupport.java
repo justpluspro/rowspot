@@ -44,6 +44,16 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/");
     }
     
+    /**
+     * Registry MessageCodeResolver
+     * @return RowspotCodeResolver
+     */
+    @Override
+    public MessageCodesResolver getMessageCodesResolver() {
+        return RowspotMessageCodeResolver.INSTANCE;
+    }
+
+    
      /**
      * Registry RowspotExceptionResolvers
      * @return RowspotExceptionResolvers
