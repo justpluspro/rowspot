@@ -60,7 +60,7 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
         //自定义的异常放在最前面
-        resolvers.add(0, new rowspotExceptionResolvers());
+        resolvers.add(0, rowspotExceptionResolvers());
         resolvers.add(1, (httpServletRequest, httpServletResponse, o, e) -> {
             if(e instanceof MaxUploadSizeExceededException) {
                 //客户端上传了过大的文件
