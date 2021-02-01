@@ -43,6 +43,15 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
     }
+    
+     /**
+     * Registry RowspotExceptionResolvers
+     * @return RowspotExceptionResolvers
+     */
+    @Bean
+    public RowspotExceptionResolvers rowspotExceptionResolvers() {
+        return new RowspotExceptionResolvers();
+    }
 
     /**
      * 定义自定义的异常解析器
@@ -51,7 +60,7 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
         //自定义的异常放在最前面
-        resolvers.add(0, new RowspotExceptionResolvers());
+        resolvers.add(0, new rowspotExceptionResolvers());
         resolvers.add(1, (httpServletRequest, httpServletResponse, o, e) -> {
             if(e instanceof MaxUploadSizeExceededException) {
                 //客户端上传了过大的文件
