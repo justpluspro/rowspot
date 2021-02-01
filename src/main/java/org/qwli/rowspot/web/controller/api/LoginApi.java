@@ -5,10 +5,7 @@ import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.service.NewUser;
 import org.qwli.rowspot.service.UserService;
 import org.qwli.rowspot.util.EnvironmentContext;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,13 +32,17 @@ public class LoginApi extends AbstractApi {
 
     /**
      * 用户登录
-     * @param user user
+     * @param loginUser user
      * @param request request
      * @return LoggedUser
      */
     @PostMapping("token")
-    public ResponseEntity<LoggedUser> session(@RequestBody @Validated User user,
+    public ResponseEntity<LoggedUser> session(@RequestBody @Validated LoginUser loginUser,
                                               HttpServletRequest request) {
+
+        User user = new User();
+        user.setEmail(loginUser.getMail());
+        user.setPassword(loginUser.getPassword());
 
         LoggedUser loggedUser = userService.login(user);
 
