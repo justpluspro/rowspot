@@ -2,6 +2,11 @@ package org.qwli.rowspot.exception;
 
 import org.qwli.rowspot.Message;
 
+
+/**
+ * @author qwli7
+ * 登陆失败异常
+ */
 public class LoginFailException extends RuntimeException {
 
 
