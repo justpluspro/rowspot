@@ -4,6 +4,7 @@ import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.config.DefaultUserProperties;
 import org.qwli.rowspot.event.UserLoginEvent;
 import org.qwli.rowspot.event.UserRegisterEvent;
+import org.qwli.rowspot.exception.LoginFailException;
 import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.aggregate.UserAggregateRoot;
@@ -19,6 +20,7 @@ import org.qwli.rowspot.service.processor.EmailBean;
 import org.qwli.rowspot.util.DateUtil;
 import org.qwli.rowspot.util.Md5Util;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,8 +62,13 @@ public class UserService extends AbstractService<User, User> {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void register(NewUser newUser) throws BizException {
         final String registerEmail = newUser.getRegisterEmail();
+
+        User probe = new User();
+        probe.setEmail(registerEmail);
+        Example<User> example = Example.of(probe);
+
         //存在. 重新发一份注册邮件
-        final Optional<User> userOptional = userRepository.findByEmail(registerEmail);
+        final Optional<User> userOptional = userRepository.findOne(example);
 
         if(!userOptional.isPresent()) {
             //不存在，创建新的用户，新的 Addition
@@ -114,25 +121,30 @@ public class UserService extends AbstractService<User, User> {
      * 用户认证
      * @param user user
      * @return User
-     * @throws BizException BizException
+     * @throws LoginFailException loginFailException
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
-    public LoggedUser login(User user) throws BizException {
-        final User existsUser = userRepository.findByEmail(user.getEmail()).orElseThrow(()
-                -> new BizException(MessageEnum.USER_NOT_EXISTS));
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = LoginFailException.class)
+    public LoggedUser login(User user) throws LoginFailException {
+        User probe = new User();
+        probe.setEmail(user.getEmail());
+        Example<User> example = Example.of(probe);
+
+        final User existsUser = userRepository.findOne(example).orElseThrow(()
+                -> new LoginFailException(MessageEnum.AUTH_FAILED));
+
         final String password = existsUser.getPassword();
         final String comparePwd = user.getPassword();
 
         final UserState state = existsUser.getState();
         if(state == UserState.LOCKED) {
-            throw new BizException(MessageEnum.USER_LOCKED);
+            throw new LoginFailException(MessageEnum.AUTH_FAILED);
         }
         if(state == UserState.UNACTIVATED) {
-            throw new BizException(MessageEnum.USER_UNACTIVATED);
+            throw new LoginFailException(MessageEnum.AUTH_FAILED);
         }
 
         if(!Md5Util.md5(comparePwd).equals(password)) {
-            throw new BizException(MessageEnum.AUTH_FAILED);
+            throw new LoginFailException(MessageEnum.AUTH_FAILED);
         }
         user.setId(existsUser.getId());
         applicationEventPublisher.publishEvent(new UserLoginEvent(this, user));
