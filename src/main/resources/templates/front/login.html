@@ -66,7 +66,7 @@
         </div>
     </div>
     <div class="hero-foot has-text-centered">
-        <div class="logo">RowSpot copyright 2018~2021</div>
+<!--        <div class="logo">RowSpot copyright 2018~2021</div>-->
     </div>
 </section>
 
@@ -104,14 +104,26 @@
                 'Content-Type': 'application/json;charset=utf8',
             }),
             method: 'POST'
-        }).then(res => res.json()).catch(error => {
+        }).then(function(response) {
+            console.log("response:" + response.status)
+            // if(response.status === 200) {
+            //     return response.json();
+            // }
+            return response.json();
+        }).catch(error => {
             loginBtn.classList.remove('is-loading');
             loginBtn.disabled = '';
             console.error('Error:', error)
-        }).then(response => {
+        }).then(res => {
             loginBtn.classList.remove('is-loading');
             loginBtn.disabled = '';
-            console.log('Success:', response);
+
+            let status = res.status;
+            if(!res.ok) {
+                alert(JSON.stringify(res));
+            }
+
+            // console.log('Success:', response);
             // window.location.href = '/';
             let redirect = getQueryVariable("redirect");
             console.log("redirect:" + decodeURI(redirect));
