@@ -1,5 +1,6 @@
 package org.qwli.rowspot.web.controller;
 
+import org.qwli.rowspot.util.WebUtil;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -8,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author qwli7
+ * @since 1.2
+ */
 @Controller
 @RequestMapping("error")
 public class RowspotErrorController implements ErrorController {
 
     private final ErrorAttributes errorAttributes;
-
 
     public RowspotErrorController(ErrorAttributes errorAttributes) {
         super();
@@ -39,9 +41,9 @@ public class RowspotErrorController implements ErrorController {
     @RequestMapping
     public Object error(HttpServletRequest request, HttpServletResponse response) {
 
-//        if (WebUtils.isAjaxRequest(request) || WebUtils.isApiRequest(request)) {
-//            return ajaxError(request, response);
-//        }
+        if (WebUtil.isAjaxRequest(request) || WebUtil.isApiRequest(request)) {
+            return ajaxError(request, response);
+        }
 
         HttpStatus status = getStatus(request);
         if (!status.isError()) {
