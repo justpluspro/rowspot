@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="https://www.orchome.com/images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="/static/markdown-editor-master/codemirror/lib/codemirror.css">
@@ -19,7 +18,6 @@
         }
     </style>
     <title>提问题-RowSpot</title>
-
 </head>
 <body>
 <div th:replace="/front/base/navbar::header"></div>
@@ -27,9 +25,13 @@
     <div class="container is-max-widescreen">
         <div class="columns">
             <div class="column">
-                <div class="control">
-                    <input id="title" autocomplete="off" class="input" type="text" placeholder="标题">
+                <div class="control has-icons-right">
+                    <input id="title" autocomplete="off" class="input is-medium" type="text" placeholder="标题">
+                    <span class="mdi mdi-lock icon is-right" aria-hidden="true"></span>
                 </div>
+                <p id="titleHelp" style="display: none;" class="help is-danger">
+                    请填写标题
+                </p>
             </div>
         </div>
 
@@ -66,14 +68,14 @@
 <script src="/static/markdown-editor-master/codemirror/markdown/markdown.js"></script>
 <script src="/static/markdown-editor-master/codemirror/marked.min.js"></script>
 <script src="/static/markdown-editor-master/codemirror/prism.js"></script>
+<script src="/static/sweetalert2/sweetalert2.min.js"></script>
+<script src="/static/axios.min.js"></script>
 
 <script>
-
     let editor;
     let column;
-
+    let rootPath = '[[@{/}]]';
     window.onload = function() {
-
         let markedRender = new marked.Renderer();
         marked.setOptions({
             render: markedRender,
@@ -88,16 +90,12 @@
 
         editor = CodeMirror.fromTextArea(document.getElementById('content'), {
             mode:'markdown',
-            // lineNumbers: true,
             autoCloseBrackets: true,
             matchBrackets: true,
             lineWrapping: true
         });
-
         editor.on('change', editorOnHandler);
-
         initialCategories();
-
     }
 
     function editorOnHandler(cm, co) {
@@ -114,39 +112,72 @@
 
 
     function initialCategories() {
-
-        fetch("/api/categories", {
-            headers: {},
+        axios({
+            url: rootPath + 'api/categories',
             method: 'GET',
-        }).then(res => res.json())
-        .catch(error => {
-            console.error('error:', error);
-        }).then(res => {
+            header: {
+                'Content-Type': 'application/json;charset=utf8',
+            }
+        }).then(response => {
+            let data = response.data;
             let html = "";
-            for(let i = 0; i < res.length; i++){
-                let category = res[i];
+            for(let i = 0; i < data.length; i++){
+                let category = data[i];
                 html += '<option value="' + category.id + '">' + category.name + '</option>';
             }
             document.getElementById('category').innerHTML = html;
-        });
+        }).catch(error => {
 
+        });
     }
 
     document.getElementById('post-question-btn').addEventListener('click', function() {
         let article = getArticle();
+        let titleElement = document.getElementById('title');
+        if(article.title === null || article.title.length === 0 || article.title === '') {
+            titleElement.classList.add('is-danger');
+            document.getElementById('titleHelp').style.display = 'block'
+            return;
+        }
+        let postQuestionBtn = this;
+        postQuestionBtn.classList.add('is-loading')
+        postQuestionBtn.disabled = 'true'
 
-        fetch('/api/article/saved', {
-            body: JSON.stringify(article),
-            headers: new Headers({
+        axios ({
+            url: rootPath + 'api/article/saved',
+            header: {
                 'Content-Type': 'application/json;charset=utf8',
-            }),
-            method: 'POST'
-        }).then(res => res.json()).catch(error => {
-            console.error('Error:', error)
-        }).then(response => {
-            console.log('Success:', response);
-            window.location.href = '/';
-        });
+            },
+            method: 'POST',
+            data: article
+        }).then((response) =>{
+            Toast.fire({
+                icon: 'success',
+                title: '发布成功'
+            }).then((result) => {
+                if(result.dismiss === Swal.DismissReason.timer) {
+                    postQuestionBtn.classList.remove('is-loading');
+                    postQuestionBtn.disabled = '';
+                    window.location.href = rootPath;
+                }
+            });
+        }).catch((error) => {
+            postQuestionBtn.classList.remove('is-loading');
+            postQuestionBtn.disabled = '';
+            alert('出错了');
+        })
+    });
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+        // timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
     });
 
     function getArticle() {
