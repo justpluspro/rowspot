@@ -71,9 +71,9 @@
 </section>
 
 <script src="/static/sweetalert2/sweetalert2.min.js"></script>
+<script src="/static/axios.min.js"></script>
 <script>
     const rootPath = '[[@{/}]]';
-
 
     document.getElementById('loginBtn').addEventListener('click', function() {
         let emailElement = document.getElementById('email');
@@ -98,41 +98,62 @@
         loginBtn.classList.add('is-loading');
         loginBtn.disabled = 'true';
 
-        fetch(rootPath + 'api/token', {
-            body: JSON.stringify({"email": email, "password": password}),
-            headers: new Headers({
+
+        axios({
+            method: 'POST',
+            url: rootPath + 'api/token',
+            header: {
                 'Content-Type': 'application/json;charset=utf8',
-            }),
-            method: 'POST'
-        }).then(function(response) {
-            console.log("response:" + response.status)
-            // if(response.status === 200) {
-            //     return response.json();
-            // }
-            return response.json();
-        }).catch(error => {
-            loginBtn.classList.remove('is-loading');
-            loginBtn.disabled = '';
-            console.error('Error:', error)
-        }).then(res => {
-            loginBtn.classList.remove('is-loading');
-            loginBtn.disabled = '';
-
-            let status = res.status;
-            console.log(status);
-            if(!res.ok) {
-                // alert(JSON.stringify(res));
+            },
+            data: {
+                "email": email,
+                "password": password
             }
+        }).then((response) => {
+            loginBtn.classList.remove('is-loading');
+            loginBtn.disabled = '';
+            Toast.fire({
+                icon: 'success',
+                title: '认证成功'
+            }).then((result) => {
+                if(result.dismiss === Swal.DismissReason.timer) {
+                    loginBtn.classList.remove('is-loading');
+                    loginBtn.disabled = '';
+                    let redirect = getQueryVariable("redirect");
+                    console.log("redirect:" + decodeURI(redirect));
+                    if(redirect !== null && redirect !== '' && redirect.trim().length !== 0) {
+                        window.location.href = decodeURI(redirect);
+                    } else {
+                        window.location.href = rootPath;
+                    }
+                }
+            })
+        }).catch((error) => {
+            let data = error.response.data;
+            let status = error.response.status;
+            let msg = data.errors.msg;
+            let code = data.errors.code;
+            Toast.fire({
+                'icon': 'error',
+                'title': msg
+            }).then((result) => {
+                if(result.dismiss === Swal.DismissReason.timer) {
+                    loginBtn.classList.remove('is-loading');
+                    loginBtn.disabled = '';
+                }
+            })
+        });
 
-            // console.log('Success:', response);
-            // window.location.href = '/';
-            let redirect = getQueryVariable("redirect");
-            console.log("redirect:" + decodeURI(redirect));
-            // if(redirect !== null && redirect !== '' && redirect.trim().length !== 0) {
-            //     window.location.href = decodeURI(redirect);
-            // } else {
-            //     window.location.href = rootPath;
-            // }
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 1000,
+            // timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
         });
     })
 
