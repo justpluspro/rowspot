@@ -92,26 +92,28 @@
 </section>
 
 <!-- Modal -->
-<div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">创建菜单</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<div class="modal" id="addMenuModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">创建菜单</p>
+            <button class="delete" onclick="closeAddMenuModal()" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="control">
+                <input id="menuName" autocomplete="off" class="input"
+                       type="text" placeholder="二级专栏菜单名称">
             </div>
-            <div class="modal-body form-group">
-                <input id="addMenuId" type="text" class="form-control" placeholder="二级专栏名称">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                <button type="button" id="submitAddMenu" class="btn btn-primary">提交</button>
-            </div>
-        </div>
+            <p id="menuNameHelp" style="display: none;" class="help is-danger">
+                专栏菜单名称不能为空
+            </p>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button" onclick="closeAddMenuModal()">关闭</button>
+            <button class="button is-success" id="saveMenuButton">提交</button>
+        </footer>
     </div>
 </div>
-
 <script src="/static/markdown-editor-master/codemirror/lib/codemirror.js"></script>
 <script src="/static/markdown-editor-master/codemirror/markdown/markdown.js"></script>
 <script src="/static/markdown-editor-master/codemirror/marked.min.js"></script>
@@ -121,6 +123,8 @@
 
     let editor;
     let category;
+    let menuNameHelpElement = document.getElementById('menuNameHelp');
+    let menuNameElement = document.getElementById('menuName');
 
     window.onload = function() {
         let markedRender = new marked.Renderer();
@@ -172,7 +176,31 @@
     })
 
 
-    document.getElementById('submitAddMenu').addEventListener('click', function() {
+    function menuChange() {
+        let menuId = document.getElementById('menuId').value;
+        if(menuId === 'add') {
+            document.getElementById('addMenuModal').classList.add('is-active');
+        }
+    }
+
+    function closeAddMenuModal() {
+        document.getElementById('addMenuModal').classList.remove('is-active');
+        document.getElementById('menuId').value = '';
+        document.getElementById('menuName').value = '';
+        menuNameHelpElement.style.display = 'none';
+        menuNameElement.classList.remove('is-danger');
+
+    }
+
+    document.getElementById('saveMenuButton').addEventListener('click', function(){
+
+        // let menuNameHelpElement = document.getElementById('menuNameHelp');
+        // let menuNameElement = document.getElementById('menuName');
+        if(menuNameElement.value === '' || menuNameElement.value.length === 0){
+            menuNameElement.classList.add('is-danger');
+            menuNameHelpElement.style.display = 'block';
+            return;
+        }
         let categoryId = document.getElementById('category').value;
         let menuName = document.getElementById('addMenuId').value;
 
@@ -200,14 +228,6 @@
             }
         })
     });
-
-
-    function menuChange() {
-        let menuId = document.getElementById('menuId').value;
-        if(menuId === 'add') {
-            $('#addMenuModal').modal('show');
-        }
-    }
 
 
     function gradeChange() {
