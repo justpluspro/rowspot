@@ -1,5 +1,6 @@
 package org.qwli.rowspot.web.controller.api;
 
+import org.qwli.rowspot.model.SavedCategory;
 import org.qwli.rowspot.service.CategoryService;
 import org.qwli.rowspot.service.NewCategory;
 import org.qwli.rowspot.model.aggregate.MenuAggregate;
@@ -50,9 +51,8 @@ public class CategoryApi extends AbstractApi {
      * @return Void
      */
     @PostMapping("category/saved")
-    public ResponseEntity<Void> save(@RequestBody @Validated NewCategory newCategory) {
-        categoryService.save(newCategory);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SavedCategory> save(@RequestBody @Validated NewCategory newCategory) {
+        return ResponseEntity.ok(categoryService.save(newCategory));
     }
 
     /**
