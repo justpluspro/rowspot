@@ -274,6 +274,8 @@
 
     let articleDraftBtn = document.getElementById('article-draft-btn');
     let articlePostBtn = document.getElementById('article-post-btn');
+    let articleTitleHelp = document.getElementById('titleHelp');
+    let articleTitle = document.getElementById('title');
 
     articlePostBtn.addEventListener('click', function() {
         this.classList.add('is-loading');
@@ -281,9 +283,37 @@
         articleDraftBtn.disabled = 'true';
         let article = getArticle();
         if(article.title === null || article.title === ''){
-            alert('请输入分享标题');
+            // alert('请输入分享标题');
+            articleTitleHelp.style.display='block';
+            articleTitle.classList.add('is-danger');
+            this.classList.remove('is-loading');
+            this.disabled = '';
+            articleDraftBtn.disabled = '';
             return;
         }
+        saveArticle(article);
+    });
+
+    articleDraftBtn.addEventListener('click', function() {
+
+        this.classList.add('is-loading');
+        this.disabled = 'true';
+        articlePostBtn.disabled = 'true';
+        let article = getArticle();
+        article.state = 'DRAFT';
+        if(article.title === null || article.title === ''){
+            // alert('请输入分享标题');
+            articleTitleHelp.style.display='block';
+            articleTitle.classList.add('is-danger');
+            this.classList.remove('is-loading');
+            this.disabled = '';
+            articlePostBtn.disabled = '';
+            return;
+        }
+        saveArticle(article);
+    });
+
+    function saveArticle(article) {
         axios({
             url: rootPath + 'api/article/saved',
             header: {
@@ -296,47 +326,11 @@
         }).catch(error => {
             console.error('error:', error)
         });
-    });
-
-    articleDraftBtn.addEventListener('click', function() {
-
-        this.classList.add('is-loading');
-        this.disabled = 'true';
-        articlePostBtn.disabled = 'true';
-        let article = getArticle();
-        article.state = 'DRAFT';
-        if(article.title === null || article.title === ''){
-            alert('请输入分享标题');
-            return;
-        }
-
-
-    })
-
-    //
-    // for(elem of document.querySelectorAll('button[data-action]')) {
-    //     elem.addEventListener('click', function (event) {
-    //         let action = this.dataset.action;
-    //         console.log('action ' + action);
-    //         let article = getArticle();
-    //
-    //         if(article.title === null || article.title === ''){
-    //             alert('请输入分享标题');
-    //             return;
-    //         }
-    //         elem.classList.add('is-loading');
-    //         elem.style.disabled = 'true'
-            //
-            // if(article.state === action && action === 'POSTED') {
-
-            // }
-        // });
-    // }
-
+    }
 
     function getArticle() {
         let Article = {};
-        Article.title = document.getElementById('title').value;
+        Article.title = articleTitle.value;
         Article.content = editor.getValue();
         Article.categoryId = document.getElementById('category').value;
         Article.state = 'POSTED';
