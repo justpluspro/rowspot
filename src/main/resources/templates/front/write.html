@@ -29,6 +29,9 @@
                 <div class="control">
                     <input id="title" autocomplete="off" class="input is-medium" type="text" placeholder="标题">
                 </div>
+                <p id="titleHelp" style="display: none;" class="help is-danger">
+                    请填写标题
+                </p>
             </div>
         </div>
         <div class="columns">
@@ -82,10 +85,10 @@
         </div>
         <div class="field is-grouped is-grouped-right">
             <div class="control">
-                <button data-action="DRAFT" class="button is-warning">存为草稿</button>
+                <button data-action="DRAFT" id="article-draft-btn" class="button is-warning">存为草稿</button>
             </div>
             <div class="control">
-                <button data-action="POSTED" id="btn-post" class="button is-success">发布</button>
+                <button data-action="POSTED" id="article-post-btn"  class="button is-success">发布</button>
             </div>
         </div>
     </div>
@@ -118,6 +121,7 @@
 <script src="/static/markdown-editor-master/codemirror/markdown/markdown.js"></script>
 <script src="/static/markdown-editor-master/codemirror/marked.min.js"></script>
 <script src="/static/markdown-editor-master/codemirror/prism.js"></script>
+<script src="/static/axios.min.js"></script>
 
 <script>
 
@@ -125,6 +129,7 @@
     let category;
     let menuNameHelpElement = document.getElementById('menuNameHelp');
     let menuNameElement = document.getElementById('menuName');
+    let rootPath = '/';
 
     window.onload = function() {
         let markedRender = new marked.Renderer();
@@ -152,23 +157,25 @@
     document.getElementById('category').addEventListener('change', function() {
         let selected = document.getElementById('category');
         let selectedIndex = selected.selectedIndex;
-        console.log(selectedIndex);
         let selectedValue = selected.options[selectedIndex].value;
         if(selectedValue !== '') {
-            fetch('/api/category/' + selectedValue, {
+            axios({
+                url:'/api/category/' + selectedValue,
                 method: 'GET',
-                headers: {}
-            }).then(res => res.json())
-            .catch(error => {
-                console.log("errors: ", error)
-            }).then(res => {
+                header: {
+                    'Content-Type': 'application/json;charset=utf8',
+                }
+            }).then(response => {
+                let data = response.data;
                 let html = '<option value="">请选择</option>';
                 html += '<option value="add">【--增加新选项--】</option>';
-                for (let i = 0; i < res.length; i++) {
-                    let menu = res[i];
+                for (let i = 0; i < data.length; i++) {
+                    let menu = data[i];
                     html += '<option value="' + menu.menuId + '">' + menu.name + '</option>';
                 }
                 document.getElementById('menuId').innerHTML = html;
+            }).catch(error => {
+
             })
         } else {
             document.getElementById('menuId').innerHTML = '';
@@ -189,44 +196,38 @@
         document.getElementById('menuName').value = '';
         menuNameHelpElement.style.display = 'none';
         menuNameElement.classList.remove('is-danger');
-
     }
 
+    //保存二级专栏菜单
     document.getElementById('saveMenuButton').addEventListener('click', function(){
-
-        // let menuNameHelpElement = document.getElementById('menuNameHelp');
-        // let menuNameElement = document.getElementById('menuName');
         if(menuNameElement.value === '' || menuNameElement.value.length === 0){
             menuNameElement.classList.add('is-danger');
             menuNameHelpElement.style.display = 'block';
+            menuNameHelpElement.innerText = '分类名称不能为空';
             return;
         }
         let categoryId = document.getElementById('category').value;
-        let menuName = document.getElementById('addMenuId').value;
+        let menuName = document.getElementById('menuName').value;
 
-        $.ajax({
+        axios({
             url: '/api/category/saved',
-            method: 'post',
-            data: JSON.stringify({parentId: categoryId, "name": menuName}),
-            dataType: 'json',
-            contentType: 'application/json;charset=utf8',
-            success: function(res) {
-                $('#addMenuModal').modal('hide');
-                $.ajax({
-                    url: '/api/category/' + value,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (res) {
-                        let html = '<option value="">请选择</option><option value="add">【--增加新选项--】</option>';
-                        for (let i = 0; i < res.length; i++) {
-                            let menu = res[i];
-                            html += '<option value="' + menu.menuId + '">' + menu.name + '</option>';
-                        }
-                        document.getElementById('menuId').innerHTML = html;
-                    }
-                });
-            }
-        })
+            method: 'POST',
+            header: {
+                'Content-Type': 'application/json;charset=utf8',
+            },
+            data: {'parentId': categoryId, 'name': menuName},
+        }).then(response => {
+            closeAddMenuModal();
+            let saveCategory = response.data;
+            let html = '<option value="'+saveCategory.id+'">'+saveCategory.name+'</option>';
+            document.getElementById('menuId').append(html);
+            document.getElementById('menuId').value = saveCategory.id;
+        }).catch(error => {
+            let data = error.response.data;
+            menuNameElement.classList.add('is-danger');
+            menuNameHelpElement.style.display = 'block';
+            menuNameHelpElement.innerText = data.errors.msg;
+        });
     });
 
 
@@ -243,7 +244,6 @@
 
 
     function editorOnHandler(cm, co) {
-        console.log(cm.getValue());
         document.getElementById('preview_out').innerHTML = marked(cm.getValue());
         // $('.markdown-body').html(marked(cm.getValue()));
         // $('.markdown-body pre code').each(function(i, block) {
@@ -253,48 +253,85 @@
 
 
     function initialCategories() {
-
-        fetch("/api/categories", {
-            method: "GET",
-            headers: {},
-        }).then(res => res.json())
-        .catch(error => {
-            console.error("error:", error)
-        }).then(res => {
+        axios({
+            url: '/api/categories',
+            method: 'GET',
+            headers: {
+                'Content-Type':'application/json;charset=utf8'
+            }
+        }).then(response => {
+            let data = response.data;
             let html = "<option value=''>请选择专栏</option>";
-            for(let i = 0; i < res.length; i++){
-                let category = res[i];
+            for(let i = 0; i < data.length; i++){
+                let category = data[i];
                 html += '<option value="' + category.id + '">' + category.name + '</option>';
             }
             document.getElementById('category').innerHTML = html;
         });
     }
 
-    for(ele of document.querySelectorAll('button[data-action]')) {
-        ele.addEventListener('click', function () {
-            let action = ele.getAttribute('data-action');
-            document.getElementById('btn-post').addEventListener('click', function() {
-                let article = getArticle();
 
-                if(article.title === null && article.title === ''){
-                    alert('请输入分享标题');
-                    return;
-                }
 
-                fetch("/api/article/saved", {
-                    headers: {
-                        'Content-Type': 'application/json;charset=utf8',
-                    },
-                    body: JSON.stringify(article),
-                    method: 'POST'
-                }).then(res => res.json()).catch(error => {
-                        console.error('error:', error)
-                  }).then(res => {
+    let articleDraftBtn = document.getElementById('article-draft-btn');
+    let articlePostBtn = document.getElementById('article-post-btn');
 
-                });
-            });
+    articlePostBtn.addEventListener('click', function() {
+        this.classList.add('is-loading');
+        this.disabled = 'true';
+        articleDraftBtn.disabled = 'true';
+        let article = getArticle();
+        if(article.title === null || article.title === ''){
+            alert('请输入分享标题');
+            return;
+        }
+        axios({
+            url: rootPath + 'api/article/saved',
+            header: {
+                'Content-Type': 'application/json;charset=utf8',
+            },
+            data: article,
+            method: 'POST'
+        }).then(response => {
+
+        }).catch(error => {
+            console.error('error:', error)
         });
-    }
+    });
+
+    articleDraftBtn.addEventListener('click', function() {
+
+        this.classList.add('is-loading');
+        this.disabled = 'true';
+        articlePostBtn.disabled = 'true';
+        let article = getArticle();
+        article.state = 'DRAFT';
+        if(article.title === null || article.title === ''){
+            alert('请输入分享标题');
+            return;
+        }
+
+
+    })
+
+    //
+    // for(elem of document.querySelectorAll('button[data-action]')) {
+    //     elem.addEventListener('click', function (event) {
+    //         let action = this.dataset.action;
+    //         console.log('action ' + action);
+    //         let article = getArticle();
+    //
+    //         if(article.title === null || article.title === ''){
+    //             alert('请输入分享标题');
+    //             return;
+    //         }
+    //         elem.classList.add('is-loading');
+    //         elem.style.disabled = 'true'
+            //
+            // if(article.state === action && action === 'POSTED') {
+
+            // }
+        // });
+    // }
 
 
     function getArticle() {
