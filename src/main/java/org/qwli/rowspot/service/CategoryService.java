@@ -4,6 +4,7 @@ import org.qwli.rowspot.Message;
 import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.exception.BizException;
 import org.qwli.rowspot.model.Article;
+import org.qwli.rowspot.model.SavedCategory;
 import org.qwli.rowspot.model.aggregate.MenuAggregate;
 import org.qwli.rowspot.model.Category;
 import org.qwli.rowspot.model.factory.CategoryFactory;
@@ -78,7 +79,7 @@ public class CategoryService extends AbstractService<Category, Category> {
      * @throws BizException BizException
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
-    public void save(NewCategory newCategory) throws BizException {
+    public SavedCategory save(NewCategory newCategory) throws BizException {
         final Category category = CategoryFactory.createCategory(newCategory);
         Long parentId = category.getParentId();
         if(parentId != null && parentId > 0) {
@@ -102,6 +103,8 @@ public class CategoryService extends AbstractService<Category, Category> {
             });
         }
         categoryRepository.save(category);
+
+        return new SavedCategory(category.getId(), category.getName());
     }
 
     @Transactional(readOnly = true)
