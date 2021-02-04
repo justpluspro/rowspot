@@ -18,11 +18,11 @@ public class Tag extends BaseEntity implements Serializable {
     @GeneratedValue(generator = "idGenerator")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
 
-    @Column(name = "alias", length = 23)
+    @Column(name = "alias", length = 23, nullable = false, unique = true)
     private String alias;
 
     @Column(name = "description", length = 1023)
