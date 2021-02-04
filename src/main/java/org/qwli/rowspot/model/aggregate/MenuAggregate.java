@@ -22,6 +22,7 @@ public class MenuAggregate implements Serializable {
     public MenuAggregate(Category category) {
         this.menuId = category.getId();
         this.name = category.getName();
+        this.sort = category.getSort();
     }
 
     public Long getMenuId() {
