@@ -11,6 +11,7 @@ import org.qwli.rowspot.model.factory.CategoryFactory;
 import org.qwli.rowspot.repository.ArticleRepository;
 import org.qwli.rowspot.repository.CategoryRepository;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +84,8 @@ public class CategoryService extends AbstractService<Category, Category> {
         final Category category = CategoryFactory.createCategory(newCategory);
         Long parentId = category.getParentId();
         if(parentId != null && parentId > 0) {
+            //save menu
+            // check parent category exists
             categoryRepository.findById(parentId).orElseThrow(()
                     -> new BizException(new Message("parent.notExists", "父分类不存在")));
 
@@ -91,10 +94,19 @@ public class CategoryService extends AbstractService<Category, Category> {
             probe.setName(category.getName());
             Example<Category> example = Example.of(probe);
 
+            //check menu exists
             categoryRepository.findOne(example).ifPresent(e -> {
                 throw new BizException(new Message("childName.exists", "该分类名称已经在"));
             });
+
+            //get max sort from parentId
+            Integer maxSort = categoryRepository.findMaxSort(parentId);
+            if(maxSort == null) {
+                maxSort = 0;
+            }
+            category.setSort(maxSort);
         } else {
+            category.setSort(0);
             Category probe = new Category();
             probe.setName(category.getName());
             Example<Category> example = Example.of(probe);
