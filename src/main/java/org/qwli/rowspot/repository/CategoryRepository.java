@@ -1,6 +1,7 @@
 package org.qwli.rowspot.repository;
 
 import org.qwli.rowspot.model.Category;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.stereotype.Repository;
@@ -15,8 +16,14 @@ import java.util.Optional;
  */
 @Repository
 public interface CategoryRepository extends CrudRepository<Category, Long>, QueryByExampleExecutor<Category> {
-
-    List<Category> findCategoriesByParentId(Integer parentId);
-
+    
     Optional<Category> findByName(String name);
+
+    /**
+     * get max sort from parentId
+     * @param parentId parentId
+     * @return Integer
+     */
+    @Query("select max(sort)+1 from Category where parentId = ?1")
+    Integer findMaxSort(Long parentId);
 }
