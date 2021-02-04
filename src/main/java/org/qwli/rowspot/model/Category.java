@@ -53,6 +53,20 @@ public class Category extends BaseEntity implements Serializable {
     @ColumnDefault("0")
     private Long parentId;
 
+    /**
+     * check sort
+     */
+    @Column(name = "sort")
+    @ColumnDefault("0")
+    private Integer sort;
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
     public Long getId() {
         return id;
