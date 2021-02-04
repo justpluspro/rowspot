@@ -2,6 +2,7 @@ package org.qwli.rowspot.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * 默认用户配置
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConfigurationProperties(prefix = "user.default")
+@PropertySource(value = "classpath:default-user.properties")
 public class DefaultUserProperties {
 
     /**

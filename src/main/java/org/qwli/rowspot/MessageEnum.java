@@ -17,11 +17,9 @@ public interface MessageEnum {
      */
     Message EMAIL_REGISTERED = new Message("email.registered", "邮箱已被注册");
 
-    /**
-     * 注册用户失败
-     */
+    Message USER_LOGIN = new Message("user.normal", "状态正常，去登录");
     Message REGISTER_FAILED = new Message("register.failed", "注册用户失败");
-
+    Message USER_STATE_INVALID = new Message("userState.invalid", "无效用户状态");
 
     Message USER_LOCKED = new Message("user.locked", "用户已被锁定，请联系管理员");
     Message AUTH_FAILED = new Message("auth.failed", "认证失败");

@@ -19,6 +19,19 @@ public class NewUser implements Serializable {
      */
     private String registerEmail;
 
+    /**
+     * 注册密码
+     */
+    private String registerPassword;
+
+    public String getRegisterPassword() {
+        return registerPassword;
+    }
+
+    public void setRegisterPassword(String registerPassword) {
+        this.registerPassword = registerPassword;
+    }
+
     public String getRegisterName() {
         return registerName;
     }

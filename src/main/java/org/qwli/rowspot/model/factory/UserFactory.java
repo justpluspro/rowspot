@@ -5,6 +5,7 @@ import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.model.UserAddition;
 import org.qwli.rowspot.model.enums.UserState;
 import org.qwli.rowspot.service.NewUser;
+import org.qwli.rowspot.util.Md5Util;
 
 import java.util.Date;
 
@@ -24,6 +25,7 @@ public class UserFactory {
         User user = new User();
         user.setUsername(newUser.getRegisterName());
         user.setEmail(newUser.getRegisterEmail());
+        user.setPassword(Md5Util.md5(newUser.getRegisterPassword()));
 
         user.setCreateAt(new Date());
         user.setModifyAt(new Date());

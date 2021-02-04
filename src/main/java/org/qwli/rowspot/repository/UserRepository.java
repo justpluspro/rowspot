@@ -22,13 +22,14 @@ public interface UserRepository extends CrudRepository<User, Long>, QueryByExamp
     @Query("update User u set u.lastLoginAt = ?2 where u.id = ?1")
     @Modifying
     void updateUserLoginDate(@Param("id") Long id, @Param("lastLoginAt") Date date);
+//
+//    /**
+//     * 根据邮件查询用户，这里只查询两个字段  email 和 password
+//     * @param email email
+//     * @return User
+//     */
+//    @Query(value = "select u.email, u.password from User u where u.email = ?1")
+//    Optional<User> findByEmail(@Param("email") String email);
 
-    /**
-     * 根据邮件查询用户，这里只查询两个字段  email 和 password
-     * @param email email
-     * @return User
-     */
-    @Query(value = "select u.email, u.password from User u where u.email = ?1")
-    Optional<User> findByEmail(@Param("email") String email);
-
+    Optional<User> findUserByEmail(String email);
 }

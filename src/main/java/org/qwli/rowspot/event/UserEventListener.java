@@ -8,6 +8,7 @@ import org.qwli.rowspot.repository.UserAdditionRepository;
 import org.qwli.rowspot.repository.UserRepository;
 import org.qwli.rowspot.service.processor.EmailBean;
 import org.qwli.rowspot.service.processor.MailProcessor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -23,6 +24,9 @@ import java.util.Date;
  */
 @Component
 public class UserEventListener {
+
+    @Value("${default.mail.from}")
+    private String from;
 
     /**
      * userRepository
@@ -78,7 +82,7 @@ public class UserEventListener {
         emailBean.setSubject("Rowspot 激活");
         emailBean.setHtml(true);
         emailBean.setSendTos(Collections.singletonList(user.getEmail()));
-        emailBean.setFrom("");
+        emailBean.setFrom(from);
         mailProcessor.sendHtmlMail(emailBean);
     }
 }

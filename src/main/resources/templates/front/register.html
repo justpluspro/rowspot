@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
-    <title>注册</title>
+    <link rel="stylesheet" href="/static/materialdesignicons/css/materialdesignicons.min.css">
+    <title>用户注册</title>
 </head>
 <body>
 <section class="section hero is-fullheight is-error-section">
@@ -12,47 +13,57 @@
         <div class="container">
             <div class="columns is-centered">
                 <div class="column is-two-fifths">
+                    <div class="notification is-light" style="display: none;" id="registerTips"></div>
+
                     <div class="card has-card-header-background">
                         <header class="card-header">
                             <p class="card-header-title">
                                 <span class="icon"><i class="mdi mdi-lock default"></i></span>
-                                <span>注册</span>
+                                <span>新用户注册</span>
                             </p>
                         </header>
                         <div class="card-content">
-                            <form method="POST">
+                            <form onsubmit="return false;">
                                 <div class="field">
-                                    <label class="label">E-mail Address</label>
+                                    <label class="label">注册邮箱</label>
                                     <div class="control">
-                                        <input type="email" autocomplete="on" name="email" class="input"
-                                               required autofocus>
+                                        <input type="text" autocomplete="off"
+                                               placeholder="电子邮箱地址" id="email" name="email" class="input" autofocus>
                                     </div>
+                                    <p id="emailHelp" style="display: none;" class="help is-danger">
+                                        邮箱是必填的
+                                    </p>
                                 </div>
                                 <div class="field">
-                                    <label class="label">Password</label>
+                                    <label class="label">密码</label>
                                     <div class="control">
-                                        <input type="password" autocomplete="on" name="password"
-                                               class="input" required>
+                                        <input type="password" id="password" autocomplete="off" name="password"
+                                               class="input" placeholder="密码，6-12位，不要用空格代替">
                                     </div>
+                                    <p id="passwordHelp" style="display: none;" class="help is-danger">
+                                        密码是必填的
+                                    </p>
                                 </div>
                                 <div class="field">
-                                    <label class="b-checkbox checkbox is-thin"><input type="checkbox" value="false">
-                                        <span class="check is-black"></span>
-                                        <span class="control-label">Remember me</span>
-                                    </label>
+                                    <label class="label">昵称</label>
+                                    <div class="control">
+                                        <input type="text" autocomplete="off" id="nickname" name="nickname"
+                                               class="input" placeholder="昵称，2-18位，中英文、数字以及下划线">
+                                    </div>
+                                    <p id="nicknameHelp" style="display: none;" class="help is-danger">
+                                        昵称是必填的
+                                    </p>
                                 </div>
                                 <hr>
-                                <div class="field is-grouped">
-                                    <div class="control">
-                                        <button type="submit" class="button is-black">
-                                            登录
-                                        </button>
-                                    </div>
-                                    <div class="control">
-                                        <a href="password-recovery.html" class="button is-outlined is-black">
-                                            忘记密码
-                                        </a>
-                                    </div>
+                                <div class="field">
+                                    <button type="submit" id="registerBtn" class="button is-fullwidth is-black">
+                                        注册
+                                    </button>
+                                </div>
+                                <div class="field">
+                                    <a th:href="@{/login}" class="button is-fullwidth is-outlined is-black">
+                                        去登陆
+                                    </a>
                                 </div>
                             </form>
                         </div>
@@ -61,28 +72,86 @@
             </div>
         </div>
     </div>
-    <div class="hero-foot has-text-centered">
-        <div class="logo"></div>
-    </div>
 </section>
+<!--<div class="modal" id="registerSuccess">-->
+<!--    <div class="modal-background"></div>-->
+<!--    <div class="modal-content">-->
+<!--        <h3 class="title is-3">感谢您注册</h3>-->
+<!--        <p>注册成功，请前往邮箱激活.</p>-->
+<!--    </div>-->
+<!--</div>-->
 
-<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+<script src="/static/axios.min.js"></script>
+
 
 <script>
-    document.getElementById('btn-register').addEventListener('click', function() {
-        const email = document.getElementById('email').value;
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+    let registerBtnElement = document.getElementById('registerBtn');
+    let nicknameElement = document.getElementById('nickname');
+    let passwordElement = document.getElementById('password');
+    let emailElement = document.getElementById('email');
+    let emailHelpElement = document.getElementById('emailHelp');
+    let passwordHelpElement = document.getElementById('passwordHelp');
+    let nicknameHelpElement = document.getElementById('nicknameHelp');
+    let registerTips = document.getElementById('registerTips');
+    const rootPath = '/';
+    registerBtnElement.addEventListener('click', function() {
+        const email = emailElement.value;
+        const username = nicknameElement.value;
+        const password = passwordElement.value;
+        if(email === null || email.length === 0 || email === ""){
+            emailHelpElement.style.display = 'block';
+            emailElement.classList.add('is-danger');
+            return;
+        }
 
-        $.ajax({
-            url: '/register',
-            data: {'email': email, 'username': username, 'password': password, 'confirmPassword': confirmPassword},
-            dataType: 'json',
+        if(password === null || password.length === 0 || password === ""){
+            passwordHelpElement.style.display = 'block';
+            passwordElement.classList.add('is-danger');
+            return;
+        }
+
+        if(username === null || username.length === 0 || username === ""){
+            nicknameHelpElement.style.display = 'block';
+            nicknameElement.classList.add('is-danger');
+            return;
+        }
+
+        registerBtnElement.classList.add('is-loading');
+        registerBtnElement.disabled = 'true';
+
+        axios({
             method: 'POST',
-            success: function(res) {
-
+            url: rootPath + 'api/register',
+            header: {
+                'Content-Type': 'application/json;charset=utf8',
+            },
+            data: {
+                "registerEmail": email,
+                "registerPassword": password,
+                "registerName": username
             }
+        }).then((response) => {
+            registerBtnElement.classList.remove('is-loading');
+            registerBtnElement.disabled = '';
+            registerTips.style.display = 'block';
+            registerTips.classList.add('is-success');
+            registerTips.innerText = '感谢注册，请前往邮箱激活';
+            nicknameElement.disabled = 'true';
+            passwordElement.disabled = 'true';
+            emailElement.disabled = 'true';
+
+        }).catch((error) => {
+            let data = error.response.data;
+            let status = error.response.status;
+            let msg = data.errors.msg;
+            let code = data.errors.code;
+            registerTips.style.display = 'block';
+            registerTips.classList.remove('is-success');
+            registerTips.classList.add('is-danger');
+            registerTips.innerText = msg;
+            registerBtnElement.classList.remove('is-loading');
+            registerBtnElement.disabled = '';
+
         });
     });
 </script>

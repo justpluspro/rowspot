@@ -63,23 +63,15 @@ public class UserService extends AbstractService<User, User> {
     public void register(NewUser newUser) throws BizException {
         final String registerEmail = newUser.getRegisterEmail();
 
-        User probe = new User();
-        probe.setEmail(registerEmail);
-        Example<User> example = Example.of(probe);
-
         //存在. 重新发一份注册邮件
-        final Optional<User> userOptional = userRepository.findOne(example);
+        final Optional<User> userOptional = userRepository.findUserByEmail(registerEmail);
 
-        if(!userOptional.isPresent()) {
-            //不存在，创建新的用户，新的 Addition
-            final User user = UserFactory.createUser(newUser, defaultUserProperties);
-            userRepository.save(user);
-            applicationEventPublisher.publishEvent(new UserRegisterEvent(this, user));
-        } else {
+        if(userOptional.isPresent()) {
             //用户存在
             final User user = userOptional.get();
             final UserState state = user.getState();
             if(UserState.LOCKED.equals(state)) {
+                //被锁定的账号
                 throw new BizException(MessageEnum.USER_LOCKED);
             }
             //未激活，判断发送激活邮件时间
@@ -100,10 +92,15 @@ public class UserService extends AbstractService<User, User> {
 
             if(UserState.NORMAL.equals(state)) {
                 //账号正常，请去登录
-                throw new BizException(MessageEnum.USER_LOCKED);
+                throw new BizException(MessageEnum.EMAIL_REGISTERED);
             }
-
         }
+
+
+        //不存在，创建新的用户，新的 Addition
+        final User user = UserFactory.createUser(newUser, defaultUserProperties);
+        userRepository.save(user);
+        applicationEventPublisher.publishEvent(new UserRegisterEvent(this, user));
     }
 
     @Transactional(readOnly = true)
@@ -151,8 +148,68 @@ public class UserService extends AbstractService<User, User> {
         return new LoggedUser(existsUser.getId(), existsUser.getUsername(), existsUser.getEmail());
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void updateUser(User user) throws BizException {
+        User dbUser = checkUser(user.getId());
+        dbUser.setUsername(user.getUsername());
+        dbUser.setModifyAt(new Date());
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void updateUserAddition(UserAddition userAddition) throws BizException {
+        User user = checkUser(userAddition.getUserId());
+
+        final Optional<UserAddition> userAdditionOptional = userAdditionRepository.findUserAdditionByUserId(user.getId());
+        if(userAdditionOptional.isPresent()) {
+
+            final UserAddition dbUserAddition = userAdditionOptional.get();
+            dbUserAddition.setJob(userAddition.getJob());
+            dbUserAddition.setSkills(userAddition.getSkills());
+            dbUserAddition.setAddress(userAddition.getAddress());
+            dbUserAddition.setWebsite(userAddition.getWebsite());
+            dbUserAddition.setIntroduce(userAddition.getIntroduce());
+            dbUserAddition.setModifyAt(new Date());
+        }
+
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void updateUserPassword(User user) throws BizException {
+        User dbUser = checkUser(user.getId());
+        final String password = user.getPassword();
+        if(Md5Util.md5(password).equals(dbUser.getPassword())) {
+            return;
+        }
+        dbUser.setPassword(Md5Util.md5(user.getPassword()));
+        dbUser.setModifyAt(new Date());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void updateUserAvatar(User user) throws BizException {
+        User dbUser = checkUser(user.getId());
+        dbUser.setAvatar(user.getAvatar());
+        dbUser.setModifyAt(new Date());
+    }
+
+
+
+    private User checkUser(Long id) throws BizException {
+        //check user exists
+        final User dbUser = userRepository.findById(id).orElseThrow(()
+                -> new BizException(MessageEnum.USER_NOT_EXISTS));
+        final UserState dbUserState = dbUser.getState();
+        if(dbUserState != UserState.NORMAL) {
+            throw new BizException(MessageEnum.USER_STATE_INVALID);
+        }
+        return dbUser;
+    }
+
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
+
+
+
 }

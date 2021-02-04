@@ -63,7 +63,7 @@ public class DefaultMailProcessor implements MailProcessor, DisposableBean {
             if (CollectionUtils.isEmpty(rightEmails)) {
                 return;
             }
-            helper.setTo(((String[]) rightEmails.toArray()));
+            helper.setTo(rightEmails.get(0));
             helper.setSubject(emailBean.getSubject());
             final Boolean html = emailBean.getHtml();
             if (html) {
