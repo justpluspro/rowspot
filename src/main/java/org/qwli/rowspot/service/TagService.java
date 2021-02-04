@@ -2,6 +2,7 @@ package org.qwli.rowspot.service;
 
 
 import org.qwli.rowspot.Message;
+import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.exception.BizException;
 import org.qwli.rowspot.model.ArticleTag;
 import org.qwli.rowspot.model.Tag;
@@ -16,8 +17,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author qwli7
@@ -39,11 +42,21 @@ public class TagService extends AbstractService<Tag, Tag> {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void save(Tag tag) throws BizException {
         final String name = tag.getName();
+        tagRepository.findByName(name).ifPresent(e -> {
+            throw new BizException(new Message("tagName.exists", "标签已经存在"));
+        });
 
-        Tag probe = new Tag();
-        probe.setName(name);
-        probe.setAlias(tag.getAlias());
+        tagRepository.findByAlias(tag.getAlias()).ifPresent(e -> {
+            throw new BizException(new Message("tagAlias.exists", "标签已经存在"));
+        });
 
+        tag.setCreateAt(new Date());
+        tag.setModifyAt(new Date());
+        String description = tag.getDescription();
+        if(!StringUtils.hasText(description)) {
+            tag.setDescription("");
+        }
+        tag.setIcon("");
         tagRepository.save(tag);
     }
 
