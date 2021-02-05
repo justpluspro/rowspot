@@ -1,6 +1,10 @@
 package org.qwli.rowspot.web.controller;
 
 
+import org.qwli.rowspot.MessageEnum;
+import org.qwli.rowspot.exception.ResourceNotFoundException;
+import org.qwli.rowspot.model.LoggedUser;
+import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.service.ArticleService;
 import org.qwli.rowspot.service.CollectService;
 import org.qwli.rowspot.service.UserService;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户页面控制器
@@ -166,6 +172,22 @@ public class UserController {
     }
 
 
+
+    @AuthenticatedRequired
+    @RequestMapping("{id}/password")
+    public String changePassword(@PathVariable("id") Long id, HttpServletRequest request) {
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        Long userId = loggedUser.getId();
+
+        User user = userService.findById(id);
+        if(!user.getId().equals(userId)) {
+            throw new ResourceNotFoundException(MessageEnum.RESOURCE_NOT_FOUND);
+        }
+
+        return "front/user/password";
+    }
+
+
     @GetMapping("share")
     @AuthenticatedRequired
     public String create(@RequestParam("type") String type) {
@@ -177,5 +199,4 @@ public class UserController {
     public String question() {
         return "front/ask3";
     }
-
 }
