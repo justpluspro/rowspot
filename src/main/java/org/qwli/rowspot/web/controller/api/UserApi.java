@@ -4,6 +4,7 @@ import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.model.UserAddition;
 import org.qwli.rowspot.model.enums.UserPasswordChanged;
+import org.qwli.rowspot.service.PasswordChanged;
 import org.qwli.rowspot.service.UserService;
 import org.qwli.rowspot.web.annotations.AuthenticatedRequired;
 import org.springframework.http.ResponseEntity;
@@ -63,18 +64,18 @@ public class UserApi extends AbstractApi {
 
     /**
      * update user password
-     * @param user user
+     * @param passwordChanged passwordChanged
      * @param request request
      * @return ResponseEntity
      */
     @PutMapping("user/password/update")
     @AuthenticatedRequired
-    public ResponseEntity<Void> updateUserPassword(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<Void> updateUserPassword(@RequestBody PasswordChanged passwordChanged, HttpServletRequest request) {
 
         LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
-        user.setId(loggedUser.getId());
+        passwordChanged.setId(loggedUser.getId());
 
-        userService.updateUserPassword(user);
+        userService.updateUserPassword(passwordChanged);
         return ResponseEntity.ok().build();
     }
 
