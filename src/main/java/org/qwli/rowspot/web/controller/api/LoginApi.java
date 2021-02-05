@@ -42,7 +42,7 @@ public class LoginApi extends AbstractApi {
                                               HttpServletRequest request) {
 
         User user = new User();
-        user.setEmail(loginUser.getMail());
+        user.setEmail(loginUser.getEmail());
         user.setPassword(loginUser.getPassword());
 
         LoggedUser loggedUser = userService.login(user);
