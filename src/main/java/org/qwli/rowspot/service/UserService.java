@@ -1,5 +1,6 @@
 package org.qwli.rowspot.service;
 
+import org.qwli.rowspot.Message;
 import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.config.DefaultUserProperties;
 import org.qwli.rowspot.event.UserLoginEvent;
@@ -126,7 +127,7 @@ public class UserService extends AbstractService<User, User> {
         probe.setEmail(user.getEmail());
         Example<User> example = Example.of(probe);
 
-        final User existsUser = userRepository.findOne(example).orElseThrow(()
+        final User existsUser = userRepository.findUserByEmail(user.getEmail()).orElseThrow(()
                 -> new LoginFailException(MessageEnum.AUTH_FAILED));
 
         final String password = existsUser.getPassword();
@@ -175,13 +176,18 @@ public class UserService extends AbstractService<User, User> {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
-    public void updateUserPassword(User user) throws BizException {
-        User dbUser = checkUser(user.getId());
-        final String password = user.getPassword();
-        if(Md5Util.md5(password).equals(dbUser.getPassword())) {
+    public void updateUserPassword(PasswordChanged passwordChanged) throws BizException {
+        User dbUser = checkUser(passwordChanged.getId());
+        final String oldPassword = passwordChanged.getOldPassword();
+        if(!Md5Util.md5(oldPassword).equals(dbUser.getPassword())) {
+            throw new BizException(new Message("oldPassword.invalid", "旧密码认证失败"));
+        }
+        if(Md5Util.md5(passwordChanged.getNewPassword()).equals(dbUser.getPassword())) {
+            logger.info("newPassword same with oldPassword");
             return;
         }
-        dbUser.setPassword(Md5Util.md5(user.getPassword()));
+
+        dbUser.setPassword(Md5Util.md5(passwordChanged.getNewPassword()));
         dbUser.setModifyAt(new Date());
     }
 
@@ -205,11 +211,21 @@ public class UserService extends AbstractService<User, User> {
         return dbUser;
     }
 
+
+    @Transactional(readOnly = true, rollbackFor = ResourceNotFoundException.class)
+    public User findById(Long id) throws ResourceNotFoundException {
+        User user = userRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException(MessageEnum.USER_NOT_EXISTS));
+
+        UserState state = user.getState();
+        if(state != UserState.NORMAL){
+            throw new ResourceNotFoundException(MessageEnum.USER_STATE_INVALID);
+        }
+        return user;
+    }
+
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
-
-
-
 }
