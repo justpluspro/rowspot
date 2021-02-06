@@ -43,11 +43,11 @@ document.getElementById('loginBtn').addEventListener('click', function() {
         if(redirect !== null && redirect !== '' && redirect.trim().length !== 0) {
             loginBtn.classList.remove('is-loading');
             loginBtn.disabled = '';
-            window.location.href = decodeURI(redirect);
+            window.location.href = decodeURIComponent(redirect);
         } else {
+            window.location.href = rootPath;
             loginBtn.classList.remove('is-loading');
             loginBtn.disabled = '';
-            window.location.href = rootPath;
         }
     }).catch((error) => {
         let data = error.response.data;
