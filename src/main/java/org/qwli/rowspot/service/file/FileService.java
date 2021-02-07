@@ -57,8 +57,6 @@ public class FileService implements InitializingBean, ApplicationEventPublisherA
 
     private final static String UPLOAD = "upload";
 
-    private final List<String> allowMediaTypes = Arrays.asList("jpg", "png", "webp", "gif", "jpeg", "mp4", "mov", "rmvb", "avi", "flv");
-
     private final UserRepository userRepository;
 
     private final FileRepository fileRepository;
@@ -150,6 +148,50 @@ public class FileService implements InitializingBean, ApplicationEventPublisherA
 
         return uploadedFile;
     }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void deleteFile(FileDelete fileDelete) throws BizException {
+        Long userId = fileDelete.getUserId();
+        User dbUser = userRepository.findById(userId).orElseThrow(()
+                -> new BizException(MessageEnum.USER_NOT_EXISTS));
+
+        UserState dbUserState = dbUser.getState();
+        if(dbUserState != UserState.NORMAL) {
+            throw new BizException(new Message("", ""));
+        }
+
+        UserUploadFile userUploadFile = fileRepository.findById(fileDelete.getFileId()).orElseThrow(()
+                -> new BizException(new Message("", "")));
+
+        //delete file mapping
+        fileRepository.delete(userUploadFile);
+        Path container = rootUploadPath.resolve(String.valueOf(dbUser.getId()));
+        File file = container.resolve(userUploadFile.getFileName()).toFile();
+        if(file.exists()) {
+            FileUtil.deleteQuietly(file.toPath());
+        }
+    }
+
+
+    @Transactional(readOnly = true)
+    public FileInfoDetail getFileInfo(Long fileId) throws BizException {
+        UserUploadFile userUploadFile = fileRepository.findById(fileId).orElse(new UserUploadFile());
+
+        FileInfoDetail fid = new FileInfoDetail();
+
+        fid.setSize(userUploadFile.getFileSize());
+        FileType fileType = userUploadFile.getFileType();
+        fid.setFileType(fileType);
+
+
+
+
+
+
+        return fid;
+    }
+
 
     public Optional<ReadablePath> getProcessedFile(String requestPath, boolean supportWebp) {
         logger.info("getProcessedFile:[{}]", requestPath);
