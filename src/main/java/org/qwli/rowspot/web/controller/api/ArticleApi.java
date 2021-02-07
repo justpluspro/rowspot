@@ -1,6 +1,7 @@
 package org.qwli.rowspot.web.controller.api;
 
 
+import org.qwli.rowspot.Constants;
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.SavedArticle;
 import org.qwli.rowspot.service.ArticleService;
@@ -38,9 +39,20 @@ public class ArticleApi extends AbstractApi {
      */
     @PostMapping("saved")
     public ResponseEntity<SavedArticle> save(@RequestBody @Validated NewArticle newArticle, HttpServletRequest request) {
-        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
         newArticle.setUserId(loggedUser.getId());
         return ResponseEntity.ok(articleService.save(newArticle));
+    }
+
+
+
+
+
+    @DeleteMapping("{id}/delete")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id, HttpServletRequest request) {
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
+        articleService.delete(id, loggedUser.getId());
+        return ResponseEntity.ok().build();
     }
 
     /**

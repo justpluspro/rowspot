@@ -11,7 +11,6 @@ import org.qwli.rowspot.model.enums.FileType;
 import org.qwli.rowspot.model.enums.UserState;
 import org.qwli.rowspot.repository.FileRepository;
 import org.qwli.rowspot.repository.UserRepository;
-import org.qwli.rowspot.service.FileUpload;
 import org.qwli.rowspot.service.condition.FileCondition;
 import org.qwli.rowspot.util.FileUtil;
 import org.qwli.rowspot.util.MediaUtil;

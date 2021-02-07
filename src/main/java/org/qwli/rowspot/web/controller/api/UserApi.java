@@ -1,5 +1,6 @@
 package org.qwli.rowspot.web.controller.api;
 
+import org.qwli.rowspot.Constants;
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.model.UserAddition;
@@ -39,11 +40,9 @@ public class UserApi extends AbstractApi {
     @PutMapping("user/update")
     @AuthenticatedRequired
     public ResponseEntity<Void> updateUser(@RequestBody User user, HttpServletRequest request) {
-        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
         user.setId(loggedUser.getId());
-
         userService.updateUser(user);
-
         return ResponseEntity.ok().build();
     }
 
@@ -56,7 +55,7 @@ public class UserApi extends AbstractApi {
     @PutMapping("user/addition/update")
     @AuthenticatedRequired
     public ResponseEntity<Void> updateUserAddition(@RequestBody UserAddition userAddition, HttpServletRequest request) {
-        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
         userAddition.setUserId(loggedUser.getId());
         userService.updateUserAddition(userAddition);
         return ResponseEntity.ok().build();
@@ -70,12 +69,13 @@ public class UserApi extends AbstractApi {
      */
     @PutMapping("user/password/update")
     @AuthenticatedRequired
-    public ResponseEntity<Void> updateUserPassword(@RequestBody PasswordChanged passwordChanged, HttpServletRequest request) {
-
-        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+    public ResponseEntity<Void> updateUserPassword(@RequestBody PasswordChanged passwordChanged,
+                                                   HttpServletRequest request) {
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
         passwordChanged.setId(loggedUser.getId());
-
         userService.updateUserPassword(passwordChanged);
+        request.removeAttribute(Constants.USER);
+        request.getSession().removeAttribute(Constants.USER);
         return ResponseEntity.ok().build();
     }
 
@@ -88,10 +88,8 @@ public class UserApi extends AbstractApi {
     @PutMapping("user/avatar/update")
     @AuthenticatedRequired
     public ResponseEntity<Void> updateUserAvatar(@RequestBody User user, HttpServletRequest request) {
-
-        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
         user.setId(loggedUser.getId());
-
         userService.updateUserAvatar(user);
         return ResponseEntity.ok().build();
     }

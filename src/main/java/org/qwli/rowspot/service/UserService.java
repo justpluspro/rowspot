@@ -11,6 +11,7 @@ import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.aggregate.UserAggregateRoot;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.model.UserAddition;
+import org.qwli.rowspot.model.enums.UserPasswordChanged;
 import org.qwli.rowspot.model.enums.UserState;
 import org.qwli.rowspot.model.factory.UserFactory;
 import org.qwli.rowspot.repository.UserAdditionRepository;
@@ -189,6 +190,8 @@ public class UserService extends AbstractService<User, User> {
 
         dbUser.setPassword(Md5Util.md5(passwordChanged.getNewPassword()));
         dbUser.setModifyAt(new Date());
+
+        applicationEventPublisher.publishEvent(new UserPasswordChanged(this, dbUser));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)

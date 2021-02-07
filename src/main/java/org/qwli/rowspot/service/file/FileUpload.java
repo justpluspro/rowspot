@@ -1,4 +1,4 @@
-package org.qwli.rowspot.service;
+package org.qwli.rowspot.service.file;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -12,11 +12,9 @@ import org.qwli.rowspot.model.aggregate.PageAggregate;
 import org.qwli.rowspot.model.aggregate.TypeAggregate;
 import org.qwli.rowspot.model.enums.ArticleState;
 import org.qwli.rowspot.model.enums.ArticleType;
+import org.qwli.rowspot.model.enums.UserState;
 import org.qwli.rowspot.model.factory.ArticleFactory;
-import org.qwli.rowspot.repository.ArticleRepository;
-import org.qwli.rowspot.repository.ArticleTagRepository;
-import org.qwli.rowspot.repository.CategoryRepository;
-import org.qwli.rowspot.repository.CommentRepository;
+import org.qwli.rowspot.repository.*;
 import org.qwli.rowspot.service.processor.MarkdownProcessor;
 import org.qwli.rowspot.web.ArticleQueryParam;
 import org.springframework.context.ApplicationEventPublisher;
@@ -51,15 +49,19 @@ public class ArticleService extends AbstractService<Article, Article> {
 
     private final CommentRepository commentRepository;
 
+    private final UserRepository userRepository;
+
     private final MarkdownProcessor markdownProcessor;
 
     public ArticleService(ArticleRepository articleRepository, CategoryRepository categoryRepository,
-                          ArticleTagRepository articleTagRepository, CommentRepository commentRepository, MarkdownProcessor markdownProcessor) {
+                          ArticleTagRepository articleTagRepository, CommentRepository commentRepository,
+                          UserRepository userRepository, MarkdownProcessor markdownProcessor) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
         this.markdownProcessor = markdownProcessor;
         this.articleTagRepository = articleTagRepository;
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -73,6 +75,14 @@ public class ArticleService extends AbstractService<Article, Article> {
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public SavedArticle save(NewArticle newArticle) throws BizException {
+
+        final Long userId = newArticle.getUserId();
+        final User user = userRepository.findById(userId).orElseThrow(() -> new BizException(MessageEnum.USER_NOT_EXISTS));
+        final UserState userState = user.getState();
+        if(userState != UserState.NORMAL) {
+            throw new BizException(MessageEnum.USER_STATE_INVALID);
+        }
+
         //check category
         final Category category = categoryRepository.findById(newArticle.getCategoryId()).orElseThrow(()
                 -> new BizException(MessageEnum.CATEGORY_NOT_EXISTS));
@@ -239,9 +249,17 @@ public class ArticleService extends AbstractService<Article, Article> {
 
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
-    public void delete(Long id) throws BizException {
+    public void delete(Long id, Long userId) throws BizException {
+
+        final User user = userRepository.findById(userId).orElseThrow(()
+                -> new BizException(MessageEnum.USER_NOT_EXISTS));
+
         final Article article = articleRepository.findById(id).orElseThrow(()
                 -> new BizException(MessageEnum.ARTICLE_NOT_EXISTS));
+
+        if(!user.getId().equals(article.getUserId())){
+            throw new BizException(MessageEnum.USER_STATE_INVALID);
+        }
 
         // delete article
         articleRepository.deleteById(article.getId());

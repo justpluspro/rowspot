@@ -1,5 +1,6 @@
 package org.qwli.rowspot.web.controller.api;
 
+import org.qwli.rowspot.Constants;
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
 import org.qwli.rowspot.service.LoginUser;
@@ -48,7 +49,7 @@ public class LoginApi extends AbstractApi {
         LoggedUser loggedUser = userService.login(user);
 
         logger.info("loggedUser: [{}]", loggedUser);
-        request.getSession().setAttribute("user", loggedUser);
+        request.getSession().setAttribute(Constants.USER, loggedUser);
 
         return ResponseEntity.ok(loggedUser);
     }
@@ -73,8 +74,8 @@ public class LoginApi extends AbstractApi {
     @PostMapping("exit")
     public ResponseEntity<Boolean> exit(HttpServletRequest request) {
         final HttpSession session = request.getSession();
-        session.removeAttribute("user");
-        request.removeAttribute("user");
+        session.removeAttribute(Constants.USER);
+        request.removeAttribute(Constants.USER);
         EnvironmentContext.removeAll();
         return ResponseEntity.ok(true);
     }

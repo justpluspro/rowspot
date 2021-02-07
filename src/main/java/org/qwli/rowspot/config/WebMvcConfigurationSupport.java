@@ -33,17 +33,17 @@ public class WebMvcConfigurationSupport implements WebMvcConfigurer {
      */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    /**
-     * 添加静态资源映射
-     * @param registry registry
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        logger.info("addResourceHandlers");
-        //将静态资源 /static/** 的映射
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
-    }
+//    /**
+//     * 添加静态资源映射
+//     * @param registry registry
+//     */
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        logger.info("addResourceHandlers");
+//        //将静态资源 /static/** 的映射
+//        registry.addResourceHandler("/static/**")
+//                .addResourceLocations("classpath:/static/");
+//    }
     
     /**
      * Registry MessageCodeResolver
