@@ -4,12 +4,25 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 
+/**
+ * @author qwli7
+ * 上传的文件
+ */
 public class FileUpload implements Serializable {
 
+    /**
+     * 上传的文件
+     */
     private MultipartFile file;
 
+    /**
+     * 文件名称
+     */
     private String filename;
 
+    /**
+     * 上传的用户
+     */
     private Long userId;
 
     public MultipartFile getFile() {
