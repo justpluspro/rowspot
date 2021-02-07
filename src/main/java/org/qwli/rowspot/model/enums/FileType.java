@@ -1,14 +1,54 @@
 package org.qwli.rowspot.model.enums;
 
-import org.springframework.util.Assert;
+/**
+ * @author qwli7
+ * 文件类型
+ */
 
 public enum FileType {
+    /**
+     * JPG
+     */
     JPG("jpg"),
+
+    /**
+     * JPEG
+     */
     JPEG("jpeg"),
+
+    /**
+     * GIF
+     */
     GIF("gif"),
+
+    /**
+     * WEBP
+     */
     WEBP("webp"),
+
+    /**
+     * PNG
+     */
     PNG("png"),
+
+    /**
+     * MP4
+     */
     MP4("mp4"),
+
+    /**
+     * AVI
+     */
+    AVI("avi"),
+
+    /**
+     * RMVB
+     */
+    RMVB("rmvb"),
+
+    /**
+     * MOV
+     */
     MOV("mov"),
     ;
 
@@ -16,17 +56,6 @@ public enum FileType {
 
     FileType(String code) {
         this.code = code;
-    }
-
-    public static FileType getTypeType(String extension) {
-        Assert.notNull(extension, "extension not null.");
-        final FileType[] values = FileType.values();
-        for(FileType fileType: values) {
-            if(fileType.getCode().equals(extension)){
-                return fileType;
-            }
-        }
-        return null;
     }
 
     public String getCode() {
