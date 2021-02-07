@@ -32,4 +32,12 @@ public class FileApi extends AbstractApi {
         fileUpload.setUserId(loggedUser.getId());
         return ResponseEntity.ok(fileService.uploadFile(fileUpload));
     }
+    
+    @DeleteMapping("file/{id}/delete")
+    public ResponseEntity<Void> deleteFile(@PathVariable("id") Long fid, HttpServletRequest request) {
+        LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
+        FileDelete fileDelete = new FileDelete(14L, fid);
+        fileService.deleteFile(fileDelete);
+        return ResponseEntity.ok().build();
+    }
 }
