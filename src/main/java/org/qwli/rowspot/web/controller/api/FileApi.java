@@ -36,7 +36,7 @@ public class FileApi extends AbstractApi {
     @DeleteMapping("file/{id}/delete")
     public ResponseEntity<Void> deleteFile(@PathVariable("id") Long fid, HttpServletRequest request) {
         final LoggedUser loggedUser = (LoggedUser) request.getAttribute("user");
-        FileDelete fileDelete = new FileDelete(14L, fid);
+        FileDelete fileDelete = new FileDelete(loggedUser.getUserId(), fid);
         fileService.deleteFile(fileDelete);
         return ResponseEntity.ok().build();
     }
