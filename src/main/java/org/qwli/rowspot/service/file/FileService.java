@@ -14,8 +14,10 @@ import org.qwli.rowspot.repository.UserRepository;
 import org.qwli.rowspot.service.FileUpload;
 import org.qwli.rowspot.service.condition.FileCondition;
 import org.qwli.rowspot.util.FileUtil;
+import org.qwli.rowspot.util.MediaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Conditional;
@@ -39,7 +41,7 @@ import java.util.*;
  */
 @Service
 @Conditional(value = FileCondition.class)
-public class FileService implements ApplicationEventPublisherAware {
+public class FileService implements InitializingBean, ApplicationEventPublisherAware {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -51,10 +53,11 @@ public class FileService implements ApplicationEventPublisherAware {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private final String rootContainer = System.getProperty("user.dir");
+    private final Path rootUploadPath;
+
+    private final static String UPLOAD = "upload";
 
     private final List<String> allowMediaTypes = Arrays.asList("jpg", "png", "webp", "gif", "jpeg", "mp4", "mov", "rmvb", "avi", "flv");
-
 
     private final UserRepository userRepository;
 
@@ -63,6 +66,7 @@ public class FileService implements ApplicationEventPublisherAware {
     public FileService(UserRepository userRepository, FileRepository fileRepository) {
         this.userRepository = userRepository;
         this.fileRepository = fileRepository;
+        this.rootUploadPath = Paths.get(Paths.get(System.getProperty("user.dir")).getParent().toString()).resolve(UPLOAD);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
@@ -82,7 +86,7 @@ public class FileService implements ApplicationEventPublisherAware {
         }
 
         //create user container
-        Path containerPath = Paths.get(rootContainer, String.valueOf(dbUser.getId()));
+        Path containerPath = rootUploadPath.resolve(String.valueOf(dbUser.getId()));
         if (!containerPath.toFile().exists()) {
             try {
                 Files.createDirectories(containerPath);
@@ -104,17 +108,19 @@ public class FileService implements ApplicationEventPublisherAware {
             throw new BizException(new Message("invalid.file", "无效的 file"));
         }
 
-        String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-        logger.info("fileExtension:[{}]", extension);
+        String fileExtension = FileUtil.getFileExtension(originalFilename);
+//        String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        logger.info("fileExtension:[{}]", fileExtension);
 
-        if (!allowMediaTypes.contains(extension) && !allowMediaTypes.contains(extension.toLowerCase())) {
+
+        if (!MediaUtil.allowFormat(fileExtension)) {
             throw new BizException(new Message("unsupport.file", "不支持的文件"));
         }
 
         try {
             File destFile = new File(containerPath.toFile(), originalFilename);
             if (destFile.exists()) {
-                originalFilename = originalFilename + "副本." + extension;
+                originalFilename = FileUtil.getFileNameWithoutExtension(originalFilename) + "副本." + fileExtension;
                 destFile = new File(containerPath.toFile(), originalFilename);
                 Files.createFile(destFile.toPath());
             }
@@ -135,7 +141,7 @@ public class FileService implements ApplicationEventPublisherAware {
         userUploadFile.setFileName(originalFilename);
         userUploadFile.setCreateAt(new Date());
         userUploadFile.setModifyAt(new Date());
-        userUploadFile.setFileType(FileType.getTypeType(extension));
+        userUploadFile.setFileType(MediaUtil.getFileType(fileExtension).orElse(null));
         userUploadFile.setFileSize(size);
         userUploadFile.setUrl("/" + dbUser.getId() + "/" + originalFilename);
 
@@ -152,8 +158,8 @@ public class FileService implements ApplicationEventPublisherAware {
 //        if(pathParser.isValid()){
 //            return Optional.empty();
 //        }
-//        Optional<Path> pathOptional = lookupFile(Lookup.newLookup(pathParser.getPath()).setMustRegularFile(true));
-        Optional<Path> pathOptional = lookupFile(Lookup.newLookup(pathParser.getSourcePath()).setMustRegularFile(true));
+//        Optional<Path> pathOptional = lookupFile(Lookup.newLookup(pathParser.getResourcePath()).setMustRegularFile(true));
+        Optional<Path> pathOptional = lookupFile(Lookup.newLookup(pathParser.getPath()).setMustRegularFile(true));
         if (!pathOptional.isPresent()) {
             return Optional.empty();
         }
@@ -162,12 +168,12 @@ public class FileService implements ApplicationEventPublisherAware {
         String fileExtension = FileUtil.getFileExtension(file);
         Resize resize = pathParser.getResize();
 
-        if (resize == null || resize.isInvalid()) {
-            //this resource can handle
-
-        } else {
-            return Optional.empty();
-        }
+//        if (resize == null || resize.isInvalid()) {
+//            //this resource can handle
+//
+//        } else {
+//            return Optional.empty();
+//        }
 
         return Optional.of(new NormalFileReadablePath(file));
     }
@@ -181,8 +187,7 @@ public class FileService implements ApplicationEventPublisherAware {
     private Optional<Path> lookupFile(Lookup lookup) {
         Path p;
         try {
-            Path root = Paths.get(rootContainer);
-            p = resolve(root, lookup.getPath());
+            p = resolve(rootUploadPath, lookup.getPath());
         } catch (InvalidPathException ex) {
             return Optional.empty();
         }
@@ -197,5 +202,15 @@ public class FileService implements ApplicationEventPublisherAware {
             resolve = root.resolve(path);
         }
         return resolve;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        try{
+            FileUtil.forceMkdir(rootUploadPath);
+        } catch (IOException ex){
+            logger.error("FileService initial uploadPath error:[{}]",ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        }
     }
 }
