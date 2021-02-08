@@ -1,0 +1,137 @@
+.user__info__container {
+    background-color: #f6f6f6;
+}
+
+.user__info__avatar {
+    height: 160px;
+    width: 160px;
+    margin: 0 auto;
+}
+
+.pb__00 {
+    padding-bottom: 0;
+}
+
+
+.pb__25 {
+    padding-bottom: 0.25rem !important;
+}
+
+.pb__50 {
+    padding-bottom: 0.5rem !important;
+}
+
+.pb__100 {
+    padding-bottom: 1rem !important;
+}
+
+.pt__150 {
+    padding-top: 1.50rem !important;
+}
+
+.mb__00 {
+    margin-bottom: 0 !important;
+}
+
+.mt__25 {
+    margin-top: 0.25rem;
+}
+
+.mb__25 {
+    margin-top: 0.25rem !important;
+}
+
+.mb__50 {
+    margin-bottom: 0.5rem !important;
+}
+
+
+.ml__25 {
+    margin-left: 0.25rem;
+}
+
+.ml__50 {
+    margin-left: 0.5rem;
+}
+
+.mt__50 {
+    margin-top: 0.5rem;
+}
+
+.font__size__13 {
+    font-size: 13px !important;
+}
+
+.user__info__text__gray {
+    color: #666666;
+}
+
+.profile__introduce__column {
+    padding-bottom: 0;
+}
+.profile__panel {
+    height: 100%;
+    background-color: #EEEEEE;
+}
+.profile__heading {
+    height: 32px;
+    line-height: 32px;
+    background-color: #e3e3e3;
+    padding: 0 12px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.profile__body {
+    background-color: #eeeeee;
+    width: 100%;
+    font-size: 13px;
+    color: #666666;
+    overflow: auto;
+    padding: 20px;
+}
+.profile__heading_dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+.profile__heading_dot--red {
+    background-color: #FF5757;
+}
+.profile__heading_dot--yellow {
+    background-color: #FFBD2E;
+}
+.profile__heading_dot--green {
+    background-color: #28CA42;
+}
+
+.user__content__container {
+
+}
+
+.profile__nav {
+    margin-bottom: 0.25rem !important;
+}
+
+.profile__nav_a {
+    padding: 4px 8px;
+    border-radius: 3px;
+    display: block !important;
+}
+
+.profile__nav a:hover {
+    border-radius: 3px;
+    padding: 4px 8px;
+    color: #009A61;
+    background-color: #F0F5F3;
+}
+
+.profile__nav__active {
+    background-color: #009A61;
+}
+
+.div__divider {
+    background-color: #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+}

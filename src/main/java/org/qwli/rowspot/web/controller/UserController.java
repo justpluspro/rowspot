@@ -5,15 +5,14 @@ import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.model.User;
+import org.qwli.rowspot.model.aggregate.*;
 import org.qwli.rowspot.service.ArticleService;
 import org.qwli.rowspot.service.CollectService;
+import org.qwli.rowspot.service.FollowService;
 import org.qwli.rowspot.service.UserService;
-import org.qwli.rowspot.model.aggregate.ArticleAggregate;
-import org.qwli.rowspot.model.aggregate.CollectAggregate;
-import org.qwli.rowspot.model.aggregate.PageAggregate;
-import org.qwli.rowspot.model.aggregate.UserAggregateRoot;
 import org.qwli.rowspot.model.enums.ArticleType;
 import org.qwli.rowspot.web.ArticleQueryParam;
+import org.qwli.rowspot.web.FollowQueryParam;
 import org.qwli.rowspot.web.annotations.AuthenticatedRequired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,11 +38,14 @@ public class UserController {
 
     private final CollectService collectService;
 
+    private final FollowService followService;
+
     public UserController(UserService userService, ArticleService articleService,
-                          CollectService collectService) {
+                          CollectService collectService, FollowService followService) {
         this.userService = userService;
         this.articleService = articleService;
         this.collectService = collectService;
+        this.followService = followService;
     }
 
     /**
@@ -152,10 +154,28 @@ public class UserController {
      * @return String
      */
     @AuthenticatedRequired
-    @GetMapping("{id}/following")
-    public String following(@PathVariable("id") String id) {
+    @GetMapping("{id}/following/{page}")
+    public String following(@PathVariable("id") Long id,
+                            @PathVariable(value = "page", required = false) Integer page,
+                            Model model) {
 
-        return "front/user/following";
+        final UserAggregateRoot userAggregateRoot = userService.getUserProfile(id);
+        model.addAttribute(userAggregateRoot);
+
+        if(page == null || page < 1) {
+            page = 1;
+        }
+        FollowQueryParam followQueryParam = new FollowQueryParam();
+        followQueryParam.setPage(page);
+        followQueryParam.setSize(10);
+        followQueryParam.setUserId(id);
+        followQueryParam.setQueryType(true);
+
+        final PageAggregate<FollowAggregate> pageAggregate = followService.findPage(followQueryParam);
+        model.addAttribute(pageAggregate);
+
+
+        return "front/user/follow";
     }
 
 
@@ -165,10 +185,27 @@ public class UserController {
      * @return String
      */
     @AuthenticatedRequired
-    @GetMapping("{id}/followed")
-    public String followed(@PathVariable("id") String id) {
+    @GetMapping("{id}/followed/{page}")
+    public String followed(@PathVariable("id") Long id,
+                           @PathVariable(value = "page", required = false) Integer page,
+                           Model model) {
 
-        return "front/user/following";
+        final UserAggregateRoot userAggregateRoot = userService.getUserProfile(id);
+        model.addAttribute(userAggregateRoot);
+
+        if(page == null || page < 1) {
+            page = 1;
+        }
+        FollowQueryParam followQueryParam = new FollowQueryParam();
+        followQueryParam.setPage(page);
+        followQueryParam.setSize(10);
+        followQueryParam.setUserId(id);
+        followQueryParam.setQueryType(false);
+
+        final PageAggregate<FollowAggregate> pageAggregate = followService.findPage(followQueryParam);
+        model.addAttribute(pageAggregate);
+
+        return "front/user/follow";
     }
 
 
