@@ -1,0 +1,100 @@
+<div class="column is-one-fifth" th:fragment="leftNav(activeItem)">
+    <div class="level" th:if="${user == null or user.id != userAggregateRoot.userId}">
+        <div class="level-left">
+            <button type="button" class="button is-fullwidth is-primary">加关注</button>
+        </div>
+        <div class="level-right">
+            <button type="button" class="button is-fullwidth is-light">发私信</button>
+        </div>
+    </div>
+    <div class="level pb__100" style="border-bottom: 1px solid #eeeeee;">
+        <div class="level-item">
+            <div>
+                <p class="heading font__size__13 user__info__text__gray">关注了</p>
+                <p class="is-6 title font__size__13">
+                    <a class="has-text-black" th:href="@{/user/} + ${userAggregateRoot.userId} + @{/following/1}"
+                       id="followingCount">
+                        -1
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="level-item" style="border-left: 1px solid #eeeeee;">
+            <div>
+                <p class="heading font__size__13 user__info__text__gray">粉丝</p>
+                <p class="is-6 title font__size__13">
+                    <a class="has-text-black" th:href="@{/user/} + ${userAggregateRoot.userId} + @{/followed/1}" id="followedCount">
+                        -1
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile__nav">
+        <a th:classappend="${activeItem == 'profile' ? 'profile_'+'_nav_'+'_active' : ''}"
+           class="profile__nav_a user__info__text__gray"
+           th:text="${user != null && user.id != userAggregateRoot.userId ? '他的主页': '我的主页'}"
+           th:href="@{/user/} + ${userAggregateRoot.userId} + @{/profile}">
+            他的主页
+        </a>
+    </div>
+    <div th:classappend="${activeItem == 'article' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/articles}"
+           class="profile__nav_a user__info__text__gray">
+            [[${user != null && user.id != userAggregateRoot.userId ? '他的文章': '我的文章'}]]
+            <span style="float: right;">5560</span>
+        </a>
+    </div>
+    <div th:classappend="${activeItem == 'question' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+        <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/questions}"
+           class="profile__nav_a user__info__text__gray">
+            [[${user != null && user.id != userAggregateRoot.userId ? '他的提问': '我的提问'}]]
+            <span style="float: right;">23</span>
+        </a>
+    </div>
+    <div th:classappend="${activeItem == 'answer' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/answers}"
+           class="profile__nav_a user__info__text__gray">
+            [[${user != null && user.id != userAggregateRoot.userId ? '他的回答': '我的回答'}]]
+            <span style="float: right;">14</span>
+        </a>
+    </div>
+    <div th:classappend="${activeItem == 'collect' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/collects}"
+           class="profile__nav_a user__info__text__gray">
+            [[${user != null && user.id != userAggregateRoot.userId ? '他的收藏夹': '我的收藏夹'}]]
+            <span style="float: right;">2</span>
+        </a>
+    </div>
+    <div th:classappend="${activeItem == 'like' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/likes}"
+           class="profile__nav_a user__info__text__gray">
+            [[${user != null && user.id != userAggregateRoot.userId ? '他的点赞': '我的点赞'}]]
+            <span style="float: right;">88</span>
+        </a>
+    </div>
+    <div th:classappend="${activeItem == 'praised' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/likes}"
+           th:text="${user != null && user.id != userAggregateRoot.userId ? '他的被赞': '我的被赞'}"
+           class="profile__nav_a user__info__text__gray">
+            他的被赞
+        </a>
+    </div>
+
+    <div class="div__divider mt__50 mb__50"></div>
+
+    <div class="profile__nav">
+        <a th:if="${user != null and user.id == userAggregateRoot.userId}"
+           class="profile__nav_a user__info__text__gray">
+            声望记录
+        </a>
+    </div>
+    <div class="profile__nav">
+        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/settings}"
+           th:if="${user != null and user.id == userAggregateRoot.userId}"
+           class="profile__nav_a user__info__text__gray">
+            系统设置
+        </a>
+    </div>
+</div>
