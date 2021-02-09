@@ -1,11 +1,19 @@
 <footer class="footer" th:fragment="footer">
     <div class="container is-max-widescreen">
         <div class="content has-text-centered">
-            <p>
-                <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
-                <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-                is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-            </p>
+            <div>
+                <span class="user__info__text__gray">Copyright 2020~2021</span>.
+                <a class="user__info__text__gray" th:href="@{https://rowspot.cn}">Rowspot</a>
+                <span class="user__info__text__gray">by</span>
+                <a class="user__info__text__gray" th:href="@{https://github.com/qwli7}">qwli7</a>.
+                <span class="user__info__text__gray">当前呈现版本</span><span class="user__info__text__gray" id="version">1.2.13</span>.
+                <span class="user__info__text__gray">构建时间</span><span class="user__info__text__gray" id="build-time"></span>.
+            </div>
+            <div>
+                <a class="user__info__text__gray" href="http://opensource.org/licenses/mit-license.php">鄂ICP备33010602002000号-1</a>.
+                <a class="user__info__text__gray" href="http://opensource.org/licenses/mit-license.php">鄂公安网备33010602002000号</a>.
+                <span class="user__info__text__gray">Rowspot 版权所有.</span>
+            </div>
         </div>
     </div>
 </footer>
