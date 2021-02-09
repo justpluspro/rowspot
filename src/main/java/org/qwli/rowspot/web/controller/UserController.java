@@ -174,6 +174,8 @@ public class UserController {
         final PageAggregate<FollowAggregate> pageAggregate = followService.findPage(followQueryParam);
         model.addAttribute(pageAggregate);
 
+        model.addAttribute("followType", true);
+
 
         return "front/user/follow";
     }
@@ -204,6 +206,8 @@ public class UserController {
 
         final PageAggregate<FollowAggregate> pageAggregate = followService.findPage(followQueryParam);
         model.addAttribute(pageAggregate);
+
+        model.addAttribute("followType", false);
 
         return "front/user/follow";
     }
