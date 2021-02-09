@@ -1,0 +1,80 @@
+<section class="section user__info__container pb__00" th:fragment="userProfile">
+    <div class="container is-max-widescreen">
+        <div class="columns">
+            <div class="column is-2">
+                <div class="image user__info__avatar">
+                    <a href="javascript:void(0);">
+                        <img alt="头像" th:alt="${userAggregateRoot.username}+'头像'" class="is-rounded" src="https://www.orchome.com/images/user/noHeadPortraitV2.png">
+                    </a>
+                </div>
+                <div class="level">
+                    <div class="level-item has-text-centered">
+                        <span class="mdi mdi-wechat" aria-hidden="true"></span>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <span class="mdi mdi-github" aria-hidden="true"></span>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <span class="mdi mdi-sina-weibo" aria-hidden="true"></span>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <span class="mdi mdi-qqchat" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-5">
+                <h3 class="is-3 title mb__00">
+                    <span th:text="${userAggregateRoot.username}"></span>
+                    <a class="font__size__16 has-text-success ml__50"
+                       th:href="@{/user/} +${userAggregateRoot.userId} +@{/about}">查看完整档案</a>
+                </h3>
+                <div class="mt__50">
+                    <span class="tag is-success">0 声望</span>
+                </div>
+                <div class="mt__50">
+                    <span class="mdi mdi-account" aria-hidden="true"></span>
+                    <span class="user__info__text__gray" th:text="${userAggregateRoot.job}">架构师</span>
+                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
+                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
+                        编辑
+                    </a>
+                </div>
+                <div class="mt__50">
+                    <span class="mdi mdi-map-marker" aria-hidden="true"></span>
+                    <span class="user__info_text__gray" th:text="${userAggregateRoot.address}">湖北-武汉</span>
+                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
+                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
+                        编辑
+                    </a>
+                </div>
+                <div class="mt__50">
+                    <span class="mdi mdi-tools" aria-hidden="true"></span>
+                    <span class="user__info__text__gray" th:text="${userAggregateRoot.skills}">Kubernates、docker、android、java</span>
+                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
+                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
+                        编辑
+                    </a>
+                </div>
+                <div class="mt__50">
+                    <span class="mdi mdi-web" aria-hidden="true"></span>
+                    <a class="user__info__text__gray" th:href="${userAggregateRoot.website}" th:text="${userAggregateRoot.website}">https://www.baidu.com</a>
+                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
+                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
+                        编辑
+                    </a>
+                </div>
+            </div>
+            <div class="column is-5 profile__introduce__column">
+                <div class="profile__panel">
+                    <div class="profile__heading">
+                        <span class="profile__heading_dot profile__heading_dot--red"></span>
+                        <span class="profile__heading_dot profile__heading_dot--yellow"></span>
+                        <span class="profile__heading_dot profile__heading_dot--green"></span>
+                        <a href="javascript:void(0);" class="user__info__text__gray font__size__13" style="float: right;">编辑</a>
+                    </div>
+                    <div class="profile__body" th:text="${userAggregateRoot.introduces}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
