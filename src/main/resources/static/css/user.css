@@ -1,3 +1,17 @@
+body {
+    font-family: -apple-system,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei",sans-serif;
+    font-size: 14px;
+    line-height: 1.42858;
+    color: #333;
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+}
+
+.navbar-item:hover {
+    background-color: transparent;
+    color: #009A61;
+}
+
 .user__info__container {
     background-color: #f6f6f6;
 }
@@ -25,16 +39,16 @@
     padding-bottom: 1rem !important;
 }
 
+.pt__25 {
+    padding-top: 0.25rem !important;
+}
+
 .pt__150 {
     padding-top: 1.50rem !important;
 }
 
 .mb__00 {
     margin-bottom: 0 !important;
-}
-
-.mt__25 {
-    margin-top: 0.25rem;
 }
 
 .mb__25 {
@@ -54,12 +68,35 @@
     margin-left: 0.5rem;
 }
 
+.mr__25 {
+    margin-top: 0.25rem !important;
+}
+
+.mt__25 {
+    margin-top: 0.25rem;
+}
+
 .mt__50 {
     margin-top: 0.5rem;
 }
 
+.mt__100 {
+    margin-top: 1rem;
+}
+.mt__150 {
+    margin-top: 1.5rem;
+}
+
+.mt_200 {
+    margin-bottom: 2rem;
+}
+
 .font__size__13 {
     font-size: 13px !important;
+}
+
+.font__size__16 {
+    font-size: 16px !important;
 }
 
 .user__info__text__gray {
@@ -78,8 +115,8 @@
     line-height: 32px;
     background-color: #e3e3e3;
     padding: 0 12px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 .profile__body {
     background-color: #eeeeee;
@@ -115,23 +152,59 @@
 }
 
 .profile__nav_a {
-    padding: 4px 8px;
-    border-radius: 3px;
+    padding: 8px;
+    border-radius: 4px;
     display: block !important;
 }
 
 .profile__nav a:hover {
-    border-radius: 3px;
-    padding: 4px 8px;
+    border-radius: 4px;
+    padding: 8px;
     color: #009A61;
     background-color: #F0F5F3;
 }
 
 .profile__nav__active {
-    background-color: #009A61;
+    background-color: #F0F5F3;
+    color: #009A61;
 }
 
 .div__divider {
     background-color: #eeeeee;
     border-bottom: 1px solid #eeeeee;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: .25rem;
+    border:1px solid #ddd;
+    color: #4a4a4a;
+    max-width: 100%;
+    box-shadow: none;
+    overflow: hidden;
+    position: relative;
+}
+.card-header {
+    background-color: #f5f5f5;
+    box-shadow: none;
+    align-items: stretch;
+    border-bottom: 1px solid #eeeeee !important;
+    display: flex;
+}
+
+.card-header-title {
+    align-items: center;
+    color: #363636;
+    display: flex;
+    flex-grow: 1;
+    font-weight: 500;
+    font-size: 16px;
+    padding: .75rem 1rem;
+}
+.card-content {
+    padding: .75rem 1rem;
+}
+
+.footer {
+    padding: 4rem 1.5rem 4rem;
 }
