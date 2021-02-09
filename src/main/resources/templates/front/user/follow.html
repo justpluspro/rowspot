@@ -6,207 +6,43 @@
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="/static/materialdesignicons/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/static/css/user.css">
-    <title>个人中心</title>
+    <title th:text="${userAggregateRoot.username + '的主页 - RowSpot'}">个人中心</title>
 </head>
 <body>
 <div th:replace="/front/base/navbar::header"></div>
-<section class="section user__info__container pb__00">
-    <div class="container is-max-widescreen">
-        <div class="columns">
-            <div class="column is-2">
-                <div class="image user__info__avatar">
-                    <a href="javascript:void(0);">
-                        <img class="is-rounded" src="https://www.orchome.com/images/user/noHeadPortraitV2.png">
-                    </a>
-                </div>
-                <div class="level">
-                    <div class="level-item has-text-centered">
-                        <span class="mdi mdi-wechat" aria-hidden="true"></span>
-                    </div>
-                    <div class="level-item has-text-centered">
-                        <span class="mdi mdi-github" aria-hidden="true"></span>
-                    </div>
-                    <div class="level-item has-text-centered">
-                        <span class="mdi mdi-sina-weibo" aria-hidden="true"></span>
-                    </div>
-                    <div class="level-item has-text-centered">
-                        <span class="mdi mdi-qqchat" aria-hidden="true"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="column is-5">
-                <h3 class="is-3 title mb__00" th:text="${userAggregateRoot.username}">半兽人</h3>
-                <div class="mt__50">
-                    <span class="tag is-success">0 声望</span>
-                </div>
-                <div class="mt__50">
-                    <span class="mdi mdi-account" aria-hidden="true"></span>
-                    <span class="user__info__text__gray" th:text="${userAggregateRoot.job}">架构师</span>
-                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
-                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
-                        编辑
-                    </a>
-                </div>
-                <div class="mt__50">
-                    <span class="mdi mdi-map-marker" aria-hidden="true"></span>
-                    <span class="user__info_text__gray" th:text="${userAggregateRoot.address}">湖北-武汉</span>
-                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
-                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
-                        编辑
-                    </a>
-                </div>
-                <div class="mt__50">
-                    <span class="mdi mdi-tools" aria-hidden="true"></span>
-                    <span class="user__info__text__gray" th:text="${userAggregateRoot.skills}">Kubernates、docker、android、java</span>
-                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
-                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
-                        编辑
-                    </a>
-                </div>
-                <div class="mt__50">
-                    <span class="mdi mdi-web" aria-hidden="true"></span>
-                    <a class="user__info__text__gray" th:href="${userAggregateRoot.website}" th:text="${userAggregateRoot.website}">https://www.baidu.com</a>
-                    <a class="user__info__text__gray ml__50 font__size__13" href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">
-                        <span class="mdi mdi-pencil" aria-hidden="true"></span>
-                        编辑
-                    </a>
-                </div>
-            </div>
-            <div class="column is-5 profile__introduce__column">
-                <div class="profile__panel">
-                    <div class="profile__heading">
-                        <span class="profile__heading_dot profile__heading_dot--red"></span>
-                        <span class="profile__heading_dot profile__heading_dot--yellow"></span>
-                        <span class="profile__heading_dot profile__heading_dot--green"></span>
-                        <a href="javascript:void(0);" class="user__info__text__gray font__size__13" style="float: right;">编辑</a>
-                    </div>
-                    <div class="profile__body" th:text="${userAggregateRoot.introduces}"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<div th:replace="/front/base/user-profile::userProfile"></div>
 
 <section class="section">
     <div class="container is-max-widescreen">
         <div class="columns">
-            <div class="column">
-                <div class="level">
-                    <div class="level-left">
-                        <button type="button" class="button is-fullwidth is-primary">加关注</button>
-                    </div>
-                    <div class="level-right">
-                        <button type="button" class="button is-fullwidth is-light">发私信</button>
-                    </div>
-                </div>
-                <div class="level pb__100" style="border-bottom: 1px solid #eeeeee;">
-                    <div class="level-item">
-                        <div>
-                            <p class="heading font__size__13 user__info__text__gray">关注了</p>
-                            <p class="is-6 title font__size__13">
-                                <a class="has-text-black" th:href="@{/user/} +  ${userAggregateRoot.userId} + @{/following/1}"
-                                   id="followingCount">
-                                    -1
-                                </a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="level-item" style="border-left: 1px solid #eeeeee;">
-                        <div>
-                            <p class="heading font__size__13 user__info__text__gray">粉丝</p>
-                            <p class="is-6 title font__size__13">
-                              <a class="has-text-black" th:href="@{/user/} +  ${userAggregateRoot.userId} + @{/followed/1}" id="followedCount">
-                                  -1
-                              </a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="profile__nav">
-                    <a class="profile__nav_a user__info__text__gray"
-                       th:href="@{/user/} + ${userAggregateRoot.userId} + @{/profile}">
-                        他的主页
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/articles}"
-                       class="profile__nav_a user__info__text__gray">
-                        他的文章
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/questions}"
-                       class="profile__nav_a user__info__text__gray">
-                        他的提问
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/answers}"
-                       class="profile__nav_a user__info__text__gray">
-                        他的回答
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/collects}"
-                       class="profile__nav_a user__info__text__gray">
-                        他的收藏
-                        <span style="float: right;">2</span>
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/likes}"
-                       class="profile__nav_a user__info__text__gray">
-                        他的点赞
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/likes}"
-                       class="profile__nav_a user__info__text__gray">
-                        他的被赞
-                    </a>
-                </div>
-
-                <div class="div__divider mt__50 mb__50"></div>
-
-                <div class="profile__nav">
-                    <a th:if="${user != null and user.id == userAggregateRoot.userId}"
-                       class="profile__nav_a user__info__text__gray">
-                        声望记录
-                    </a>
-                </div>
-                <div class="profile__nav">
-                    <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/settings}" th:if="${user != null and user.id == userAggregateRoot.userId}"
-                       class="profile__nav_a user__info__text__gray">
-                        系统设置
-                    </a>
-                </div>
-            </div>
+            <div th:replace="/front/base/left-nav::leftNav('followed')"></div>
             <div class="column is-four-fifths">
                 <div class="content pb__00 mb__25" style="border-bottom: 1px solid #eeeeee;">
-                    <h4 class="is-4 pb__00">问题</h4>
+                    <h4 class="is-4 pb__00" th:text="${followType? '他的粉丝':'他的关注'}">问题</h4>
                 </div>
                 <div class="columns">
                     <div class="column">
                         <article class="media" th:each="followAggregate : ${pageAggregate.data}">
                             <figure class="media-left">
                                 <p class="image is-32x32">
-                                    <img src="https://www.orchome.com/images/user/noHeadPortraitV2.png" class="is-rounded" alt="">
+                                    <img src="https://www.orchome.com/images/user/noHeadPortraitV2.png"
+                                         class="is-rounded" alt="">
                                 </p>
                             </figure>
                             <div class="media-content">
                                 <div class="content">
-                                    <a th:href="@{/user/} + ${followAggregate.followUserId} + '/profile'" class="has-text-primary" th:text="${followAggregate.followUsername}"></a><br/>
-                                    <span class="is-small" th:text="${followAggregate.followUserPrestige}+' 声望'"></span>
-                                    <span style="margin-left: 0.25rem; margin-right: 0.25rem">-</span>
-                                    <span class="is-small" th:text="${#dates.format(followAggregate.createAt, 'yyyy-MM-dd HH:mm')}"></span>
+                                    <a th:href="@{/user/} + ${followAggregate.followUserId} + '/profile'" class="has-text-success" th:text="${followAggregate.followUsername}"></a><br/>
+                                    <span class="font__size__13 user__info__text__gray"
+                                          th:text="${followAggregate.followUserPrestige}+' 声望'"></span>
+                                    <span class="font__size__13 user__info__text__gray ml__25"
+                                          th:text="${#dates.format(followAggregate.createAt, 'yyyy-MM-dd HH:mm')}"></span>
                                 </div>
                             </div>
                         </article>
                     </div>
                 </div>
 
-                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                <nav class="pagination is-small is-centered" role="navigation" aria-label="pagination">
                     <ul class="pagination-list">
                         <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>
                         <li><span class="pagination-ellipsis">&hellip;</span></li>
@@ -224,6 +60,7 @@
 
 <div th:replace="/front/base/footer::footer"></div>
 <script src="/static/axios.min.js"></script>
+<script src="/static/js/version.js"></script>
 
 <script>
     let rootPath = '[[@{/}]]';
@@ -242,7 +79,6 @@
             document.getElementById('followedCount').innerText = '0';
             document.getElementById('followingCount').innerText = '0';
         });
-
     }
 </script>
 
