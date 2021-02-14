@@ -10,10 +10,8 @@ import org.qwli.rowspot.model.aggregate.PageAggregate;
 import org.qwli.rowspot.repository.ArticleTagRepository;
 import org.qwli.rowspot.repository.TagRepository;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,11 +41,11 @@ public class TagService extends AbstractService<Tag, Tag> {
     public void save(Tag tag) throws BizException {
         final String name = tag.getName();
         tagRepository.findByName(name).ifPresent(e -> {
-            throw new BizException(new Message("tagName.exists", "标签已经存在"));
+            throw new BizException(MessageEnum.NAME_EXISTS);
         });
 
         tagRepository.findByAlias(tag.getAlias()).ifPresent(e -> {
-            throw new BizException(new Message("tagAlias.exists", "标签已经存在"));
+            throw new BizException(MessageEnum.ALIAS_EXISTS);
         });
 
         tag.setCreateAt(new Date());
@@ -64,7 +62,7 @@ public class TagService extends AbstractService<Tag, Tag> {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void delete(Long id) throws BizException {
         final Tag tag = tagRepository.findById(id).orElseThrow(()
-                -> new BizException(new Message("tag.notExists", "标签不存在")));
+                -> new BizException(MessageEnum.TAG_NOT_EXISTS));
         ArticleTag articleTag = new ArticleTag();
         articleTag.setTagId(tag.getId());
         articleTagRepository.delete(articleTag);
@@ -91,5 +89,35 @@ public class TagService extends AbstractService<Tag, Tag> {
 
         }
         return new PageAggregate<>(tags.getContent(), page, tags.getTotalPages());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
+    public void update(Tag tag) throws BizException {
+        Tag oldTag = tagRepository.findById(tag.getId()).orElseThrow(()
+                -> new BizException(MessageEnum.TAG_NOT_EXISTS));
+        final String name = tag.getName();
+        Tag probe = new Tag();
+        probe.setName(name);
+
+        Example<Tag> example = Example.of(probe);
+        //check name
+        tagRepository.findOne(example).ifPresent(e -> {
+            throw new BizException(MessageEnum.NAME_EXISTS);
+        });
+
+        probe.setName(null);
+        probe.setAlias(tag.getAlias());
+
+        //check alias
+        tagRepository.findOne(example).ifPresent(e -> {
+            throw new BizException(MessageEnum.ALIAS_EXISTS);
+        });
+
+        //update
+        oldTag.setName(name);
+        oldTag.setAlias(tag.getAlias());
+        oldTag.setModifyAt(new Date());
+        oldTag.setIcon(tag.getIcon());
+        oldTag.setDescription(tag.getDescription());
     }
 }

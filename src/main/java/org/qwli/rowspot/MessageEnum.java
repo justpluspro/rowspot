@@ -36,5 +36,9 @@ public interface MessageEnum {
     Message RESOURCE_NOT_FOUND = new Message("resource.notFound", "资源未找到");
     Message ARTICLE_STATE_ERROR = new Message("articleState.error", "无效的文章状态");
     Message ARTICLE_NOT_EXISTS = new Message("article.notExists", "文章不存在");
+
+    Message TAG_NOT_EXISTS = new Message("tag.notExists", "标签不存在");
+    Message NAME_EXISTS = new Message("name.exists", "名称存在");
+    Message ALIAS_EXISTS = new Message("alias.exists", "别名已经存在");
 }
 

@@ -7,6 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Tag
+ * @author liqiwen
+ * @since 1.0
+ */
 @RestController
 @RequestMapping("api")
 public class TagApi extends AbstractApi {
@@ -21,6 +26,19 @@ public class TagApi extends AbstractApi {
     @PostMapping("tag/saved")
     public ResponseEntity<Void> save(@RequestBody @Validated Tag tag) {
         tagService.save(tag);
+        return ResponseEntity.ok().build();
+    }
+
+
+
+    @PutMapping("tag/{id}/update")
+    public ResponseEntity<Void> update(@PathVariable("id") Long id, @RequestBody Tag tag) {
+
+        tag.setId(id);
+
+        tagService.update(tag);
+
+
         return ResponseEntity.ok().build();
     }
 
