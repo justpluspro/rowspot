@@ -2,6 +2,7 @@ package org.qwli.rowspot.service;
 
 import org.qwli.rowspot.MessageEnum;
 import org.qwli.rowspot.event.FollowedEvent;
+import org.qwli.rowspot.event.UnFollowEvent;
 import org.qwli.rowspot.exception.BizException;
 import org.qwli.rowspot.exception.ResourceNotFoundException;
 import org.qwli.rowspot.model.Follow;
@@ -119,25 +120,44 @@ public class FollowService implements ApplicationEventPublisherAware {
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BizException.class)
     public void addFollow(Follow follow) throws BizException {
+
         Long userId = follow.getUserId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new BizException(MessageEnum.USER_NOT_EXISTS));
+        Long followUserId = follow.getFollowUserId();
+
+        if(userId.equals(followUserId)) {
+            throw new BizException(MessageEnum.FOLLOW_ERROR);
+        }
+
+        //check user
+        User user = userRepository.findById(userId).orElseThrow(()
+                -> new BizException(MessageEnum.USER_NOT_EXISTS));
         if(user.getState() != UserState.NORMAL) {
             throw new BizException(MessageEnum.USER_STATE_INVALID);
         }
 
-        Long followUserId = follow.getFollowUserId();
-        User followedUser = userRepository.findById(followUserId).orElseThrow(() -> new BizException(MessageEnum.USER_NOT_EXISTS));
+        //check follow user
+        User followedUser = userRepository.findById(followUserId).orElseThrow(()
+                -> new BizException(MessageEnum.USER_NOT_EXISTS));
         if(followedUser.getState() != UserState.NORMAL) {
             throw new BizException(MessageEnum.USER_STATE_INVALID);
         }
 
+        //check has followed?
         Optional<Follow> followOptional = followRepository.findByUserIdAndFollowUserId(userId, followUserId);
         if(!followOptional.isPresent()) {
             follow.setCreateAt(new Date());
             follow.setModifyAt(new Date());
             followRepository.save(follow);
+
+            //publish follow event
+            applicationEventPublisher.publishEvent(new FollowedEvent(this, user, followedUser));
+
+        } else {
+            //cancel follow
+            followRepository.delete(followOptional.get());
+            //publish unfollow event
+            applicationEventPublisher.publishEvent(new UnFollowEvent(this));
         }
-        applicationEventPublisher.publishEvent(new FollowedEvent(this, user, followedUser));
     }
 
     /**

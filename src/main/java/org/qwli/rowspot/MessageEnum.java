@@ -40,5 +40,6 @@ public interface MessageEnum {
     Message TAG_NOT_EXISTS = new Message("tag.notExists", "标签不存在");
     Message NAME_EXISTS = new Message("name.exists", "名称存在");
     Message ALIAS_EXISTS = new Message("alias.exists", "别名已经存在");
+    Message FOLLOW_ERROR = new Message("follow.error", "无法关注自己");
 }
 

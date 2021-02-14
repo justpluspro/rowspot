@@ -2,13 +2,12 @@ package org.qwli.rowspot.web.controller.api;
 
 
 import org.qwli.rowspot.Constants;
+import org.qwli.rowspot.model.Follow;
 import org.qwli.rowspot.model.LoggedUser;
 import org.qwli.rowspot.service.FollowService;
+import org.qwli.rowspot.web.annotations.AuthenticatedRequired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class FollowApi extends AbstractApi {
     }
 
     /**
-     * 检查某个用户是否关注了某个用户
+     * check user has followed other user
      * @param userId userId
      * @param request request
      * @return ResponseEntity
@@ -51,5 +50,21 @@ public class FollowApi extends AbstractApi {
     public ResponseEntity<Map<String, Long>> countFollowData(@PathVariable("userId") Long userId, HttpServletRequest request) {
 //        final LoggedUser loggedUser = getLoggedUser(request);
         return ResponseEntity.ok(followService.countFollowData(userId));
+    }
+
+
+    @AuthenticatedRequired
+    @PostMapping("follow/{id}/add")
+    public ResponseEntity<Void> addFollow(@PathVariable("id") Long id, HttpServletRequest request) {
+
+        Follow follow = new Follow();
+        follow.setFollowUserId(id);
+
+        final LoggedUser loggedUser = (LoggedUser) request.getAttribute(Constants.USER);
+        follow.setUserId(loggedUser.getId());
+
+        followService.addFollow(follow);
+
+        return ResponseEntity.ok().build();
     }
 }
