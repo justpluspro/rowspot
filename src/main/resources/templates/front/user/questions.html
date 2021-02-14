@@ -4,115 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/bulma/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
-    <title>个人中心</title>
+    <link rel="stylesheet" href="/static/materialdesignicons/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/static/css/user.css">
+    <title th:text="${userAggregateRoot.username + '的主页 - RowSpot'}">个人中心</title>
 </head>
 <body>
 <div th:replace="/front/base/navbar::header"></div>
-<section class="section" style="background:#EEEEEE;">
-    <div class="container is-max-widescreen">
-        <div class="columns">
-            <div class="column is-one-quarter">
-                <div class="image is-128x128">
-                    <img class="is-rounded" src="https://www.orchome.com/images/user/noHeadPortraitV2.png">
-                </div>
-            </div>
-            <div class="column is-one-quarter">
-                <h5 class="is-5" th:text="${userAggregateRoot.username}">半兽人</h5>
-                <div>
-                    <span th:text="${userAggregateRoot.job}">架构师</span>
-                    <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">编辑</a>
-                </div>
-                <div>
-                    <span th:text="${userAggregateRoot.address}">湖北-武汉</span>
-                    <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">编辑</a>
-                </div>
-                <div>
-                    <span th:text="${userAggregateRoot.skills}">Kubernates、docker、android、java</span>
-                    <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">编辑</a>
-                </div>
-                <div>
-                    <a th:href="${userAggregateRoot.website}" th:text="${userAggregateRoot.website}">https://www.baidu.com</a>
-                    <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}">编辑</a>
-                </div>
-            </div>
-            <div class="column">
-                <article class="message is-dark">
-                    <div class="message-header">
-                        <p>Dark</p>
-                    </div>
-                    <div class="message-body">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                    </div>
-                </article>
-            </div>
-        </div>
-    </div>
-</section>
+<div th:replace="/front/base/user-profile::userProfile"></div>
 
 <section class="section">
     <div class="container is-max-widescreen">
         <div class="columns">
-            <div class="column is-one-fifth">
-                <nav class="panel">
-                    <p class="panel-heading">
-                        Repositories
-                    </p>
-                    <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/profile}" class="panel-block is-active">
-                    <span class="panel-icon">
-                      <i class="fas fa-book" aria-hidden="true"></i>
-                    </span>
-                        主页
-                    </a>
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/articles}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-book" aria-hidden="true"></i>
-                        </span>
-                        文章
-                    </a>
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/questions}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-book" aria-hidden="true"></i>
-                        </span>
-                        提问
-                    </a>
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/answers}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-book" aria-hidden="true"></i>
-                        </span>
-                        回答
-                    </a>
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/collects}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-code-branch" aria-hidden="true"></i>
-                        </span>
-                        收藏
-                    </a>
-                    <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/likes}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-code-branch" aria-hidden="true"></i>
-                        </span>
-                        点赞
-                    </a>
+            <div th:replace="/front/base/left-nav::leftNav('question')"></div>
 
-                    <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-code-branch" aria-hidden="true"></i>
-                        </span>
-                        声望记录
-                    </a>
-
-                    <a href="javascript:void(0);" th:if="${user != null and user.id == userAggregateRoot.userId}" class="panel-block">
-                        <span class="panel-icon">
-                          <i class="fas fa-code-branch" aria-hidden="true"></i>
-                        </span>
-                        设置
-                    </a>
-                </nav>
-            </div>
-            <div class="column">
-                <div class="content">
-                    <h3>问题</h3>
+            <div class="column is-four-fifths">
+                <div class="content pb__00 mb__25" style="border-bottom: 1px solid #eeeeee;">
+                    <h4 class="is-4 pb__00" th:text="提问">问题</h4>
                 </div>
                 <div class="columns" th:each="article: ${pageAggregate.data}">
                     <div class="column">
@@ -126,7 +33,7 @@
                     </div>
                 </div>
 
-                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                <nav class="pagination is-small is-centered" role="navigation" aria-label="pagination">
                     <ul class="pagination-list">
                         <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>
                         <li><span class="pagination-ellipsis">&hellip;</span></li>
@@ -143,6 +50,8 @@
 </section>
 
 <div th:replace="/front/base/footer::footer"></div>
+<script src="/static/axios.min.js"></script>
+<script src="/static/js/version.js"></script>
 
 </body>
 </html>

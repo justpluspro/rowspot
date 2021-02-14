@@ -39,36 +39,41 @@
             他的主页
         </a>
     </div>
-    <div th:classappend="${activeItem == 'article' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
-        <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/articles}"
+    <div class="profile__nav">
+        <a  th:classappend="${activeItem == 'article' ? 'profile_'+'_nav_'+'_active' : ''}"
+            th:href="@{/user/} + ${userAggregateRoot.userId} + @{/articles}"
            class="profile__nav_a user__info__text__gray">
             [[${user != null && user.id != userAggregateRoot.userId ? '他的文章': '我的文章'}]]
             <span style="float: right;">5560</span>
         </a>
     </div>
-    <div th:classappend="${activeItem == 'question' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+    <div class="profile__nav">
         <a th:href="@{/user/}  + ${userAggregateRoot.userId} + @{/questions}"
+           th:classappend="${activeItem == 'question' ? 'profile_'+'_nav_'+'_active' : ''}"
            class="profile__nav_a user__info__text__gray">
             [[${user != null && user.id != userAggregateRoot.userId ? '他的提问': '我的提问'}]]
             <span style="float: right;">23</span>
         </a>
     </div>
-    <div th:classappend="${activeItem == 'answer' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+    <div class="profile__nav">
         <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/answers}"
+           th:classappend="${activeItem == 'answer' ? 'profile_'+'_nav_'+'_active' : ''}"
            class="profile__nav_a user__info__text__gray">
             [[${user != null && user.id != userAggregateRoot.userId ? '他的回答': '我的回答'}]]
             <span style="float: right;">14</span>
         </a>
     </div>
-    <div th:classappend="${activeItem == 'collect' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+    <div class="profile__nav">
         <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/collects}"
+           th:classappend="${activeItem == 'collect' ? 'profile_'+'_nav_'+'_active' : ''}"
            class="profile__nav_a user__info__text__gray">
             [[${user != null && user.id != userAggregateRoot.userId ? '他的收藏夹': '我的收藏夹'}]]
             <span style="float: right;">2</span>
         </a>
     </div>
-    <div th:classappend="${activeItem == 'like' ? 'profile_'+'_nav_'+'_active' : ''}" class="profile__nav">
+    <div class="profile__nav">
         <a th:href="@{/user/} + ${userAggregateRoot.userId} + @{/likes}"
+           th:classappend="${activeItem == 'like' ? 'profile_'+'_nav_'+'_active' : ''}"
            class="profile__nav_a user__info__text__gray">
             [[${user != null && user.id != userAggregateRoot.userId ? '他的点赞': '我的点赞'}]]
             <span style="float: right;">88</span>
