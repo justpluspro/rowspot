@@ -53,6 +53,12 @@ public class FollowApi extends AbstractApi {
     }
 
 
+    /**
+     * 添加关注/取消关注
+     * @param id id
+     * @param request request
+     * @return ResponseEntity
+     */
     @AuthenticatedRequired
     @PostMapping("follow/{id}/add")
     public ResponseEntity<Void> addFollow(@PathVariable("id") Long id, HttpServletRequest request) {
