@@ -124,6 +124,7 @@ public class FollowService implements ApplicationEventPublisherAware {
         Long userId = follow.getUserId();
         Long followUserId = follow.getFollowUserId();
 
+        //check is self
         if(userId.equals(followUserId)) {
             throw new BizException(MessageEnum.FOLLOW_ERROR);
         }
