@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * 关注 api
+ * @author liqiwen
+ * @since 1.0
+ */
 @RestController
 @RequestMapping("api")
 public class FollowApi extends AbstractApi {
