@@ -37,11 +37,27 @@ public class EventListenProcessor {
                 processFollowedEvent(followedEvent);
                 break;
             case UN_FOLLOWED:
+                logger.info("processEvent unfollowed event:[{}]", abstractEvent);
+                UnFollowEvent unFollowEvent = (UnFollowEvent) abstractEvent;
+                processUnfollowEvent(unFollowEvent);
                 break;
         }
     }
 
+    /**
+     * 处理取消关注事件
+     * @param unFollowEvent unFollowEvent
+     */
+    private void processUnfollowEvent(UnFollowEvent unFollowEvent) {
+        final EventType eventType = unFollowEvent.getEventType();
+        final long timestamp = unFollowEvent.getTimestamp();
+    }
 
+
+    /**
+     * 处理关注事件
+     * @param followedEvent followedEvent
+     */
     public void processFollowedEvent(FollowedEvent followedEvent) {
         final User followUser = followedEvent.getFollowUser();
         final User user = followedEvent.getUser();
