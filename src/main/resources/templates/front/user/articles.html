@@ -24,13 +24,16 @@
                 </div>
 
                 <div class="columns" th:each="article: ${pageAggregate.data}">
-                    <div class="column">
-                        <span class="tag">0 票</span>
+                    <div class="column is-1">
+                        <span class="tag is-warning is-light">0 票</span>
                     </div>
-                    <div class="column is-four-fifths">
+                    <div class="column is-7">
                         <a th:href="@{/} + ${article.id}" th:text="${article.title}"></a>
                     </div>
-                    <div class="column">
+                    <div class="column is-2">
+                        kafka
+                    </div>
+                    <div class="column is-2">
                         <span>19 小时前</span>
                     </div>
                 </div>
